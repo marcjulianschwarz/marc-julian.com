@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/phoenixllmtracing/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="So I wanted to setup tracing for an LLM app with [Phoenix](https://phoenix.arize.com/) and while doing so I had some learnings that I wanted to document:
+
+-" />
+<meta name="keywords" content="EN,TypeScript,LLM,2025" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="OpenTelemetry LLM App Tracing with Phoenix" />
+<meta name="og:description" content="So I wanted to setup tracing for an LLM app with [Phoenix](https://phoenix.arize.com/) and while doing so I had some learnings that I wanted to document:
+
+-" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/phoenixllmtracing/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>OpenTelemetry LLM App Tracing with Phoenix</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>OpenTelemetry LLM App Tracing with Phoenix</h1>
+                    <h2></h2>
+                    <p class="date">2025-04-06</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/typescript/">
+    <div class="tag tag-post">TypeScript</div>
+</a>
+  <a href="/blog/tags/llm/">
+    <div class="tag tag-post">LLM</div>
+</a>
+  <a href="/blog/tags/2025/">
+    <div class="tag tag-year">2025</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>So I wanted to setup tracing for an LLM app with <a href="https://phoenix.arize.com/" target="_blank">Phoenix</a> and while doing so I had some learnings that I wanted to document:</p>
+
+<ul>
+<li>you have to take <code>SimpleSpanProcessor</code> by its name. It really only is a <strong>simple</strong> span processor. It is nice for development but for production you should be using the <code>BatchSpanProcessor</code> because it batches span exports, saving tons of network requests and probably avoiding some concurrency issues</li>
+<li>always make sure to end spans at the correct position, not too early, not too late, with <code>span.end()</code>. If you are using one central place to create spans, end them right there after you added attributes to it</li>
+<li>if you use <code>SemanticConventions</code>, make sure to check which attributes actually need to be set to get any visual on some dashboards (like Phoenix)</li>
+<li>tracing should be separated from business logic as much as possible. I am using a decorator for that specific purpose. It has access to the functions input, output and is called when the function it decorates is called without being in the way. This also makes it <em>really easy</em> to trace new functions.</li>
+</ul>
+
+<p>Here is an example implementation of such a <code>Trace</code> decorator.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="kr">export</span> <span class="kd">function</span> <span class="nx">Trace</span><span class="p">&lt;</span><span class="nt">A</span><span class="p">,</span> <span class="na">R</span><span class="p"></span><span class="p">&gt;</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">traceName</span>: <span class="kt">string</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">   <span class="nx">traceFunction</span><span class="o">:</span> <span class="p">(</span><span class="nx">span</span>: <span class="kt">Span</span><span class="p">,</span> <span class="nx">args</span>: <span class="kt">A</span><span class="p">,</span> <span class="nx">result</span>: <span class="kt">R</span><span class="p">)</span> <span class="o">=</span><span class="o">&gt;</span> <span class="k">void</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">     <span class="nx">target</span>: <span class="kt">unknown</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="nx">propertyKey</span>: <span class="kt">string</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="nx">descriptor</span>: <span class="kt">PropertyDescriptor</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">   <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">     <span class="kr">const</span> <span class="nx">originalMethod</span> <span class="o">=</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">     <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="kr">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">args</span>: <span class="kt">A</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">       <span class="k">return</span> <span class="k">await</span> <span class="nx">tracer</span><span class="p">.</span><span class="nx">startActiveSpan</span><span class="p">(</span><span class="nx">traceName</span><span class="p">,</span> <span class="kr">async</span> <span class="p">(</span><span class="nx">span</span>: <span class="kt">Span</span><span class="p">)</span> <span class="o">=</span><span class="o">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">         <span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">originalMethod</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">         <span class="nx">traceFunction</span><span class="p">(</span><span class="nx">span</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">         <span class="nx">span</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">         <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">       <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">     <span class="p">}</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">     <span class="k">return</span> <span class="nx">descriptor</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">   <span class="p">}</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> <span class="p">}</span>
+</span></span></code></pre>
+<p>And here is an example on how you can use it. As you can see the business logic in <code>doingSomeWork()</code> is completely free of any tracing logic. Removing the <code>@Trace()</code> decorator completely removes any tracing from it.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="kr">type</span> <span class="nx">DoingSomeWorkParams</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">input</span>: <span class="kt">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">@Trace</span><span class="p">(</span><span class="s2">&#34;Doing Some Work&#34;</span><span class="p">,</span> <span class="nx">DoingSomeWorkParams</span><span class="p">,</span> <span class="kt">string</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">async</span> <span class="kd">function</span> <span class="nx">doingSomeWork</span><span class="p">(</span><span class="nx">args</span>: <span class="kt">DoingSomeWorkParams</span><span class="p">)</span><span class="o">:</span> <span class="nx">Promise</span><span class="p">&lt;</span><span class="nt">string</span><span class="p"></span><span class="p">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ... doing some work with args.input
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">return</span> <span class="nx">result</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">traceDoingSomeWork</span><span class="p">(</span><span class="nx">span</span>: <span class="kt">Span</span><span class="p">,</span> <span class="nx">args</span>: <span class="kt">DoingSomeWorkParams</span><span class="p">,</span> <span class="nx">result</span>: <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">span</span><span class="p">.</span><span class="nx">setAttributes</span><span class="p">(</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">     <span class="p">[</span><span class="nx">SemanticConventions</span><span class="p">.</span><span class="nx">OPENINFERENCE_SPAN_KIND</span><span class="p">]</span><span class="o">:</span> <span class="nx">OpenInferenceSpanKind</span><span class="p">.</span><span class="nx">AGENT</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="p">[</span><span class="nx">SemanticConventions</span><span class="p">.</span><span class="nx">INPUT_VALUE</span><span class="p">]</span><span class="o">:</span> <span class="nx">args</span><span class="p">.</span><span class="nx">input</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">     <span class="p">[</span><span class="nx">SemanticConventions</span><span class="p">.</span><span class="nx">OUTPUT_VALUE</span><span class="p">]</span><span class="o">:</span> <span class="nx">result</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre>
+<p>Going on with the list of things I learned:
+- either use a <code>ConsoleSpanExporter</code> or <code>diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);</code> to see a lot of details about the tracing. Especially interesting are the <code>traceId</code>, <code>parentId</code> and <code>id</code> attributes of each span. Here you can check whether the context got propagated nicely between the spans.
+- because I noticed some span exporting issues to Phoenix I tried a different span/traces exporter: <code>ZipkinExporter</code> with the <a href="https://zipkin.io/" target="_blank">Zipkin UI</a> and there is still an <a href="https://github.com/Arize-ai/phoenix/discussions/7041#discussioncomment-12736322" target="_blank">open discussion</a> on GitHub about the problems I noticed with Phoenix. Will update this post accordingly.</p>
+</article>
+        </main>
+    </body>
+</html>

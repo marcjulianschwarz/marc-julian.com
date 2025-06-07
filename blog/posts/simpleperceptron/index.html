@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/simpleperceptron/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="We&#39;ll be implementing a simple perceptron model for binary classification tasks using Python, and discussing the fundamentals of the perceptron model," />
+<meta name="keywords" content="EN,ML,Python,DS,2023" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Implementing a Simple Perceptron for Binary Classification" />
+<meta name="og:description" content="We&#39;ll be implementing a simple perceptron model for binary classification tasks using Python, and discussing the fundamentals of the perceptron model," />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/simpleperceptron/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Implementing a Simple Perceptron for Binary Classification</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Implementing a Simple Perceptron for Binary Classification</h1>
+                    <h2></h2>
+                    <p class="date">2023-06-27</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/ml/">
+    <div class="tag tag-post">ML</div>
+</a>
+  <a href="/blog/tags/python/">
+    <div class="tag tag-post">Python</div>
+</a>
+  <a href="/blog/tags/ds/">
+    <div class="tag tag-post">DS</div>
+</a>
+  <a href="/blog/tags/2023/">
+    <div class="tag tag-year">2023</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>We&rsquo;ll be implementing a simple perceptron model for binary classification tasks using Python, and discussing the fundamentals of the perceptron model, including how it makes predictions and updates its weights during training.</p>
+
+<p>The first step in implementing a simple perceptron model is to define a class that contains the weights, training loop, and prediction methods.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Perceptron</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span> 
+</span></span><span class="line"><span class="cl">		<span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span> 
+</span></span><span class="line"><span class="cl">		<span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="p">)</span> <span class="c1"># TODO</span>
+</span></span></code></pre>
+<p>Here, we already set default values for hyperparameters like the learning rate (lr) and the number of epochs that the model should be trained for. Additionally, we already initialize the weight and bias values with the <code>init_weights</code> method.</p>
+
+<h2 id="weight-bias-initialization">Weight &amp; Bias Initialization</h2>
+
+<p>To initialize the weights and bias, we can either use constant values like 0 and 1, or we can choose random numbers.
+Since our training data has two features, we need one weight per feature, so we use two random values for the weights here.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">	<span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span></code></pre>
+<h2 id="training-loop">Training Loop</h2>
+
+<p>Now we are ready to work on the training loop. The basic idea is that we start predicting classes with random weight values in the model. We then compare the predicted (probably misclassified) class label with the expected class label to compute the error that the model has made.
+We then use the error to update the weights and bias by a small amount to get better predictions. We iterate over this process until the model converges or we reach the maximum epoch limit.</p>
+
+<p><img src="/blog/media/percep8.png" alt="" /></p>
+
+<p>At each learning step (epoch), we loop through the entire data set and update the weights and bias by a small delta value.</p>
+
+<p><img src="/blog/media/percep2.svg" alt="" /></p>
+
+<p>In the code, we can use two loops to iteratively update the values.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="c1"># for every data point and label</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="n">weight_delta</span> <span class="o">=</span> <span class="o">.</span><span class="o">.</span><span class="o">.</span> <span class="c1"># TODO </span>
+</span></span><span class="line"><span class="cl">			<span class="n">bias_delta</span> <span class="o">=</span> <span class="o">.</span><span class="o">.</span><span class="o">.</span> <span class="c1"># TODO </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="c1"># Update weigths</span>
+</span></span><span class="line"><span class="cl">			<span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_delta</span> 
+</span></span><span class="line"><span class="cl">			<span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_delta</span>
+</span></span></code></pre>
+<p>Of course, the important part is calculating the correct delta values.</p>
+
+<p>The current error of the model
+<img src="/blog/media/percep3.svg" alt="" /></p>
+
+<p>can take different values depending on the predictions.
+If the true and predicted classes are the same (0,0 or 1,1), the error will be equal to 0. In this case, everything is fine and we don&rsquo;t need to update the weights.
+In the two cases of misclassification (0,1 or 1,0), the error will be either  -1 or 1. Here we want to update the weights to hopefully get the prediction closer to the correct class in the next epoch.</p>
+
+<p>As you can see from the formula below, we update the weight with respect to the actual data points. This way, our data has an influence on the weight updates. Large values will have a higher impact than small values. This implies that our model benefits from feature scaling. One of the methods that could be applied is <strong>standardization</strong> where you subtract the mean and divide by the standard deviation to center and scale your data points.</p>
+
+<p>We multiply by the learning rate to make smaller steps, which helps to get better convergence. The magnitude of the learning rate plays an essential role. Too large values will lead to rapid but unstable convergence, too low values will make the model converge slowly and it may even get stuck in local minima.</p>
+
+<p><img src="/blog/media/percep4.svg" alt="" /></p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">			<span class="c1"># Compute the error and weight updates</span>
+</span></span><span class="line"><span class="cl">			<span class="n">error</span> <span class="o">=</span> <span class="n">yi</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="c1"># TODO</span>
+</span></span><span class="line"><span class="cl">			<span class="n">weight_delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">*</span> <span class="n">error</span> <span class="o">*</span> <span class="n">xi</span>  
+</span></span><span class="line"><span class="cl">			<span class="n">bias_delta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">*</span> <span class="n">error</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_delta</span> 
+</span></span><span class="line"><span class="cl">			<span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_delta</span>
+</span></span></code></pre>
+<p>Finally, we have to implement the <code>predict</code> method to be able to calculate the error.</p>
+
+<h2 id="prediction">Prediction</h2>
+
+<p>For prediction, we simply compute a linear combination of the input data using the trained weights and bias. To get the corresponding class labels, we need to clip the values with a step function. This gives us a binary output, just like the target variable.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">output</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span>
+</span></span><span class="line"><span class="cl">	<span class="c1"># Activation Function (in this case a simple step function)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">output</span> <span class="o">&gt;</span><span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="n">pred</span>
+</span></span></code></pre>
+<h2 id="using-the-perceptron-model">Using the Perceptron Model</h2>
+
+<p>To use the perceptron model, we first need to create some sample data using the scikit-learns <code>make_classification</code> function. The resulting synthetic data set has two classes with two features.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="p">:</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">X_train</span><span class="p">[</span><span class="p">:</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="sa"></span><span class="s1">&#39;</span><span class="s1">o</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span>
+</span></span></code></pre>
+<p><img src="/blog/media/percep5.png" alt="Scatter Plot for Binary Classification Problem" /></p>
+
+<h3 id="prediction-with-random-weights">Prediction with Random Weights</h3>
+
+<p>First, we create a perceptron instance and predict classes without training the model.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">perceptron</span> <span class="o">=</span> <span class="n">Perceptron</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">y_pred</span> <span class="o">=</span> <span class="n">perceptron</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X_train</span><span class="p">[</span><span class="p">:</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">X_train</span><span class="p">[</span><span class="p">:</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="sa"></span><span class="s1">&#39;</span><span class="s1">o</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span>
+</span></span></code></pre>
+<p>We can see that the random weights did not do a good job of separating the two classes.</p>
+
+<p><img src="/blog/media/percep6.png" alt="Bad Binary Classification Scatter Plot" /></p>
+
+<h3 id="prediction-with-trained-weights">Prediction with Trained Weights</h3>
+
+<p>Now, let us fit the perceptron and see whether the results are any better.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">perceptron</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">y_pred</span> <span class="o">=</span> <span class="n">perceptron</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</span></span></code></pre>
+<p>Here we can see two different plots for the predictions. The left one did not use any activation function and therefore shows the full range of values that were predicted. On the right side, the step function from above was used.</p>
+
+<p><img src="/blog/media/percep7.png" alt="Good Binary Classification Scatter Plot" /></p>
+
+<p>After training, the model seems to be able to discriminate between the two classes quite well. However, when comparing the predictions with the original data set we can clearly see that some samples were still misclassified. This is expected because the perceptron model is trying to fit a <strong>linear</strong> decision boundary while the two classes are actually <strong>not linearly</strong> separable.
+We could solve this problem by introducing more features, since in a higher dimensional space there may be a hyperplane that perfectly separates the classes. Of course, this will not always be possible which is why we need more complex models that can fit nonlinear decision boundaries.</p>
+
+<h2 id="code">Code</h2>
+
+<p>You can find the complete code here and on <a href="https://github.com/marcjulianschwarz/jupyter-notebooks" target="_blank">GitHub</a>.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">torch</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">sklearn</span><span class="nn">.</span><span class="nn">datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Perceptron</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">total_error</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">error</span> <span class="o">=</span> <span class="n">yi</span> <span class="o">-</span> <span class="n">y_pred</span>
+</span></span><span class="line"><span class="cl">                <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">*</span> <span class="n">error</span> <span class="o">*</span> <span class="n">xi</span>
+</span></span><span class="line"><span class="cl">                <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">*</span> <span class="n">error</span>
+</span></span><span class="line"><span class="cl">                <span class="n">total_error</span> <span class="o">+</span><span class="o">=</span> <span class="n">error</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="s1">epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> error </span><span class="si">{</span><span class="n">total_error</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">output</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">activation</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">output</span> <span class="o">&gt;</span><span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">output</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">perceptron</span> <span class="o">=</span> <span class="n">Perceptron</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">perceptron</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">y_pred</span> <span class="o">=</span> <span class="n">perceptron</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+</span></span></code></pre></article>
+        </main>
+    </body>
+</html>

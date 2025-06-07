@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/tilterminalaliases/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="&gt; **Edit** (17.12.2024): After more than a year of using Oh My Zsh and many custom aliases, my most used and favourite aliases are `go &lt;marker-name&gt;` (for" />
+<meta name="keywords" content="EN,TIL,Python,Misc,2023" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Command Line - Aliases and Functions" />
+<meta name="og:description" content="&gt; **Edit** (17.12.2024): After more than a year of using Oh My Zsh and many custom aliases, my most used and favourite aliases are `go &lt;marker-name&gt;` (for" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/tilterminalaliases/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Command Line - Aliases and Functions</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Command Line - Aliases and Functions</h1>
+                    <h2></h2>
+                    <p class="date">2023-07-05</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/til/">
+    <div class="tag tag-post">TIL</div>
+</a>
+  <a href="/blog/tags/python/">
+    <div class="tag tag-post">Python</div>
+</a>
+  <a href="/blog/tags/misc/">
+    <div class="tag tag-post">Misc</div>
+</a>
+  <a href="/blog/tags/2023/">
+    <div class="tag tag-year">2023</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><blockquote>
+<p><strong>Edit</strong> (17.12.2024): After more than a year of using Oh My Zsh and many custom aliases, my most used and favourite aliases are <code>go &lt;marker-name&gt;</code> (for going to a marked directory) and <code>b</code> (short for back + performing <code>cd ..</code>).  Oh My Zsh is awesome!</p>
+
+<p><strong>Edit</strong> (20.07.2023): The open source framework <a href="https://github.com/ohmyzsh/ohmyzsh" target="_blank">ohmyzsh</a>  makes it even easier to manage complex zsh configurations and there are tons of plugins that add useful aliases.</p>
+</blockquote>
+
+<p>Today I learned (<a href="https://www.marc-julian.de/tags/TIL.html" target="_blank">TIL</a>) that you can define aliases and functions inside of most command line applications like bash or zsh shells.
+For zsh, the config file <code>.zshrc</code> is located directly in the user folder. You can edit it in any text editer (on some systems, you might need to open it as an admin or run your preferred command with <code>sudo</code>).</p>
+
+<p>When you are done, run the following command to execute the file and reload all defined aliases and functions.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="nb">source</span> .zshrc
+</span></span></code></pre>
+<p>Here are some of <em>my favorites</em>:</p>
+
+<h2 id="conda">Conda</h2>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Run to get bash autocomplete functions in zsh shell </span>
+</span></span><span class="line"><span class="cl">autoload bashcompinit
+</span></span><span class="line"><span class="cl">bashcompinit
+</span></span><span class="line"><span class="cl">autoload -Uz compinit
+</span></span><span class="line"><span class="cl">compinit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List all conda environments</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> envs<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">	conda info --env
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Activate environment with autocompletion</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> aenv<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    conda activate <span class="nv">$1</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> extract_env_names<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Extracts the names of the environments from the output of `conda info --env`</span>
+</span></span><span class="line"><span class="cl">    conda info --env <span class="p">|</span> awk -F<span class="s1">&#39; &#39;</span> <span class="s1">&#39;{print $1}&#39;</span> <span class="p">|</span> tail -n +3
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> _aenv<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Get the current word being completed</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">local</span> <span class="nv">cur</span><span class="o">=</span><span class="si">${</span><span class="nv">COMP_WORDS</span><span class="p">[COMP_CWORD]</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Generate possible matches and store them in the COMPREPLY variable</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># -W expects a list of possible matches</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">COMPREPLY</span><span class="o">=</span><span class="o">(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&#34;</span><span class="k">$(</span>extract_env_names<span class="k">)</span><span class="s2">&#34;</span> -- <span class="nv">$cur</span><span class="k">)</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Register the completion function to be called for the aenv command</span>
+</span></span><span class="line"><span class="cl"><span class="nb">complete</span> -F _aenv aenv
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> denv<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    conda deactivate
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create a conda environment with a name and python version</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> cenv<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    conda create -n <span class="nv">$1</span> <span class="nv">python</span><span class="o">=</span><span class="nv">$2</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> renv<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    conda remove -n <span class="nv">$1</span> --all
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create a python kernel from a conda environment</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> envtokernel<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    python -m ipykernel install --user --name <span class="nv">$1</span> --display-name <span class="s2">&#34;</span><span class="s2">Python (</span><span class="nv">$1</span><span class="s2">)</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Create a conda environment with some sane default packages that I use a lot in data science projects </span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> defaultenv<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    cenv <span class="nv">$1</span> <span class="nv">$2</span>
+</span></span><span class="line"><span class="cl">    conda activate <span class="nv">$1</span>
+</span></span><span class="line"><span class="cl">    pip install pandas numpy matplotlib seaborn scikit-learn notebook
+</span></span><span class="line"><span class="cl">    envtokernel <span class="nv">$1</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre>
+<h2 id="mark-paths-to-directly-jump-to-them-from-anywhere">Mark paths to directly jump to them from anywhere</h2>
+
+<p>Inspired by the <code>mark</code> and <code>cdd</code> function in this <a href="https://chris-said.io/2014/10/16/jumping-quickly-between-deep-directories/" target="_blank">blog post</a> by Chris Said, I added two more additional functions <code>opend</code> and <code>coded</code> to quickly open a folder in Finder or VSCode.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Run to get bash autocomplete functions in zsh shell </span>
+</span></span><span class="line"><span class="cl">autoload bashcompinit
+</span></span><span class="line"><span class="cl">bashcompinit
+</span></span><span class="line"><span class="cl">autoload -Uz compinit
+</span></span><span class="line"><span class="cl">compinit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MARKPATH</span><span class="o">=</span><span class="s2">&#34;/Users/username/marks&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># jump to a marked path</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> cdd<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># change directory to the marked path, if it does not exist, ignore the error and print &#34;No such mark: $1&#34; instead</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">cd</span> -P <span class="s2">&#34;</span><span class="nv">$MARKPATH</span><span class="s2">/</span><span class="nv">$1</span><span class="s2">&#34;</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="s2">No such mark: </span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> opend<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    open <span class="s2">&#34;</span><span class="nv">$MARKPATH</span><span class="s2">/</span><span class="nv">$1</span><span class="s2">&#34;</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="s2">No such mark: </span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> coded<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    code <span class="s2">&#34;</span><span class="nv">$MARKPATH</span><span class="s2">/</span><span class="nv">$1</span><span class="s2">&#34;</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="s2">No such mark: </span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># mark a path for quick access</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> mark<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># create a folder to store marks</span>
+</span></span><span class="line"><span class="cl">    mkdir -p <span class="s2">&#34;</span><span class="nv">$MARKPATH</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># create a symlink in the mark folder to the current directory</span>
+</span></span><span class="line"><span class="cl">    ln -s <span class="s2">&#34;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$MARKPATH</span><span class="s2">/</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># delete a mark</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> unmark<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># remove the symlink</span>
+</span></span><span class="line"><span class="cl">    rm -i <span class="s2">&#34;</span><span class="nv">$MARKPATH</span><span class="s2">/</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># list all marks</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> marks<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># list all symlinks in the mark folder with some formatting magic to make it look nicer</span>
+</span></span><span class="line"><span class="cl">    <span class="se">\l</span>s -l <span class="s2">&#34;</span><span class="nv">$MARKPATH</span><span class="s2">&#34;</span> <span class="p">|</span> tail -n +2 <span class="p">|</span> sed <span class="s1">&#39;s/  / /g&#39;</span> <span class="p">|</span> cut -d<span class="s1">&#39; &#39;</span> -f9- <span class="p">|</span> awk -F <span class="s1">&#39; -&gt; &#39;</span> <span class="s1">&#39;{printf &#34;%-10s -&gt; %s\n&#34;, $1, $2}&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># autocomplete marks</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> _cdd<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># get the current word being completed</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">local</span> <span class="nv">cur</span><span class="o">=</span><span class="si">${</span><span class="nv">COMP_WORDS</span><span class="p">[COMP_CWORD]</span><span class="si">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># generate possible matches and store them in the COMPREPLY variable</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">COMPREPLY</span><span class="o">=</span><span class="o">(</span><span class="k">$(</span><span class="nb">compgen</span> -W <span class="s2">&#34;</span><span class="k">$(</span>ls <span class="nv">$MARKPATH</span><span class="k">)</span><span class="s2">&#34;</span> -- <span class="nv">$cur</span><span class="k">)</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># register the completion function to be called for the cdd command</span>
+</span></span><span class="line"><span class="cl"><span class="nb">complete</span> -F _cdd cdd
+</span></span><span class="line"><span class="cl"><span class="nb">complete</span> -F _cdd opend
+</span></span><span class="line"><span class="cl"><span class="nb">complete</span> -F _cdd coded
+</span></span></code></pre>
+<h2 id="python">Python</h2>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">function</span> py<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    python <span class="nv">$1</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> pyv<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    python --version
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre>
+<h2 id="streamlit">Streamlit</h2>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">function</span> strun<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    streamlit run <span class="nv">$1</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre>
+<h2 id="jupyter">Jupyter</h2>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">jnb</span><span class="o">=</span><span class="s2">&#34;jupyter notebook&#34;</span>
+</span></span></code></pre>
+<h2 id="git">Git</h2>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">function</span> gitc<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    git commit -m <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">gits</span><span class="o">=</span><span class="s2">&#34;git status&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">gitp</span><span class="o">=</span><span class="s2">&#34;git push&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">gitpl</span><span class="o">=</span><span class="s2">&#34;git pull&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">gitb</span><span class="o">=</span><span class="s2">&#34;git branch&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">gitl</span><span class="o">=</span><span class="s2">&#34;git log&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">gitd</span><span class="o">=</span><span class="s2">&#34;git diff&#34;</span>
+</span></span></code></pre>
+<h2 id="npm">NPM</h2>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">ninit</span><span class="o">=</span><span class="s2">&#34;npm init -y&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">nstart</span><span class="o">=</span><span class="s2">&#34;npm start&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">nbuild</span><span class="o">=</span><span class="s2">&#34;npm run build&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">ntest</span><span class="o">=</span><span class="s2">&#34;npm run test&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">alias</span> <span class="nv">ninstall</span><span class="o">=</span><span class="s2">&#34;npm install&#34;</span>
+</span></span></code></pre>
+<h2 id="imagemagick">ImageMagick</h2>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># d for do mogrify </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># I use this to automatically convert images for this blog </span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> dmog<span class="o">(</span><span class="o">)</span><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    mogrify -format jpg -geometry 1300x -quality <span class="nv">$1</span> *.png
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></article>
+        </main>
+    </body>
+</html>

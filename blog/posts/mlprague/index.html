@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/mlprague/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="Last week, I joined machine learning enthusiasts from around the world in Prague for Europe&#39;s biggest conference on ML and AI applications, [ML Prague" />
+<meta name="keywords" content="Conference,NLP,LLM,ML,EN,Data Science,2023" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Highlights from ML Prague Conference 2023" />
+<meta name="og:description" content="Last week, I joined machine learning enthusiasts from around the world in Prague for Europe&#39;s biggest conference on ML and AI applications, [ML Prague" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/mlprague/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Highlights from ML Prague Conference 2023</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Highlights from ML Prague Conference 2023</h1>
+                    <h2>Insights and Takeaways</h2>
+                    <p class="date">2023-06-08</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/conference/">
+    <div class="tag tag-post">Conference</div>
+</a>
+  <a href="/blog/tags/nlp/">
+    <div class="tag tag-post">NLP</div>
+</a>
+  <a href="/blog/tags/llm/">
+    <div class="tag tag-post">LLM</div>
+</a>
+  <a href="/blog/tags/ml/">
+    <div class="tag tag-post">ML</div>
+</a>
+  <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/data-science/">
+    <div class="tag tag-post">Data Science</div>
+</a>
+  <a href="/blog/tags/2023/">
+    <div class="tag tag-year">2023</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>Last week, I joined machine learning enthusiasts from around the world in Prague for Europe&rsquo;s biggest conference on ML and AI applications, <a href="https://mlprague.com/" target="_blank">ML Prague 2023</a>.</p>
+
+<p><img src="/blog/media/mlprague_sign.jpg" alt="ML Prague Conference 2023 sign at the entrance" /></p>
+
+<p>The event featured a broad lineup of speakers, covering a wide range of topics - from the latest breakthroughs in natural language processing to cutting-edge computer vision applications. In this blog post, I want to write about some of the most interesting talks from the conference and highlight the key takeaways. So, without further ado, let&rsquo;s dive in and start with two topics from the area of image processing.</p>
+
+<h2 id="image-processing">Image Processing</h2>
+
+<h3 id="3d-pose-estimation-in-sport">3D Pose Estimation in Sport</h3>
+
+<p><a href="https://www.linkedin.com/in/piotr-skalski-36b5b4122/" target="_blank">Piotr Skalski</a> from Roboflow showed us how he was able to reproduce parts of the Video Assistant Referee (VAR) system shown in the following clip.</p>
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/WycjDx6giVE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<p>He used <a href="https://github.com/WongKinYiu/yolov7" target="_blank">YOLOv7</a> and two cameras that record from different perspectives to track a skeleton of his body.</p>
+
+<p>When using this technique, there are some key points to consider:
+-  Use <strong>at least</strong> two cameras with the same configuration
+	- For best results, position them above the playing field to reduce player occlusions
+	- For better results, use more than two cameras
+-  Avoid or remove any lens distortion before processing the video recordings.</p>
+
+<p>Take a look at his <a href="https://github.com/SkalskiP/sport" target="_blank">GitHub repository</a> to see the results.</p>
+
+<h3 id="multi-model-machine-learning-based-industrial-vision-tool-for-assembly-part-quality-control">Multi-Model Machine Learning based Industrial Vision Tool for Assembly Part Quality Control</h3>
+
+<p><a href="https://www.linkedin.com/in/aimira-baitieva/?originalSubdomain=cz" target="_blank">Aimira Baitieva</a> from Valeo offered insights into anomaly detection in images using neural networks.</p>
+
+<p>One interesting idea was to train a model that outputs embeddings for images, which represent their information well enough. You could then create a <em>&ldquo;good&rdquo;</em> embedding for normal parts (without anomalies) to compare against. If an embedded image has a dissimilarity above a certain threshold when compared with the good embedding, one can mark it as an anomaly.</p>
+
+<p>Their final <strong>multi-model</strong> approach, however, consisted of three steps:
+1. Create a segmented anomaly map:
+	1. Segment the image to get a segmentation map
+	2. Use an anomaly detector to get an anomaly map
+	3. Combine both maps
+2. Extract features from this map
+3. Classify the image based on the features.</p>
+
+<p><img src="/blog/media/mlprague_valeo.jpg" alt="Image at Conference of multi-model approach" /></p>
+
+<p>This turned out to work quite well and is currently in use.</p>
+
+<h2 id="large-language-models">Large Language Models</h2>
+
+<h3 id="llm-driven-game-characters">LLM-driven Game Characters</h3>
+
+<p><a href="https://www.linkedin.com/in/marekrosa1/?originalSubdomain=cz" target="_blank">Marek Rosa</a> from GoodAI shared their progress in creating LLM-driven game characters.</p>
+
+<p>In their AI Game, characters use a large language model to generate their thoughts, actions and speech. The player can interact with them via a chat interface and with normal in-game actions like exchanging objects.</p>
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/G7ZAPwji4i0?start=92" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<p>Every character has a long-term memory which has been implemented via a vector database. New thoughts and interactions are preprocessed and then saved into the database.
+When needed, the database will be queried with respect to
+- recency
+- importance
+- and relevance.</p>
+
+<p>The short-term memory is controlled with the current context of the language model.</p>
+
+<p>This combination of short and long-term memory lets agents learn continually by using it to plan actions based on past observations, experience, its current environment and thoughts.</p>
+
+<p>Personally, I think that LLMs will completely redefine the role of NPCs (Non-Player Characters) in video games. Today, the player-controlled character is often the central figure in the game&rsquo;s story while other characters are less important.
+In the near future, the player will take on a more supporting role and the game does not have a clearly defined protagonist. The story will be open-ended and allows the players <strong>and</strong> NPCs to make choices that affect the outcome and direction of it.
+More games will adopt a sandbox-style approach, similar to Minecraft, where there is no apparent goal or ending of the game.</p>
+
+<p>Other interesting projects that try to use LLMs to create autonomous agents are
+- <a href="https://github.com/Significant-Gravitas/Auto-GPT" target="_blank">AutoGPT</a>
+- <a href="https://github.com/MineDojo/Voyager" target="_blank">Voyager Minecraft Agent</a></p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In conclusion, the ML Prague Conference 2023 was a fantastic opportunity for ML professionals to come together, learn about the latest trends and innovations in the field, and connect with others. I had a great time and am glad that I was able to be there. I hope you enjoyed this short recap of the conference. If you&rsquo;ve been there too, let&rsquo;s connect on <a href="https://www.linkedin.com/in/marcjulian/" target="_blank">LinkedIn</a> and have a chat about <strong>your</strong> favorite talks.</p>
+
+<p><img src="/blog/media/mlprague_evening.jpg" alt="Prague City with evening sun" /></p>
+</article>
+        </main>
+    </body>
+</html>

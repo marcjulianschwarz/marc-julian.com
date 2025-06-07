@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/gurobi/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="Solving a Mixed Integer Programming (MIP) Problem with Gurobi requires the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/) and the Python" />
+<meta name="keywords" content="Python,Math,Data Science,2022" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Gurobi - Solving Mixed Integer Problems with Python" />
+<meta name="og:description" content="Solving a Mixed Integer Programming (MIP) Problem with Gurobi requires the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/) and the Python" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/gurobi/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Gurobi - Solving Mixed Integer Problems with Python</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Gurobi - Solving Mixed Integer Problems with Python</h1>
+                    <h2>Capacitated and Uncapacitated Lot-Sizing Problems</h2>
+                    <p class="date">2022-12-31</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/python/">
+    <div class="tag tag-post">Python</div>
+</a>
+  <a href="/blog/tags/math/">
+    <div class="tag tag-post">Math</div>
+</a>
+  <a href="/blog/tags/data-science/">
+    <div class="tag tag-post">Data Science</div>
+</a>
+  <a href="/blog/tags/2022/">
+    <div class="tag tag-year">2022</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>Solving a Mixed Integer Programming (MIP) Problem with Gurobi requires the <a href="https://www.gurobi.com/products/gurobi-optimizer/" target="_blank">Gurobi Optimizer</a> and the Python package <a href="https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-" target="_blank">GurobiPy</a> to be installed on your system.</p>
+
+<p>The GurobiPy package can be installed with pip or conda:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">python -m pip install gurobipy
+</span></span></code></pre><pre class="chroma"><code><span class="line"><span class="cl">conda install -c gurobi gurobi
+</span></span></code></pre>
+<h2 id="importing-package">Importing package</h2>
+
+<p>When installed, gurobipy can be imported like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">gurobipy</span> <span class="k">as</span> <span class="nn">gp</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">gurobipy</span> <span class="kn">import</span> <span class="n">GRB</span>
+</span></span></code></pre>
+<h2 id="initialize-model">Initialize Model</h2>
+
+<p>The next step is to initialize a Gurobi model. For this example problem, setting a constant with the name capacitated to <code>False</code> will be necessary too. This variable can be changed depending on whether you want to have production capacity constraints (LS-C) or not (LS-U).</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">m</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">ls</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">capacitated</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span></code></pre>
+<h2 id="constants">Constants</h2>
+
+<p>The situation for the example problem is the following:</p>
+
+<p>A production facility wants to make a plan for the next 8 months. They want to know exactly how many products have to be produced each month to fulfill the demand in that month and reduce the overall costs which consist of</p>
+
+<ul>
+<li>Production costs for one product: 100€</li>
+<li>Preparing the machines at the beginning of a month (only if the machines are being used in that month):  5000€</li>
+<li>Storing one product for a month:  5€</li>
+</ul>
+
+<p>These are all constants that won&rsquo;t change during the optimization of the model. That&rsquo;s why they don&rsquo;t have to be added to the model.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Time (e.g. months)</span>
+</span></span><span class="line"><span class="cl"><span class="n">n</span> <span class="o">=</span> <span class="mi">8</span>
+</span></span><span class="line"><span class="cl"><span class="n">t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="c1"># Costs for production of one product for each month</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Costs for storing a product for each month</span>
+</span></span><span class="line"><span class="cl"><span class="n">h</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Costs for armoring the machines for each month (has to be done at most once for each month)</span>
+</span></span><span class="line"><span class="cl"><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5000</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Demand for products for each month</span>
+</span></span><span class="line"><span class="cl"><span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">]</span>
+</span></span></code></pre>
+<h2 id="add-variables">Add Variables</h2>
+
+<p>To describe the objective function and constraints of the model, variables with specified types have to be added to the model.</p>
+
+<p>The number of products being produced each month (<code>x</code>) will have to be an integer variable as the facility can&rsquo;t produce fractions of a product. The same constraint holds for the storage of products (<code>s</code>) where only finished products can be stored.
+The storage amount will have one extra entry in comparison to the other variables as there will be an initial stock from the month before.</p>
+
+<p>The variable <code>y</code> is binary as it controls whether the machines have to be prepared (1) or not (0).</p>
+
+<p>The only difference between the Uncapacitated and Capacitated Lot-Sizing problem lies in the definition of the capacity constraining variable <code>M</code>.
+For the uncapacitated case, the variable will be unbounded and will therefore always be big enough to produce any amount of products. In the capacitated case it will consist of a list of capacities.
+In the code example below, the capacities are selected in a way to minimize the preparation costs of the machines.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Production Amount for each month</span>
+</span></span><span class="line"><span class="cl"><span class="n">x</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">addVars</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">x</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">vtype</span><span class="o">=</span><span class="n">GRB</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Storage Amount for each month</span>
+</span></span><span class="line"><span class="cl"><span class="n">s</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">addVars</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">s</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">vtype</span><span class="o">=</span><span class="n">GRB</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Production Preparation necessary for each month (0 or 1)</span>
+</span></span><span class="line"><span class="cl"><span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">addVars</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">y</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">vtype</span><span class="o">=</span><span class="n">GRB</span><span class="o">.</span><span class="n">BINARY</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Production Capacity for each month (in this case unbounded -&gt; LS-U)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">capacitated</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7000</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">M</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">addVars</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">M</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">vtype</span><span class="o">=</span><span class="n">GRB</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span>
+</span></span></code></pre>
+<h2 id="objective-function">Objective Function</h2>
+
+<p>As described above, the facility wants to minimize the overall costs. They consist of the sum of costs for producing products, preparing machines, and storing products.
+Thus the objective function has to look like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">setObjective</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">quicksum</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span><span class="p">,</span> <span class="n">GRB</span><span class="o">.</span><span class="n">MINIMIZE</span><span class="p">)</span>
+</span></span></code></pre>
+<h2 id="linear-constraints">(Linear) Constraints</h2>
+
+<p>Last but not least all constraints of the model have to be defined.</p>
+
+<p>The first two constraints make sure that the demand will be fulfilled and that the excess will be stored for the next month.</p>
+
+<p>Constraints three and four will control the initial and final stock.</p>
+
+<p>Constraint five adds capacity constraints to the model. As stated before, <code>M</code> will either be unbounded or have specific capacity restrictions.</p>
+
+<p>The last three positivity constraints make sure that no negative amounts of products can be produced or stored.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Stored products from the previous month plus the number of products produced in the current</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># month must fulfill the demand while the rest of the products must be stored for the next month</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c1</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c2</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># The number of products stored in the first month must be equal to 200 (Initial stock)</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c3</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># The number of products stored in the last month must be equal to 0 (Final stock)</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstr</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c4</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># If products are being produced in the current month the machines must be prepared</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span><span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c5</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># There cant be a negative number of products stored in the warehouse or produced</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span><span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c6</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span><span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c7</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span><span class="o">=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c8</span><span class="s2">&#34;</span><span class="p">)</span><span class="p">;</span>
+</span></span></code></pre>
+<h2 id="mathematical-model">Mathematical Model</h2>
+
+<p>The resulting mathematical model would look like this:</p>
+
+<p><img src="/blog/media/LS_U_Problem_Model.svg" alt="Mathematical LP model" /></p>
+
+<h2 id="optimizing">Optimizing</h2>
+
+<p>The function call</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="p">)</span>
+</span></span></code></pre>
+<p>does everything we need to solve this optimization problem.</p>
+
+<p>Gurobi will use the Branch-and-Bound algorithm as the model only consists of linear constraints and a linear objective function, with (mixed) integer variables (IP).</p>
+
+<h2 id="evaluation">Evaluation</h2>
+
+<p>These are the results for the given problem:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">Gurobi Optimizer version 9.5.2 build v9.5.2rc0 (mac64[rosetta2])
+</span></span><span class="line"><span class="cl">Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+</span></span><span class="line"><span class="cl">Optimize a model with 35 rows, 33 columns and 53 nonzeros
+</span></span><span class="line"><span class="cl">Model fingerprint: 0xa7ef1cf7
+</span></span><span class="line"><span class="cl">Model has 8 quadratic constraints
+</span></span><span class="line"><span class="cl">Variable types: 0 continuous, 33 integer (8 binary)
+</span></span><span class="line"><span class="cl">Coefficient statistics:
+</span></span><span class="line"><span class="cl">  Matrix range     [1e+00, 1e+00]
+</span></span><span class="line"><span class="cl">  QMatrix range    [1e+00, 1e+00]
+</span></span><span class="line"><span class="cl">  QLMatrix range   [1e+00, 1e+00]
+</span></span><span class="line"><span class="cl">  Objective range  [5e+00, 5e+03]
+</span></span><span class="line"><span class="cl">  Bounds range     [1e+00, 1e+00]
+</span></span><span class="line"><span class="cl">  RHS range        [2e+02, 1e+03]
+</span></span><span class="line"><span class="cl">Presolve removed 29 rows and 4 columns
+</span></span><span class="line"><span class="cl">Presolve time: 0.00s
+</span></span><span class="line"><span class="cl">Presolved: 30 rows, 53 columns, 74 nonzeros
+</span></span><span class="line"><span class="cl">Presolved model has 16 SOS constraint(s)
+</span></span><span class="line"><span class="cl">Variable types: 0 continuous, 53 integer (16 binary)
+</span></span><span class="line"><span class="cl">Found heuristic solution: objective 859000.00000
+</span></span><span class="line"><span class="cl">Found heuristic solution: objective 830000.00000
+</span></span><span class="line"><span class="cl">Found heuristic solution: objective 822000.00000
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Root relaxation: objective 7.170501e+05, 13 iterations, 0.00 seconds (0.00 work units)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    Nodes    |    Current Node    |     Objective Bounds      |     Work
+</span></span><span class="line"><span class="cl"> Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">     0     0 717050.070    0    6 822000.000 717050.070  12.8%     -    0s
+</span></span><span class="line"><span class="cl">H    0     0                    737000.00000 717050.070  2.71%     -    0s
+</span></span><span class="line"><span class="cl">H    0     0                    736000.00000 727633.403  1.14%     -    0s
+</span></span><span class="line"><span class="cl">     0     0 736000.000    0    5 736000.000 736000.000  0.00%     -    0s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Cutting planes:
+</span></span><span class="line"><span class="cl">  Implied bound: 7
+</span></span><span class="line"><span class="cl">  Flow cover: 1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Explored 1 nodes (20 simplex iterations) in 0.01 seconds (0.00 work units)
+</span></span><span class="line"><span class="cl">Thread count was 10 (of 10 available processors)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Solution count 5: 736000 737000 822000 ... 859000
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Optimal solution found (tolerance 1.00e-04)
+</span></span><span class="line"><span class="cl">Best objective 7.360000000000e+05, best bound 7.360000000000e+05, gap 0.0000%
+</span></span></code></pre>
+<p>As one can see the optimal solution is equal to 736,000€ of overall costs.</p>
+
+<p>Printing out the variables reveals how many products have to be produced in each month to achieve these minimal costs.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">getVars</span><span class="p">(</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">varName</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">x</span><span class="s2">&#34;</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">print</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">Produce </span><span class="si">{}</span><span class="s2"> products in month </span><span class="si">{}</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">varName</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="p">]</span><span class="p">)</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">--------------------------------</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">Total cost: </span><span class="si">{}</span><span class="s2">&#34;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">objVal</span><span class="p">)</span><span class="p">)</span>
+</span></span></code></pre>
+<p>Output:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">Produce 600.0 products in month [0] 
+</span></span><span class="line"><span class="cl">Produce 0.0 products in month [1] 
+</span></span><span class="line"><span class="cl">Produce 1600.0 products in month [2] 
+</span></span><span class="line"><span class="cl">Produce 0.0 products in month [3] 
+</span></span><span class="line"><span class="cl">Produce 1200.0 products in month [4] 
+</span></span><span class="line"><span class="cl">Produce 1200.0 products in month [5] 
+</span></span><span class="line"><span class="cl">Produce 1200.0 products in month [6] 
+</span></span><span class="line"><span class="cl">Produce 1200.0 products in month [7] 
+</span></span><span class="line"><span class="cl">-------------------------------- 
+</span></span><span class="line"><span class="cl">Total cost: 736000.0
+</span></span></code></pre></article>
+        </main>
+    </body>
+</html>

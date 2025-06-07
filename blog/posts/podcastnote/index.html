@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/podcastnote/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="# Podcast Note
+
+My plugin *Podcast Note* for the note taking app [Obsidian](https://obsidian.md) is a great way to write notes on podcasts. With a single URL" />
+<meta name="keywords" content="EN,Obsidian,2021" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Podcast Note plugin for Obsidian" />
+<meta name="og:description" content="# Podcast Note
+
+My plugin *Podcast Note* for the note taking app [Obsidian](https://obsidian.md) is a great way to write notes on podcasts. With a single URL" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/podcastnote/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Podcast Note plugin for Obsidian</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Podcast Note plugin for Obsidian</h1>
+                    <h2></h2>
+                    <p class="date">2021-09-09</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/obsidian/">
+    <div class="tag tag-post">Obsidian</div>
+</a>
+  <a href="/blog/tags/2021/">
+    <div class="tag tag-year">2021</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><h1 id="podcast-note">Podcast Note</h1>
+
+<p>My plugin <em>Podcast Note</em> for the note taking app <a href="https://obsidian.md" target="_blank">Obsidian</a> is a great way to write notes on podcasts. With a single URL you will get the title, image and description of your podcast.
+Using a custom template you can style the note to your likings.
+More settings and features will be explained further down.</p>
+
+<p>You can find it in the official community plugins list right in <a href="https://obsidian.md" target="_blank">Obsidian</a> or on <a href="https://github.com/marcjulianschwarz/obsidian-podcast-note" target="_blank">GitHub</a>.</p>
+
+<h2 id="how-to-use-it">How to use it</h2>
+
+<p>You can add new podcast notes by opening the command pallete (cmd + p) and searching for &ldquo;Podcast Note&rdquo; commands:</p>
+
+<h3 id="add-podcast-note">Add Podcast Note</h3>
+
+<p>A prompt will open where you can enter the URL for the podcast you want to take notes on.
+Of course you can also specify a keyboard shortcut to trigger the prompt.</p>
+
+<h3 id="add-podcast-notes-from-selection">Add Podcast Notes from selection</h3>
+
+<p>This command will only be visible in editor mode.
+Make sure you have text selected which contains markdown links to podcast episodes. Running the command will create new podcast notes for every url in the selected text. It will also automatically link these notes.</p>
+
+<h3 id="supported-podcast-services">Supported Podcast services</h3>
+
+<p>So far these podcast services are supported:
++ Apple Podcast
++ Spotify Podcast
++ Google Podcast
++ Pocket Casts
++ Airr
++ Overcast
++ Castro
++ Castbox</p>
+
+<h2 id="demo">Demo</h2>
+
+<h3 id="example-podcast-note">Example Podcast Note:</h3>
+
+<p><img src="https://user-images.githubusercontent.com/67844154/131222181-e9a52afa-fee2-4eff-83e1-f03deb633df3.png" alt="Podcast Note example" /></p>
+
+<h2 id="settings">Settings</h2>
+
+<h3 id="1-template">1. Template</h3>
+
+<p>Here you can specify how the metadata for your podcast notes looks like.
+Use these three placeholders:</p>
+
+<ul>
+<li><strong>{{Title}}</strong> → title of your podcast</li>
+<li><strong>{{ImageURL}}</strong> → image url of your podcast</li>
+<li><strong>{{Description}}</strong> → short podcast description</li>
+<li><strong>{{PodcastURL}}</strong> → url to podcast</li>
+<li><strong>{{Date}}</strong> → date (format: Day-Month-Year)</li>
+<li><strong>{{Timestamp}}</strong> → current timestamp</li>
+</ul>
+
+<h4 id="example-template">Example template:</h4>
+<pre class="chroma"><code><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl">tags: [Podcast]
+</span></span><span class="line"><span class="cl">date: {{Date}}
+</span></span><span class="line"><span class="cl">---
+</span></span><span class="line"><span class="cl"># {{Title}} 
+</span></span><span class="line"><span class="cl">![]({{ImageURL}})
+</span></span><span class="line"><span class="cl">## Description: 
+</span></span><span class="line"><span class="cl">&gt; {{Description}}
+</span></span><span class="line"><span class="cl">-&gt; [Podcast Link]({{PodcastURL}})
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">## Notes:
+</span></span></code></pre>
+<h3 id="2-filename-template">2. Filename template</h3>
+
+<p>Specify whether the podcast note will be inserted at your cursor or whether a new note will be added.
+You can also use a template for the filename.
+Placeholders:
++ <strong>{{Title}}</strong> → title of your podcast
++ <strong>{{Timestamp}}</strong> → timestamp (like zettelkasten id)
++ <strong>{{Date}}</strong> → date (format: Day-Month-Year)</p>
+
+<h3 id="3-folder">3. Folder</h3>
+
+<p>Set the folder where new Podcast notes will be saved. The path is relative to your vault. For example <strong>folder/podcast_folder</strong> will become <strong>path/to/vault/folder/podcastfolder</strong>.</p>
+
+<h3 id="4-insert-podcast-note-at-cursor">4. Insert podcast note at cursor</h3>
+
+<p>Specify whether you want to create a new note or whether you want the metadata to be inserted at your cursor.</p>
+</article>
+        </main>
+    </body>
+</html>

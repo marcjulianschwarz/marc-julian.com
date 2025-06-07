@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/pythonpackagedistribution/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="&gt; **Notice:** This blog post is most likely outdated and there are better ways to package and publish Python packages.
+
+Yesterday I published my Python package" />
+<meta name="keywords" content="EN,Python,2022" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Distributing a Python Package" />
+<meta name="og:description" content="&gt; **Notice:** This blog post is most likely outdated and there are better ways to package and publish Python packages.
+
+Yesterday I published my Python package" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/pythonpackagedistribution/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Distributing a Python Package</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Distributing a Python Package</h1>
+                    <h2></h2>
+                    <p class="date">2022-02-11</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/python/">
+    <div class="tag tag-post">Python</div>
+</a>
+  <a href="/blog/tags/2022/">
+    <div class="tag tag-year">2022</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><blockquote>
+<p><strong>Notice:</strong> This blog post is most likely outdated and there are better ways to package and publish Python packages.</p>
+</blockquote>
+
+<p>Yesterday I published my Python package <a href="https://github.com/marcjulianschwarz/watchlib" target="_blank">watchlib</a> to PyPi, the <em>Python Package Index</em>. In this post I will show you how I did it and add some tips, tricks and resources that helped me a lot in the process.</p>
+
+<h2 id="package-structure">Package structure</h2>
+
+<p>To make a package ready for distribution you will have to create a folder that will look something like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">some_folder/
+</span></span><span class="line"><span class="cl">├── LICENSE
+</span></span><span class="line"><span class="cl">├── pyproject.toml
+</span></span><span class="line"><span class="cl">├── README.md
+</span></span><span class="line"><span class="cl">├── setup.cfg
+</span></span><span class="line"><span class="cl">├── src/
+</span></span><span class="line"><span class="cl">│   └── your_package/
+</span></span><span class="line"><span class="cl">│       ├── __init__.py
+</span></span><span class="line"><span class="cl">│       └── submodule_of_your_package.py
+</span></span><span class="line"><span class="cl">└── tests/
+</span></span></code></pre>
+<p>If you are using GitHub to manage your package you will most likely know what a README.md and LICENSE file is. However if you need some help with choosing an appropriate license or creating an appealing readme, here are some resources that you can check out:
+- <a href="https://choosealicense.com" target="_blank">choosealicense.com</a>
+- <a href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax" target="_blank">Writing an Formatting on GitHub</a>
+- <a href="https://github.github.com/gfm/" target="_blank">GitHub flavored markdown</a></p>
+
+<p>The <code>src</code> folder will contain all your sources and the top level folder in there will determine the name of your package. Adding an empty <code>__init__.py</code> file ensures that the folder can be imported later on.</p>
+
+<h2 id="build-configuration-pyproject-toml">Build configuration - pyproject.toml</h2>
+
+<p>In the <code>pyproject.toml</code> file you will have to enter configuration details that will be used while building the package.
+To build my project I was using <a href="https://setuptools.pypa.io/en/latest/" target="_blank">setuptools</a> which greatly simplifies the building process. If you want to use setuptools too, make sure to require it and define the build-backend (in the pyproject.toml file) like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">[build-system]
+</span></span><span class="line"><span class="cl">requires = [
+</span></span><span class="line"><span class="cl"> &#34;setuptools&gt;=42&#34;,
+</span></span><span class="line"><span class="cl"> &#34;wheel&#34;
+</span></span><span class="line"><span class="cl">]
+</span></span><span class="line"><span class="cl">build-backend = &#34;setuptools.build_meta&#34;
+</span></span></code></pre>
+<h2 id="metadata-setup-cfg">Metadata - setup.cfg</h2>
+
+<p>The setup.cfg file is the configuration file for setuptools itself. All of the metadata of your package will be located here. The resource that helped me the most was the <a href="https://setuptools.pypa.io/en/latest/userguide/declarative_config.html" target="_blank">userguide from setuptools</a>. It&rsquo;s great.</p>
+
+<p>For some inspiration, this is how my setup.cfg file looks like:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">[metadata]
+</span></span><span class="line"><span class="cl">name = watchlib
+</span></span><span class="line"><span class="cl">version = 0.0.1a1
+</span></span><span class="line"><span class="cl">author = Marc Julian Schwarz
+</span></span><span class="line"><span class="cl">author_email = my@email.de
+</span></span><span class="line"><span class="cl">description = watchlib is a [[Python]] package providing tools for loading, visualizing and analyzing Apple Watch health data.
+</span></span><span class="line"><span class="cl">long_description = file: README.md
+</span></span><span class="line"><span class="cl">long_description_content_type = text/markdown
+</span></span><span class="line"><span class="cl">url = https://github.com/marcjulianschwarz/watchlib
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">project_urls =
+</span></span><span class="line"><span class="cl">	Bug Tracker = https://github.com/marcjulianschwarz/watchlib/issues
+</span></span><span class="line"><span class="cl">	Docs = https://github.com/marcjulianschwarz/watchlib/wiki
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">classifiers =
+</span></span><span class="line"><span class="cl">	Programming Language :: Python :: 3
+</span></span><span class="line"><span class="cl">	License :: OSI Approved :: MIT License
+</span></span><span class="line"><span class="cl">	Operating System :: OS Independent
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[options]
+</span></span><span class="line"><span class="cl">package_dir =
+</span></span><span class="line"><span class="cl">	= src
+</span></span><span class="line"><span class="cl">packages = find:
+</span></span><span class="line"><span class="cl">python_requires = &gt;=3.6
+</span></span><span class="line"><span class="cl">install_requires =
+</span></span><span class="line"><span class="cl">	pandas
+</span></span><span class="line"><span class="cl">	numpy
+</span></span><span class="line"><span class="cl">	matplotlib
+</span></span><span class="line"><span class="cl">	seaborn
+</span></span><span class="line"><span class="cl">	annoy
+</span></span><span class="line"><span class="cl">	sklearn
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[options.packages.find]
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">where = src
+</span></span><span class="line"><span class="cl">
+</span></span></code></pre>
+<p>As you can see I used the <code>install_requires</code> field to list all dependencies of my package. These dependencies will be installed when someone installs the package via PyPi.
+One last note on the version field. <a href="https://www.python.org/dev/peps/pep-0440/" target="_blank">PEP 440</a> goes into great detail on different version schemes, what&rsquo;s allowed and what not and lists some interesting version timeline examples.</p>
+
+<h2 id="building-the-package">Building the package</h2>
+
+<p>Now comes the exciting part. To build the package navigate to the folder where the pyproject.toml file is located and run this command:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">python3 -m build
+</span></span></code></pre>
+<p>When building has finished a new folder, called <code>dist</code>, will have been added on the same level as the <code>src</code> folder. It contains a source archive and a built distribution.</p>
+
+<h2 id="uploading-distribution-files-with-twine">Uploading distribution files with Twine</h2>
+
+<p>Before uploading the files you will have to register an account on <a href="https://pypi.org" target="_blank">PyPi</a>.</p>
+
+<blockquote>
+<p><strong>Important side note!</strong> I would highly recommend to first register on <a href="https://test.pypi.org" target="_blank">Test PyPi</a> which is a second Python package index just for testing. Everything works exactly the same but you can treat it as a playground and try out different things.</p>
+</blockquote>
+
+<p>When you have an account you will need to create an <a href="https://test.pypi.org/account/login/?next=%2Fmanage%2Faccount%2F#api-tokens" target="_blank">API token</a> and store it somewhere safe.</p>
+
+<p>Now that everything is setup you can start uploading your package using twine like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">twine upload dist/*
+</span></span></code></pre>
+<p>To upload to <a href="https://test.pypi.org" target="_blank">Test PyPi</a> use this command instead:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">python3 -m twine upload --repository testpypi dist/*
+</span></span></code></pre>
+<h2 id="and-that-s-it-you-just-distributed-a-python-package">And that&rsquo;s it! You just distributed a [[Python]] package.</h2>
+
+<p>To install your package run the familiar pip command:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">pip install your_package
+</span></span></code></pre>
+<p>If you used <a href="https://test.pypi.org" target="_blank">Test PyPi</a> you can install your package like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps your_package
+</span></span></code></pre>
+<h2 id="need-help-or-want-to-chat">Need help or want to chat?</h2>
+
+<p>I hope this guide made it a bit easier for you to distribute your own package. If there are still any questions or you just want to chat with some like-minded people, feel free to join my <a href="https://discord.gg/KVxRd8zse8" target="_blank">Discord Server</a>.</p>
+</article>
+        </main>
+    </body>
+</html>

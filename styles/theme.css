@@ -1,0 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+}
+
+/* Custom emoji font-family to standardize appearance across platforms
+ https://www.client9.com/css-color-emoji-stack/
+ https://nolanlawson.com/2022/04/08/the-struggle-of-using-native-emoji-on-the-web/ */
+@font-face {
+    font-family: "color-emoji";
+    src:
+        local("Apple Color Emoji"), local("Twemoji Mozilla"),
+        local("Segoe UI Emoji"), local("Segoe UI Symbol"),
+        local("Noto Color Emoji"), local("EmojiOne Color"),
+        local("Android Emoji");
+}
+
+:root {
+    --primary-background: rgb(0, 0, 0);
+    --secondary-background: #4a4a4a;
+    --tertiary-background: rgba(255, 255, 255, 0.08);
+    --primary-text: rgb(255, 255, 255);
+    --secondary-text: rgb(185, 185, 185);
+    --special: rgb(115, 126, 252);
+    --default-font-family:
+        -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif, color-emoji;
+}
+
+* {
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-padding-top: 3rem;
+}
+
+body {
+    background-color: var(--primary-background);
+    color: var(--primary-text);
+    font-family: var(--default-font-family);
+}
+
+p {
+    line-height: 1.5em;
+}
+
+.special {
+    color: var(--special);
+    opacity: 1;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/macos-screen-access-notifications/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="With a recent macOS Sequoia update, apps capturing your screen would trigger a new notification that shows next to the menubar. For apps like" />
+<meta name="keywords" content="EN,macOS,2025" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Remove macOS Sequoia Screen Capture Notifications" />
+<meta name="og:description" content="With a recent macOS Sequoia update, apps capturing your screen would trigger a new notification that shows next to the menubar. For apps like" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/macos-screen-access-notifications/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Remove macOS Sequoia Screen Capture Notifications</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Remove macOS Sequoia Screen Capture Notifications</h1>
+                    <h2></h2>
+                    <p class="date">2025-04-12</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/macos/">
+    <div class="tag tag-post">macOS</div>
+</a>
+  <a href="/blog/tags/2025/">
+    <div class="tag tag-year">2025</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>With a recent macOS Sequoia update, apps capturing your screen would trigger a new notification that shows next to the menubar. For apps like <a href="https://alt-tab-macos.netlify.app/" target="_blank">AltTab</a> which take screenshots of your screen for their functionality, this results in a constant flood of notifications every time the app is used.</p>
+
+<p>Apparently, this new <em>feature</em> was not on purpose. It was supposed to only show a notification once every 30 days. But through some misconfiguration of the timestamps in the <code>ScreenCaptureApprovals.plist</code> file, the notification was not limited to 30 days.
+To fix this, find the file with:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">open <span class="nv">$HOME</span>/Library/Group<span class="se">\ </span>Containers/group.com.apple.replayd
+</span></span></code></pre>
+<p>and move or delete the <code>ScreenCaptureApprovals.plist</code> file from the opened folder. Then directly restart your Mac. The macOS system will automatically rewrite the file with corrected timestamps and the screen capture notifications are finally gone.</p>
+</article>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/grpcphoenix/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="This is an update / followup for last weeks post on [OpenTelemetry LLM App Tracing with Phoenix](https://marc-julian.com/blog/posts/phoenixllmtracing/) which" />
+<meta name="keywords" content="EN,TypeScript,LLM,2025" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="OpenTelemetry gRPC Exporter" />
+<meta name="og:description" content="This is an update / followup for last weeks post on [OpenTelemetry LLM App Tracing with Phoenix](https://marc-julian.com/blog/posts/phoenixllmtracing/) which" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/grpcphoenix/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>OpenTelemetry gRPC Exporter</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>OpenTelemetry gRPC Exporter</h1>
+                    <h2></h2>
+                    <p class="date">2025-04-12</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/typescript/">
+    <div class="tag tag-post">TypeScript</div>
+</a>
+  <a href="/blog/tags/llm/">
+    <div class="tag tag-post">LLM</div>
+</a>
+  <a href="/blog/tags/2025/">
+    <div class="tag tag-year">2025</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>This is an update / followup for last weeks post on <a href="https://marc-julian.com/blog/posts/phoenixllmtracing/" target="_blank">OpenTelemetry LLM App Tracing with Phoenix</a> which ended with following statement:</p>
+
+<blockquote>
+<p>because I noticed some span exporting issues to Phoenix I tried a different span/traces exporter: <code>ZipkinExporter</code> with the <a href="https://zipkin.io/" target="_blank">Zipkin UI</a> and there is still an <a href="https://github.com/Arize-ai/phoenix/discussions/7041#discussioncomment-12736322" target="_blank">open discussion</a> on GitHub about the problems I noticed with Phoenix. Will update this post accordingly.</p>
+</blockquote>
+
+<p>After further debugging (breaking at every single <code>span.end()</code> call) I was able to see that during several span creations, the error <code>Exception has occurred: Error: read ECONNRESET</code> and <code>Exception has occurred: Error: socket hang up</code> were thrown. Exactly these spans were missing in Phoenix. <a href="https://github.com/RogerHYang" target="_blank">Roger Yang</a> suggested to use the <a href="https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc" target="_blank">experimental gRPC exporter</a> like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="kr">import</span> <span class="p">{</span> <span class="nx">OTLPTraceExporter</span> <span class="p">}</span> <span class="kr">from</span> <span class="s2">&#34;@opentelemetry/exporter-trace-otlp-grpc&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">provider</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NodeTracerProvider</span><span class="p">(</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">spanProcessors</span><span class="o">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="nx">SimpleSpanProcessor</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="k">new</span> <span class="nx">OTLPTraceExporter</span><span class="p">(</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span><span class="o">:</span> <span class="s2">&#34;http://localhost:4317&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span><span class="p">)</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">registerInstrumentations</span><span class="p">(</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">instrumentations</span><span class="o">:</span> <span class="p">[</span><span class="k">new</span> <span class="nx">OpenAIInstrumentation</span><span class="p">(</span><span class="p">)</span><span class="p">]</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">provider</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="p">)</span><span class="p">;</span>
+</span></span></code></pre>
+<p>This exports spans directly via gRPC to port <code>4317</code> of your Phoenix app. Make sure to use the <a href="https://docs.arize.com/phoenix/self-hosting" target="_blank">Docker images provided by Phoenix</a> which automatically expose this port next to the default <code>6006</code> port.</p>
+
+<p>With the above exporter configured, no spans go missing anymore and even complex long running traces are captured nicely.</p>
+</article>
+        </main>
+    </body>
+</html>

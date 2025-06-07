@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/hackbay/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="Last month, I attended the two-day [Hackbay 2023 Hackathon](https://www.hackbay.de/) and, together with [Maximilian Kasper](https://www.linkedin.com/in/maximili" />
+<meta name="keywords" content="EN,Hackathon,NLP,LLM,ML,Data Science,2023" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Hackbay 2023 - A hackathon for everyone" />
+<meta name="og:description" content="Last month, I attended the two-day [Hackbay 2023 Hackathon](https://www.hackbay.de/) and, together with [Maximilian Kasper](https://www.linkedin.com/in/maximili" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/hackbay/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Hackbay 2023 - A hackathon for everyone</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Hackbay 2023 - A hackathon for everyone</h1>
+                    <h2>Disrupting the DATEV HR Process with AI</h2>
+                    <p class="date">2023-06-05</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/hackathon/">
+    <div class="tag tag-post">Hackathon</div>
+</a>
+  <a href="/blog/tags/nlp/">
+    <div class="tag tag-post">NLP</div>
+</a>
+  <a href="/blog/tags/llm/">
+    <div class="tag tag-post">LLM</div>
+</a>
+  <a href="/blog/tags/ml/">
+    <div class="tag tag-post">ML</div>
+</a>
+  <a href="/blog/tags/data-science/">
+    <div class="tag tag-post">Data Science</div>
+</a>
+  <a href="/blog/tags/2023/">
+    <div class="tag tag-year">2023</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>Last month, I attended the two-day <a href="https://www.hackbay.de/" target="_blank">Hackbay 2023 Hackathon</a> and, together with <a href="https://www.linkedin.com/in/maximilian-kasper-693648174/" target="_blank">Maximilian Kasper</a>, we worked on DATEV&rsquo;s challenge called <em>&ldquo;Disrupting DATEV&rsquo;s HR Process with AI&rdquo;</em>.</p>
+
+<p><img src="/blog/media/hackbay.jpg" alt="Hackathon" /></p>
+
+<h2 id="our-prototype">Our Prototype</h2>
+
+<p>On day one, we started with some brainstorming to generate good ideas that could make the HR process as easy and frictionless as possible for both the applicant and the company. In the end, we decided to concentrate on the part of the process where applicants search for job opportunities and companies try to find fitting candidates for their job offers.</p>
+
+<p>We wanted to create a job-offer platform that uses new advances in Natural Language Processing (NLP) to automatically suggest fitting jobs based on <strong>raw resume text</strong> files. Applicants should be able to upload their resume and instantly see jobs that fit their academic and professional career, their skills, languages, and interests. Also, the applicant should be able to weigh their experiences and interests in a way such that only relevant jobs will be shown.</p>
+
+<p>The platform removes the need for creating a detailed profile and relies only on the applicant&rsquo;s resume. This way, no extra work is necessary.</p>
+
+<p><img src="/blog/media/hackbay_mac.jpg" alt="Coding at the hackathon" /></p>
+
+<p>We decided to use <a href="https://streamlit.io/" target="_blank">Streamlit</a> as the frontend framework to quickly create a user interface that was fast to iterate on.</p>
+
+<p>For the recommendation system, we used the following approach:
+1. Create an embedding for the resume text
+	1. Use a <code>BertTokenizer</code> to encode the text
+	2. Use a <code>BertModel</code> to embed the encoded tokens
+2. Create an embedding for every job posting
+	1. Use a <code>BertTokenizer</code> to encode the text
+	2. Use a <code>BertModel</code> to embed the encoded tokens
+	3. Use an <code>AnnoyIndex</code> to store the embedding vectors for easy and fast retrieval via their similarity  (<a href="https://github.com/spotify/annoy" target="_blank">spotify/annoy</a>)
+3. Query the index with the resume embedding to get the <strong>k</strong> most similar job postings
+4. Filter and sort similar job postings based on the user&rsquo;s selected weights and hard constraints (e.g. location, language, etc.)</p>
+
+<p>So, in the end, an applicant was able to upload their raw resume to the platform, which would automatically find the most fitting job postings and output them as a sorted list. The applicant could then easily apply to one or more of the listed jobs.</p>
+
+<p>Of course, this was only a prototype, so there were still a lot of issues that one would have to tackle to actually bring the platform into production.</p>
+
+<p>For example, at the moment, companies and/or applicants could easily <em>hack</em> the recommender by writing their job postings and resumes in a way such that they are semantically very similar. This could be achieved by long keyword lists that outweigh all other factors.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In summary, we developed a prototype job-offer platform that utilizes NLP to suggest fitting job opportunities based solely on a resume text file. The platform removes the need for an applicant to create a detailed profile, simplifying the hiring process for both employers and applicants.</p>
+
+<p>Overall, attending the Hackbay 2023 Hackathon was a valuable experience that allowed us to challenge ourselves to develop a ML solution within a short timeframe.</p>
+
+<p>Additionally, you can check out the aftermovie for the 2023 Hackbay Hackathon to get a glimpse of the event&rsquo;s highlights:</p>
+
+<p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/IyNvbw1OFq4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></p>
+</article>
+        </main>
+    </body>
+</html>

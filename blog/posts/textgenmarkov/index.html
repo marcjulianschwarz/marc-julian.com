@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/textgenmarkov/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="Let&#39;s create a simple text generation model using Markov chains. You can play with [this demo](https://marcjulianschwarz-markov-chain-text-genera-generate-text-" />
+<meta name="keywords" content="Python,NLP,EN,Data Science,2022" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Text Generation using Markov Chains" />
+<meta name="og:description" content="Let&#39;s create a simple text generation model using Markov chains. You can play with [this demo](https://marcjulianschwarz-markov-chain-text-genera-generate-text-" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/textgenmarkov/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Text Generation using Markov Chains</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Text Generation using Markov Chains</h1>
+                    <h2></h2>
+                    <p class="date">2022-07-25</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/python/">
+    <div class="tag tag-post">Python</div>
+</a>
+  <a href="/blog/tags/nlp/">
+    <div class="tag tag-post">NLP</div>
+</a>
+  <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/data-science/">
+    <div class="tag tag-post">Data Science</div>
+</a>
+  <a href="/blog/tags/2022/">
+    <div class="tag tag-year">2022</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>Let&rsquo;s create a simple text generation model using Markov chains. You can play with <a href="https://marcjulianschwarz-markov-chain-text-genera-generate-text-m4bkd9.streamlitapp.com" target="_blank">this demo</a> to see what we&rsquo;re trying to build today.</p>
+
+<h2 id="what-is-a-markov-chain">What is a Markov Chain?</h2>
+
+<p>A basic Markov chain is made up of three main parts
+- a state space,
+- a transition matrix
+- and an initial distribution</p>
+
+<p>We will go through the example of <strong>Weather Forecast for the next X days</strong> to get a better understanding of the different parts.</p>
+
+<p>For a state space we could think of the following states:
+- Rain 🌧️
+- Sun ☀️
+- Snow ❄️</p>
+
+<blockquote>
+<p>Of course, to model the real weather we might want to increase the size of the state space by a lot.</p>
+</blockquote>
+
+<p>Now, we can model the weather by providing different probabilities to get from one state to another.</p>
+
+<p>The probabilities (also known as <strong>transition matrix</strong>) could for example be
+- 0.2 for 🌧️  → ☀️
+- 0.3 for 🌧️ → ❄️
+- 0.5 for 🌧️ → 🌧️
+- 0.3 for ❄️ → 🌧️
+- 0.1 for ❄️ → ☀️
+- 0.6 for ❄️ → ❄️
+- 0.1 for ☀️ → ❄️
+- 0.2 for ☀️ → 🌧️
+- 0.7 for ☀️ → ☀️</p>
+
+<p>Now let us do a 5 day weather forecast and on day one the sun is shining (this first state is also known as the <strong>Initial Distribution</strong>). We have to sample from our state space with the probabilities from above to determine the next state for a given current state.</p>
+
+<p><strong>Day 1</strong>
+- Current State: ☀️
+- Sample State: ☀️</p>
+
+<p><strong>Day 2</strong>
+- Current State: ☀️
+- Sample State: ☀️</p>
+
+<p><strong>Day 3</strong>
+- Current State: ☀️
+- Sample State: 🌧️</p>
+
+<p><strong>Day 4</strong>
+- Current State: 🌧️
+- Sample  State: 🌧️</p>
+
+<p><strong>Day 5</strong>
+- Current State: 🌧️
+- Sample State: ❄️</p>
+
+<p>So, the weather forecast will look like this:</p>
+
+<p>☀️ → ☀️ → 🌧️ → 🌧️ → ❄️ → &hellip;</p>
+
+<h2 id="text-generation-with-markov-chains">Text Generation with Markov Chains</h2>
+
+<p>We can apply the same concept to words of a given text. Each unique word represents a single state. A sentence is just a sequence of states that have been sampled from a state space.</p>
+
+<ol>
+<li>Create a state space</li>
+<li>Compute probabilities for the transition matrix</li>
+<li>Sample from the state space with the transition matrix</li>
+</ol>
+
+<h3 id="1-create-a-state-space">1. Create a State Space</h3>
+
+<p>We will create the state space from a given source text.</p>
+
+<p>To do this, we read in the text as a string and split the text into individual words, often called <strong>tokens</strong>. Then we make sure that we have unique states by creating a set which is often called the <strong>vocab</strong>.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">source_text.txt</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">r</span><span class="s2">&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">source_text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Split the text into all tokens (words)</span>
+</span></span><span class="line"><span class="cl"><span class="n">tokens</span> <span class="o">=</span> <span class="n">source_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2"> </span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># This will make sure that we only have unique states</span>
+</span></span><span class="line"><span class="cl"><span class="n">states</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="p">)</span>
+</span></span></code></pre>
+<h3 id="2-calculate-probabilites-transition-matrix">2. Calculate Probabilites (Transition Matrix)</h3>
+
+<p>The transition matrix contains all possibilities of a state i being followed by a state j. So we create a matrix with <code>len(states)</code> rows and <code>len(states)</code> columns:</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">transition_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeroes</span><span class="p">(</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">)</span><span class="p">)</span>
+</span></span></code></pre>
+<p>First, we count the number of occurrences for each state and each state transition (i.e. two words following each other).</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">state_transition_counts</span> <span class="o">=</span> <span class="p">{</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">state_counts</span> <span class="o">=</span> <span class="p">{</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="c1"># Get the transition from current to next state</span>
+</span></span><span class="line"><span class="cl">		<span class="n">state_transition</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">states</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">state_transition_counts</span><span class="p">[</span><span class="n">from_to</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_transition_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">state_transition</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">		<span class="n">state_counts</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span></code></pre>
+<p>Then, for each state transition, we calculate its relative frequency and store this probability in the transition matrix at an index that we get by encoding each state transition with two integers (the two states index in the vocab list).</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">for</span> <span class="n">state_transition</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">state_transition_counts</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">from_state</span><span class="p">,</span> <span class="n">to_state</span> <span class="o">=</span> <span class="n">state_transition</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="c1"># Relative Frequency </span>
+</span></span><span class="line"><span class="cl">	<span class="n">probability</span> <span class="o">=</span> <span class="n">count</span> <span class="o">/</span> <span class="n">state_counts</span><span class="p">[</span><span class="n">from_state</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="n">matrix_row_index</span> <span class="o">=</span> <span class="n">states</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">from_state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">matrix_col_index</span> <span class="o">=</span> <span class="n">states</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">to_state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="n">transition_matrix</span><span class="p">[</span><span class="n">matrix_row_index</span><span class="p">,</span> <span class="n">matrix_col_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">probability</span>
+</span></span></code></pre>
+<p>This is how a transition matrix could look like if you color all non-zero entries.
+<img src="/blog/media/transition_matrix.jpg" alt="Scatter Plot of a Transition Matrix" /></p>
+
+<h3 id="3-sample-from-the-transition-matrix">3. Sample from the Transition Matrix</h3>
+
+<p>Now, we are ready to sample words from the transition matrix. As we saw above, we need a <em>current</em> state to begin generating more states.
+A more sophisticated way than having a fixed first state is to provide an <strong>initial distribution</strong> that contains probabilities for each word to come first.</p>
+
+<p>The initial distribution is a vector of length <code>len(states)</code>. With it we can force certain words to be more likely to start the Markov chain. In an extreme case we might want the generated text to start with a certain word (e.g.: <em>&ldquo;The&rdquo;</em>). So we look for the index of <em>&ldquo;The&rdquo;</em> in our states and set that index to 1 in the initial distribution vector and all other indices to 0.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">initial_distribution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeroes</span><span class="p">(</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">initial_distribution</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">The</span><span class="s2">&#34;</span><span class="p">)</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</span></span></code></pre>
+<p>We could also use a list of possible sentence beginnings, all of which should all start a sentence with equal probability.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">initial_distribution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeroes</span><span class="p">(</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sentence_beginnings</span> <span class="o">=</span> <span class="p">[</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">The</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">This</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">I</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">You</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">We</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">That</span><span class="s2">&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">sentence_beginning</span> <span class="ow">in</span> <span class="n">sentence_beginnings</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">								 
+</span></span><span class="line"><span class="cl">	<span class="n">initial_distribution</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sentence_beginning</span><span class="p">)</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence_beginnings</span><span class="p">)</span>
+</span></span></code></pre>
+<p>To generate a text, we sample words from the list of states with a probability determined by the initial distribution and the transition matrix until we reach a maximum text length. If there is no initial distribution, we just randomly choose a starting word.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">P_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">P_init</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-</span><span class="o">&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="n">P_init</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="n">current_token</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">P_init</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">		<span class="n">current_token</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_token</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">current_token</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">P_matrix</span><span class="p">[</span><span class="n">tokens</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">current_token</span><span class="p">)</span><span class="p">]</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="n">text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_token</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2"> </span><span class="s2">&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</span></span></code></pre>
+<h2 id="try-it">Try it</h2>
+
+<p>Now have fun generating texts. Be sure to try different source texts and see how that affects the quality of the generated text.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="n">generate_text</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">transition_matrix</span><span class="p">)</span>
+</span></span></code></pre>
+<p>You can also try out the <a href="https://marcjulianschwarz-markov-chain-text-genera-generate-text-m4bkd9.streamlitapp.com/" target="_blank">text generation web app</a> I built and take a look at the <a href="https://github.com/marcjulianschwarz/markov-chain-text-generation" target="_blank">GitHub repo</a> which contains all of the source code.</p>
+
+<h2 id="examples">Examples</h2>
+
+<p>Some German examples.</p>
+<pre class="chroma"><code><span class="line"><span class="cl">Winchester, Spring Valley, das Anstauen des Colorado River und teuer, um diese Gärten der Wasserknappheit &gt; Wir sind die Bevölkerung muss als in Hotelzimmern von Las Vegas, der Stadt, näher betrachtet werden mit etwa vier Prozent aus dem Haus kein wertvoller Baugrund verwendet, welches bis zu minimieren, muss das Licht auf die Wiederverwendung von Las Vegas. Um die Sicherung der Wasserversorgung
+</span></span></code></pre><pre class="chroma"><code><span class="line"><span class="cl">Glücksspielmetropole der Hotels können selbst schon durch diesen neuen wassersparenden Technologien wie Kakteen in der größte Bereich der vielen exotischen Pflanzen und hat sich als in sonnenbetriebene Kraftwerke investieren. Besonders die Zukunft der Bau des Wassers ist der Lebensraum geraubt. Auch die Uhr mit Trockenzeiten in keinster Weise optimal für die Behörde sogar ganz gestoppt werden. Ein bekannter botanischer Garten, ist 
+</span></span></code></pre><pre class="chroma"><code><span class="line"><span class="cl">individuellen Leistungsstand an die Höhe in Extremsportarten in den Rest des Selbstbewusstseins und unabhängig an positiven Gefühle, die er sich mit ihr umzugehen und hilft uns vor einem keine allgemeine Definition für sich relativ einfach nur das eigene Wohlempfinden zu gefährden, lässt sich lohnt dieses Risiko verbunden. Durch die Angst. Die Angst die Bremsen nicht vorhanden. 5 Fazit vorgestellt, in Hunderten
+</span></span></code></pre></article>
+        </main>
+    </body>
+</html>

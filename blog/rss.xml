@@ -1,0 +1,2112 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Marc Julian - Blog</title><link>https://marc-julian.com/blog/rss.xml</link><description>This is a cool feed!</description><atom:link href="https://marc-julian.com/blog/rss.xml" rel="self"/><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><language>en</language><lastBuildDate>Sun, 01 Jun 2025 20:50:25 +0000</lastBuildDate><item><title>Debugger Nest.js App</title><link>https://www.marc-julian.com/blog/posts/til-debugger-nestjs</link><description>Today I learned that it is REALLY easy to attach a debugger to a NestJS app in VS Code. Run the following commands in the command palette:
+
+- Debug: Toggle Auto Attach
+- (Debug: Attach to Node Process)
+
+In the terminal, run the NestJS app in the usual way, for example `yarn start:dev`. The debugger will now attach automatically.
+
+No need to edit any `launch.json` files, awesome!</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/til-debugger-nestjs</guid></item><item><title>How to animate a Radar Plot</title><link>https://www.marc-julian.com/blog/posts/animateradarplot</link><description>In this short guide I will show you how to animate a *Radar Plot* with [matplotlib](https://matplotlib.org) in Python.
+
+## Example 
+
+At the end of this guide you will be able to create radar plot animations like this one:
+
+
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/9Uk6DoPJqjs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen&gt;&lt;/iframe&gt;
+
+
+## Import modules
+
+The only modules needed are numpy and matplotlib. Import them like this:
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+```
+
+## Data 
+
+For this guide, I am creating some artificial data to make the data structure a bit more visible: 
+
+```python
+length = 250
+
+data = [
+	[np.sin(i*0.06) for i in range(0, length)],
+	[np.cos(i*0.06) for i in range(0, length)],
+	[np.sin(i*0.06) for i in range(0, length)],
+	[np.cos(i*0.06) for i in range(0, length)],
+	[np.sin(i*0.06) for i in range(0, length)]
+]
+```
+
+`data` is a list of the different features that you want to plot. Every feature list contains the individual datapoints that will be plotted at frame `i`. This means all lists have to be the same length.
+
+Now, the first feature list will need to be copied to the end of the data list. This will ensure that the radar plot will be a closed polygon. The first and last datapoint will overlap and therefore close the shape.
+
+```python
+data = [*data, data[0]]
+
+# This works too 
+data.append(data[0])
+```
+
+To achieve this, we can use the syntax `*expression` to spread out the list and append the first entry.  
+
+From the Python documentation:
+&gt; If the syntax `*expression` appears in the function call, `expression` must evaluate to an [iterable](https://docs.python.org/3/glossary.html#term-iterable). Elements from these iterables are treated as if they were additional positional arguments. For the call`f(x1, x2, *y, x3, x4)`, if _y_ evaluates to a sequence _y1_, …, _yM_, this is equivalent to a call with M+4 positional arguments _x1_, _x2_, _y1_, …, _yM_, _x3_, _x4_.
+
+
+## Labels
+
+To create labels for every feature in the data list, create a new list and apply the same procedure with the spread operator.
+
+```python
+labels = ["Label 1", "Label 2", "Label 3", "Label 4", "Label 5"]
+labels = [*labels, labels[0]]
+
+# This works too 
+labels.append(labels[0])
+```
+
+The last step, before plotting begins, will be to calculate evenly distributed positions for the labels like this:
+
+```python
+# Get len(labels) equal distance points on a circle
+label_loc = np.linspace(0, 2*np.pi, num=len(labels))
+```
+
+## Initialize plot 
+
+For every animation in matplotlib an initial plot (using the first datapoints) is needed. To create a radar plot it is important to set the projection method to `polar`.
+
+```python
+fig, ax = plt.subplots(figsize=(10, 10), subplot_kw={'projection': 'polar'})
+```
+
+In a radar plot the x-values will correspond to the positions on the circle (0-360 degrees) and the y-values are the distances from the middle point of the circle.
+
+Therefore the x-values will be the label positions and the y-values will be the datapoints. For the initial plot the first datapoints will be selected using a list comprehension.
+
+```python
+radar_ln = ax.plot(label_loc, [d[0] for d in data], label="Legend")
+```
+
+The labels themselves will be placed at the previously calculated positions around the circle by converting the radians to degrees and setting the labels in the `set_thetagrids` method. 
+
+```python
+ax.set_thetagrids(np.degrees(label_loc), labels=labels)
+ax.legend(loc="lower left", bbox_to_anchor=(0.95, 0.95))
+```
+
+The limits in a radar plot can be changed too:
+
+```python
+ax.set_rmax(2)
+ax.set_rmin(-2)
+```
+
+## Update function
+
+Animating a plot with matplotlib will always include an `update(i)` function which will update the plot with new data for every frame `i`. In this case the new data will again be selected with a list comprehension (the same way the plot was initialized).
+
+```python
+def update(i, radar_ln, label_loc, data):
+	radar_ln[0].set_data(label_loc, [d[i] for d in data])
+	return radar_ln
+```
+
+
+## Rendering and saving the animation 
+
+Finally, it is only a matter of assigning the correct variables to `FuncAnimation` before running the `save()` method.
+
+```python
+ani = FuncAnimation(fig, update, frames=len(data[0]), fargs=(radar_ln, label_loc, data), interval=40)
+
+ani.save("animation.mp4", dpi=300)
+```</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/animateradarplot</guid></item><item><title>Obsidian Raycast Extension</title><link>https://www.marc-julian.com/blog/posts/obsraycast</link><description>[Raycast](https://www.raycast.com) is a free to use productivity tool. It's basically a replacement for the default macOS Spotlight Search and offers similar functionalities like searching for files and applications.
+
+Or to put it in Raycasts words:
+&gt; Raycast is a blazingly fast, totally extendable launcher. It lets you complete tasks, calculate, share common links, and much more.
+
+The biggest difference is that it is extendable through extensions which you can install in raycasts own store. There you will find everything from a YouTube Launcher, Visual Studio Code Search, GitHub actions, home control and so much more. The store is growing everyday and new useful extensions are developed.
+
+As I really like the concept of a search/launcher to be the main hub on my Mac and because I am a big fan and extensive user of the note taking app [Obsidian](https://obsidian.md), I decided to create my own [raycast extension for Obsidian.](https://www.raycast.com/marcjulian/obsidian)
+
+Right now it consists of the following two commands but new features are being developed while you are reading this sentence.
+
+## Search Note
+With the command *Search Note* you can search for every note in your vault. 
+
+![Search Note Command](/images/search_note_06_01_2022.jpg)
+
+Several actions are available when you select a note. 
+You can view the note using *Quick Look* to get a glance at the content or use *Open in Obsidian* to directly open it in Obsidian itself.
+With *Append to note* you can add text to the note, this is especially useful to add entries to lists or tables.
+The *Copy note content* is self-explanatory and *Paste note content* will paste the text into the last used application. 
+
+### Preferences
+In the commands settings you are able to exclude folders from the search. This is especially useful if you have lots of reference notes or some sort of "database" which you don't want to search through.
+For Quick Look, copy and paste actions it might be a good idea to hide the YAML frontmatter and wikilinks as they might not be needed in other applications. Therefore a setting for hiding this content is available too. 
+Lastly you can configure the primary action (enter key) to trigger *Quick Look* or *Open in Obsidian*.
+
+## Open Vault
+With the command *Open Vault* you can quickly open one of your vaults which you can specify in the preferences. This allows for quick switching between different vaults and removes the rather annoying way of using Obsidian's vault switcher.
+
+![Open Vault Command](/images/open_vault.jpg)
+
+## Contribute
+If you want to contribute to this extension you can visit the [GitHub repository](https://github.com/marcjulianschwarz/obsidian-raycast) and open a new issue. 
+I am open to implement feature requests and would welcome it if any bugs or wrong behavior is reported to me.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/obsraycast</guid></item><item><title>1-year Anniversary at AHEAD Automotive</title><link>https://www.marc-julian.com/blog/posts/aheadanniversary</link><description>This week I had my **1-year anniversary** at AHEAD Automotive. In this short time we built an entire product from scratch, which is now being used by over 60 car workshops in Germany and soon released for everyone. The product is called [Qira](https://www.linkedin.com/company/qira-ai/), the intelligent assistant for the automotive aftermarket. Qira combines detailed repair information from various data providers and original car manufacturers at a single point of access. With only a simple natural language input field, car mechanics can ask Qira for
+- detailed vehicle adjustment data 🚗  
+- lubricants 💧  
+- component locations 📍  
+- repair manuals 🔧  
+- recalls ⚠️  
+- technical drawings 📝  
+- and much more...  
+
+Qira also interprets error codes to precisely describe their symptoms, causes and effects. Qira can predict affected components and suggests solutions based on past reports with the same error code. Qira will even guide users through step by step diagnosis instructions to accurately pin down faults in electrical components.  
+  
+All answers by Qira are based on reliable data sources and we made sure that our systems can not alter the provided information, so you can always be sure to get the most up to date and accurate information.
+
+I am proud that our hard work finally saw the light of day and that Qira is already [assisting car mechanics with their daily work.](https://www.linkedin.com/posts/qira-ai_werkstattzukunft-qira-ki-activity-7310308463698411521-s56_?utm_source=share&amp;utm_medium=member_desktop&amp;rcm=ACoAAFZNsFoBY9zXWmwyaotjwH3DzubIQ945gsk)</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/aheadanniversary</guid></item><item><title>Kann die CDU Startups und Deep-Tech?</title><link>https://www.marc-julian.com/blog/posts/cdustartup</link><description>Diese Frage stellt sich Frank Thelen in seinem neuen Podcast zusammen mit Thomas Jarzombek von der CDU. Sie sprechen über drei verschiedene Themen:
+
+## Was wird für Start-ups getan?
+Der Zukunftsfonds ist ein neuer Fonds, der mit 20 Milliarden Euro privat finanziert wird und mit 10 Milliarden Euro vom Bund. Insgesamt kommen also rund 30 Milliarden Euro zusammen. Dieser Fonds soll den Zugang zu Kapital für innovative Technologieunternehmen verbessern.
+
+Außerdem unterstützt die CDU das Programm EXIST, das die Gründungskultur an Hochschulen stärken soll.
+
+Norwegen investiert bereits viel in Start-ups und Gründerfonds. Dabei wurden bisher oft Gewinne erzielt, die dann in die norwegische Altersvorsorge geflossen sind.
+Diesen Weg könnte auch Deutschland gehen, indem der Staat stärker in Startups und kleinere Unternehmen mit guten Produkten investiert und das Investment- und Fondsmanagement von der Politik unabhängig macht. 
+
+
+## Deep Tech?
+Im Bereich Deep Tech spielt vor allem der DeepTech Future Fund eine Rolle. Er wird aus Mitteln des bereits erwähnten Zukunftsfonds und des ERP-Sondervermögens finanziert. Sein Ziel ist es, innovative deutsche Unternehmen mit hohem Finanzierungsbedarf zu unterstützen. Das sind zum Beispiel Unternehmen, die Technologien für die Luft- und Raumfahrt entwickeln, da diese bereits in der Frühphase einen hohen Kapitalbedarf haben.
+
+Das Deutsche Zentrum für Luft- und Raumfahrt (DLR) möchte Existenzgründer unterstützen und bietet deshalb Screenings für Start-ups an. Dabei werden das Unternehmen und das Produkt bzw. die Idee hinter dem Unternehmen analysiert. Die Ergebnisse (Machbarkeit, Innovationsgrad etc.) können dann direkt an Investoren weitergegeben werden, um zu entscheiden, in welche Startups investiert werden soll.
+
+
+
+
+## Modernisierung des Staates
+Im diesjährigen Wahlkampf spricht Armin Laschet von einem Jahrzehnt der Modernisierung. Die öffentliche Verwaltung soll so verbessert werden, dass sie in der nächsten Krise schneller und effizienter handeln kann.
+Dabei will die CDU vor allem am *digitalen Staat* arbeiten. Darunter versteht man vor allem automatisierte Bürokratie (z.B. für Echtzeitberichte).
+
+Im Buch *Neustaat* von Thomas Heilmann werden einige Beispiele beschrieben, wie der Staat modernisiert werden könnte.
+Unter anderem geht es um Smart Contract, also digitale Verträge, die eine bestimmte Logik enthalten und so Beziehungen zu anderen Verträgen und Dokumenten herstellen können.
+
+
+## Wer ist für die Digitalisierung der Verwaltung zuständig?
+Grundsätzlich muss der Staat für die Digitalisierung der Verwaltung verantwortlich sein. Es ist bekannt, dass der Staat nicht sehr gut darin ist, Software für Anwender zu entwickeln. Daher ist es sinnvoll, dass er zunächst eine API zur Verfügung stellt.
+Auf Basis dieser Schnittstelle können dann Drittanbieter das Frontend entwickeln.
+→ ähnlich der Elster-Schnittstelle für Steuererklärungen
+
+
+
+# Quellen
++ [Startup-DNA: Der Podcast mit Frank Thelen: Kann die CDU Startups &amp; Deep-Tech? Ein Gespräch mit Thomas Jarzombek der diese Themen im BMWi verantwortet. auf Apple Podcasts](https://podcasts.apple.com/de/podcast/startup-dna-der-podcast-mit-frank-thelen/id1469034187?i=1000528233824)
++ [Startseite - DLR Portal](https://www.dlr.de/DE/Home/home_node.html)
++ [Deep-Tech Future Fonds](https://deeptech-future-fonds.de)
++ [BMWi - Zukunftsfonds startet – Bundesregierung stärkt die Start-up-Finanzierung in Deutschland](https://www.bmwi.de/Redaktion/DE/Pressemitteilungen/2021/03/20210324-zukunftsfonds-startet-bundesregierung-staerkt-die-start-up-finazierung-in-deutschland.html)
++ [Koalition stärkt mit dem EXIST-Programm die Gründerkultur | CDU/CSU-Fraktion](https://www.cducsu.de/presse/pressemitteilungen/koalition-staerkt-mit-dem-exist-programm-die-gruenderkultur)</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/cdustartup</guid></item><item><title>Distributing a Python Package</title><link>https://www.marc-julian.com/blog/posts/pythonpackagedistribution</link><description>&gt; **Notice:** This blog post is most likely outdated and there are better ways to package and publish Python packages.
+
+Yesterday I published my Python package [watchlib](https://github.com/marcjulianschwarz/watchlib) to PyPi, the *Python Package Index*. In this post I will show you how I did it and add some tips, tricks and resources that helped me a lot in the process.
+
+## Package structure
+
+To make a package ready for distribution you will have to create a folder that will look something like this:
+
+```
+some_folder/
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── setup.cfg
+├── src/
+│   └── your_package/
+│       ├── __init__.py
+│       └── submodule_of_your_package.py
+└── tests/
+```
+
+If you are using GitHub to manage your package you will most likely know what a README.md and LICENSE file is. However if you need some help with choosing an appropriate license or creating an appealing readme, here are some resources that you can check out:
+- [choosealicense.com](https://choosealicense.com)
+- [Writing an Formatting on GitHub](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+- [GitHub flavored markdown](https://github.github.com/gfm/)
+
+The `src` folder will contain all your sources and the top level folder in there will determine the name of your package. Adding an empty `__init__.py` file ensures that the folder can be imported later on.
+
+## Build configuration - pyproject.toml 
+
+In the `pyproject.toml` file you will have to enter configuration details that will be used while building the package.
+To build my project I was using [setuptools](https://setuptools.pypa.io/en/latest/) which greatly simplifies the building process. If you want to use setuptools too, make sure to require it and define the build-backend (in the pyproject.toml file) like this:
+
+```
+[build-system]
+requires = [
+ "setuptools&gt;=42",
+ "wheel"
+]
+build-backend = "setuptools.build_meta"
+```
+
+## Metadata - setup.cfg 
+
+The setup.cfg file is the configuration file for setuptools itself. All of the metadata of your package will be located here. The resource that helped me the most was the [userguide from setuptools](https://setuptools.pypa.io/en/latest/userguide/declarative_config.html). It's great.
+
+For some inspiration, this is how my setup.cfg file looks like:
+
+```
+[metadata]
+name = watchlib
+version = 0.0.1a1
+author = Marc Julian Schwarz
+author_email = my@email.de
+description = watchlib is a [[Python]] package providing tools for loading, visualizing and analyzing Apple Watch health data.
+long_description = file: README.md
+long_description_content_type = text/markdown
+url = https://github.com/marcjulianschwarz/watchlib
+
+project_urls =
+	Bug Tracker = https://github.com/marcjulianschwarz/watchlib/issues
+	Docs = https://github.com/marcjulianschwarz/watchlib/wiki
+
+classifiers =
+	Programming Language :: Python :: 3
+	License :: OSI Approved :: MIT License
+	Operating System :: OS Independent
+
+[options]
+package_dir =
+	= src
+packages = find:
+python_requires = &gt;=3.6
+install_requires =
+	pandas
+	numpy
+	matplotlib
+	seaborn
+	annoy
+	sklearn
+
+[options.packages.find]
+
+where = src
+
+```
+
+As you can see I used the `install_requires` field to list all dependencies of my package. These dependencies will be installed when someone installs the package via PyPi.
+One last note on the version field. [PEP 440](https://www.python.org/dev/peps/pep-0440/) goes into great detail on different version schemes, what's allowed and what not and lists some interesting version timeline examples. 
+
+## Building the package 
+
+Now comes the exciting part. To build the package navigate to the folder where the pyproject.toml file is located and run this command:
+
+```
+python3 -m build
+```
+
+When building has finished a new folder, called `dist`, will have been added on the same level as the `src` folder. It contains a source archive and a built distribution.
+
+## Uploading distribution files with Twine
+
+Before uploading the files you will have to register an account on [PyPi](https://pypi.org). 
+
+&gt;**Important side note!** I would highly recommend to first register on [Test PyPi](https://test.pypi.org) which is a second Python package index just for testing. Everything works exactly the same but you can treat it as a playground and try out different things. 
+
+When you have an account you will need to create an [API token](https://test.pypi.org/account/login/?next=%2Fmanage%2Faccount%2F#api-tokens) and store it somewhere safe.
+
+Now that everything is setup you can start uploading your package using twine like this:
+
+```
+twine upload dist/*
+```
+
+To upload to [Test PyPi](https://test.pypi.org) use this command instead:
+
+```
+python3 -m twine upload --repository testpypi dist/*
+```
+
+## And that's it! You just distributed a [[Python]] package.
+
+To install your package run the familiar pip command:
+
+```
+pip install your_package
+```
+
+If you used [Test PyPi](https://test.pypi.org) you can install your package like this:
+
+```
+python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps your_package
+```
+
+## Need help or want to chat?
+I hope this guide made it a bit easier for you to distribute your own package. If there are still any questions or you just want to chat with some like-minded people, feel free to join my [Discord Server](https://discord.gg/KVxRd8zse8).</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/pythonpackagedistribution</guid></item><item><title>Remove macOS Sequoia Screen Capture Notifications</title><link>https://www.marc-julian.com/blog/posts/macos-screen-access-notifications</link><description>With a recent macOS Sequoia update, apps capturing your screen would trigger a new notification that shows next to the menubar. For apps like [AltTab](https://alt-tab-macos.netlify.app/) which take screenshots of your screen for their functionality, this results in a constant flood of notifications every time the app is used. 
+
+Apparently, this new *feature* was not on purpose. It was supposed to only show a notification once every 30 days. But through some misconfiguration of the timestamps in the `ScreenCaptureApprovals.plist` file, the notification was not limited to 30 days.
+To fix this, find the file with:
+
+```bash
+open $HOME/Library/Group\ Containers/group.com.apple.replayd
+```
+
+and move or delete the `ScreenCaptureApprovals.plist` file from the opened folder. Then directly restart your Mac. The macOS system will automatically rewrite the file with corrected timestamps and the screen capture notifications are finally gone.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/macos-screen-access-notifications</guid></item><item><title>VSCode Regex Group Reference in Find and Replace</title><link>https://www.marc-julian.com/blog/posts/tilvscoderegex</link><description>Today I learned ([TIL](https://www.marc-julian.de/tags/TIL.html)) that you can reference regex groups in the *"Find and Replace"* search of VSCode.
+
+For example, if you want to find a certain HTML tag to replace it with a different one, you could use the following regex expression in the search
+
+```
+&lt;p&gt;([.\W\w]*?)&lt;/p&gt;
+```
+
+and use the captured group `$1` in the replacement like this:
+
+```
+&lt;h1&gt;$1&lt;/h1&gt;
+```
+
+Ensure that you enabled regex syntax using the button in the search field on the right side.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/tilvscoderegex</guid></item><item><title>Copy Permalink to Line in Zed</title><link>https://www.marc-julian.com/blog/posts/copy-permalink-to-line-in-zed</link><description>Today I learned that you can copy a permanent link to a line of source code in Zed. It's as simple as a right-click and selecting `Copy Permalink` (the last option in the context menu). It will copy a GitHub link to that exact line of code to your clipboard. This is great for quickly sharing an exact location in the codebase with your colleagues.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/copy-permalink-to-line-in-zed</guid></item><item><title>What I like and don't like about iOS 15</title><link>https://www.marc-julian.com/blog/posts/ios15</link><description>As of today I have tested the first iOS 15 Beta for a few weeks. And overall, I am quite happy with the new features added. But a few of them stood out for me:
+
+
+## Safari
+Apple markets it to be *reimagined for the way we browse today.* The tab and search bar dropped from the top of the screen right to the bottom where it is easier to reach with only one hand. Swiping across the bar will switch between all opened tabs. At first I wasn't a fan of the new UI, it took quite some time to get used to the new gestures. 
+
+But to be fair, Safari did get lots of other great new functionalities. A customizable start page, privacy protections with *iCloud+ Private Relay* (although I wasn't able to use it in the beta version yet), the ability to add web extensions and a grid-like tab overview. 
+
+## Notifications
+Additionally, long requested changes to the notification system were made. Notifications are now ranked by priority to make sure that the most urgent ones are always at the top. A helpful notification summary can now be delivered daily at various times so you can quickly see whats new.
+
+## Focus
+Strongly connected to notifications is the all new *Focus* mode. It is basically an extension to the already existing *"Do not disturb mode"* which silences all incoming notifications. Focus can automatically filter notifications to your liking. But thats not all. You can even specify which homescreens will be shown when Focus mode is activated. 
+
+## Spotlight Search + Live Text
+Last but not least, the already beloved spotlight search got a complete revamp. It is now faster, more detailed and the new live text feature adds so much more functionality to it. You can now search for text which appears in your images. Especially for people who take lots of screenshots, this can be a huge time-saver. 
+
+## Conclusion:
+I definitely see the problems people might have with the updated Safari UI but I do think that they will quickly get used to it and in the end appreciate having the ability to use Safari one-handedly.
+
+For me personally, the best feature in iOS15 is the Focus mode. I already set up a *Learning mode* which automatically changes my homescreen to only display relevant apps and widgets (e.g. Notability, Calendar, Reminders, Files, and other university related apps). Also any messages which weren't sent by my fellow students or professors will not be displayed. It helps me get less distracted when learning or working.
+
+As I said in the beginning, iOS15 gave us lots of small upgrades which will enhance the overall experience with your Apple devices. Nothing big, but great nonetheless.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/ios15</guid></item><item><title>Apple Watch MagSafe Konzept</title><link>https://www.marc-julian.com/blog/posts/applewatchmagsafe</link><description>Mit den neuen iPhone 12 Modellen hat es [MagSafe](https://de.wikipedia.org/wiki/MagSafe) wieder zurück in einige Apple Geräte gefunden.
+
+Magnetisches Zubehör wie Hüllen, Kartenhalter und kabellose Ladegeräte können damit einfach am Handy befestigt werden. Mit dieser neuen Technologie wurde auch ein kleines Feature hinzugefügt, das ich ziemlich interessant finde. Wenn zum Beispiel eine MagSafe kompatible Hülle am iPhone angebracht wird, erscheint eine kleine Animation auf dem Bildschirm. Das besondere ist, dass diese Animation dieselbe Farbe wie die Hülle hat. Das heißt das Smartphone weiß immer, welches Gerät über MagSafe verbunden ist.
+
+Hier ein Foto (beim Link auch ein Video), das die Animation mit verschiedenen Farben zeigt:
+
+![MagSafe iPhone 12 Hülle](/images/ms_iphone.jpg)
+
+Quelle: [Twitter Video](https://twitter.com/ikonereo/status/1320319230605049857?s=20)
+
+Gestern kam mir eine Idee, wie man diese Technik nutzen könnte, um eine tolle Funktion für die Apple Watch zu entwickeln.
+Die meisten Apple Watch Besitzer haben bereits viele verschiedene Armbänder.
+Silikon für den Sport, Leder für die Arbeit und ein Solo Loop für den täglichen Gebrauch. Mit einer Art MagSafe für die Apple Watch könnte die Uhr erkennen, welches Armband zurzeit verbunden ist und dementsprechend das Ziffernblatt anpassen. Farbe und Stil passen somit immer perfekt zum Band. Zum Beispiel könnte bei einem Sport Loop automatisch das Fitness-Watchface angezeigt werden.
+Natürlich können dann auch weitere Funktionen, wie durch den Benutzer festgelegte Presets, hinzugefügt werden.
+
+Ich bin davon überzeugt, dass sich die Apple Watch in Zukunft immer mehr von einem „Gadget“ zu einem Mode Accessoire weiterentwickelt und Konzepte, wie das eben vorgestellte, Realität werden.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/applewatchmagsafe</guid></item><item><title>Wrote this Keyboard-Centric Todo App with React - What did I learn?</title><link>https://www.marc-julian.com/blog/posts/reacttodoapp</link><description>Hey there, in this post I want to share a side project of mine that I have been working on for a few days – a minimalist, *keyboard-centric* todo app. While showcasing the main features, I will refer you to some of the React resources and concepts that I used during the development of the app.
+## Landing Page - Creating Your First Todo List
+
+When you first open the app, you are presented with a rather minimalist-looking landing page. You can see the main keyboard shortcuts, and simply typing a name will create your very first todo list. 
+
+![Start Page of the todo app](/images/todo_start.jpg)
+
+&gt; Implementing all of the keyboard shortcuts and navigation throughout the app taught me a lot about reference management via the [useRef React hook](https://react.dev/reference/react/useRef#manipulating-the-dom-with-a-ref) to control the focus of various HTML elements through the DOM.
+
+The user interface was intentionally kept simple, to feel just like a piece of paper sitting right there on your desktop, waiting for you to jot down todos. Striking them through with a single keyboard click should feel as seamless and delightful as possible. That's why all of your actions will trigger the dynamic HUD to give you instant feedback.
+
+![](/images/todo_list_done.jpg)
+
+![](/images/todo_hud.jpg)
+
+
+&gt; Implementing the HUD made me use and learn a surprising amount of new React concepts. First, I created a [custom React Hook](https://react.dev/reference/react/cloneElement#extracting-logic-into-a-custom-hook) to abstract away the logic of showing and hiding the HUD element. Then, I used a [React portal](https://react.dev/reference/react-dom/createPortal#rendering-a-modal-dialog-with-a-portal) to correctly position it above all other content of the app. Lastly, I used the Publish-Subscribe Pattern to implement app-wide messaging via a [React context and context provider](https://react.dev/learn/passing-data-deeply-with-context) to facilitate the necessary methods.
+
+## When One List Is Not Enough
+
+Of course, a todo app would be nothing without the ability to create more than one list. None of your brilliant ideas will get lost again; just add them to your second "Ideas" list.
+
+![](/images/todo_two_list.jpg)
+
+But I didn't stop there. You can go crazy and add as many lists as you please. Productivity has never been this easy before 😉.
+
+![](/images/todo_four_list.jpg)
+
+## And Lastly, For All You Productivity Nerds (Including Myself)
+
+It's 2023, our apps *need* command bars. 
+
+![](/images/todo_cmd.jpg)
+
+The command bar let's you create new lists, delete the ones you don't need anymore, and toggle the currently selected todo item. 
+
+&gt; Implementing the command bar made me use the [Reducer Pattern](https://kentcdodds.com/blog/the-state-reducer-pattern-with-react-hooks) (also see [useReducer](https://react.dev/reference/react/useReducer)) so that actions could be fired from everywhere within the app. These actions then trigger all of the backend operations (in this case local storage). Also UI changes are performed, such as showing the already mentioned HUD.
+
+## Conclusion
+
+Overall, this project taught me a lot about the various interesting concepts in the React framework. I had to build reusable components, write lots of CSS and think about ways to communicate between parts of the app. 
+So, quite a success.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/reacttodoapp</guid></item><item><title>Meine Scriptable Widget Kollektion für iOS</title><link>https://www.marc-julian.com/blog/posts/scriptablewidgets</link><description>Da auch meine anderen iOS Scriptable Widgets gut angekommen sind, will ich diese hier mal vorstellen.
+
+## Regenradar Deutschland
+Angefangen mit dem *Regenradar Widget für Deutschland*, das in einem [YouTube Video](https://www.youtube.com/watch?v=ddoOl1OM4zE) auf dem Kanal von [Nils-Hendrik Welk](https://www.youtube.com/channel/UCvWQOze3mZUVHgHUyCe4s-Q) vorgestellt wurde.
+Das Widget kann 13 verschiedene Karten mit Regeninformationen auf dem Homescreen anzeigen, welche alle 10-15min aktualisiert werden.
+Hier befindet sich der [Code](https://github.com/marcjulianschwarz/scriptable-widgets/tree/main/germany-rain-radar) und weitere Infos.
+
+![Regenradar Deutschland Widget](/images/sw_regen.jpg)
+
+## Daily NASA picture
+Mit dem *NASA Pictures Widget* werden täglich neue Bilder von der NASA auf dem Homescreen angezeit. Dabei gibt es immer auch zusätzliche Informationen zu dem jeweiligen Bild und wenn einem diese noch nicht genügen, reicht ein Klick auf das Widget um noch mehr Erklärungen zu bekommen.
+Auch hier befindet sich der [Code](https://github.com/marcjulianschwarz/scriptable-widgets/tree/main/nasa-pictures) und eine Anleitung zur Installation auf GitHub.
+
+![Daily NASA picture Widget](/images/sw_nasa.jpg)
+
+## Apple Newsroom
+Das *(Apple) Newsroom Widget* zeigt die neuesten Informationen aus Apples Newsroom an und aktualisiert sich alle 10-15min. So verpasst man nie, wenn es etwas neues gibt. Hier gibt es den [Code](https://github.com/marcjulianschwarz/scriptable-widgets/tree/main/newsroom) für dieses Widget.
+
+![Apple Newsroom Widget](/images/sw_apple.jpg)
+
+## Boca Chica SpaceX
+Zuletzt ein etwas spezielles Widget, das vor allem für SpaceX und Starship Fans interessant ist. Das *Boca Chica SpaceX Widget* zeigt an, wann der Highway in Boca Chica Village (Texas) von der Polizei gesperrt wird und ob geplante Sperrungen noch aktuell sind. Außerdem werden die neuesten Temporary Flight Restrictions (TFR) für Brownsville angezeigt. Beide Informationen können auf Prototypen Tests von SpaceX hindeuten.
+Für alle, die auch von den neuesten Entwicklungen in Boca Chica begeistert sind, ist dieses Widget ein Muss. Hier befindet sich der [Code](https://github.com/marcjulianschwarz/scriptable-widgets/tree/main/boca-chica-spacex) und eine Anleitung zur Installation.
+
+![Boca Chica SpaceX Widget](/images/sw_boca.jpg)</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/scriptablewidgets</guid></item><item><title>OpenTelemetry LLM App Tracing with Phoenix</title><link>https://www.marc-julian.com/blog/posts/phoenixllmtracing</link><description>So I wanted to setup tracing for an LLM app with [Phoenix](https://phoenix.arize.com/) and while doing so I had some learnings that I wanted to document:
+
+- you have to take `SimpleSpanProcessor` by its name. It really only is a **simple** span processor. It is nice for development but for production you should be using the `BatchSpanProcessor` because it batches span exports, saving tons of network requests and probably avoiding some concurrency issues
+- always make sure to end spans at the correct position, not too early, not too late, with `span.end()`. If you are using one central place to create spans, end them right there after you added attributes to it
+- if you use `SemanticConventions`, make sure to check which attributes actually need to be set to get any visual on some dashboards (like Phoenix)
+- tracing should be separated from business logic as much as possible. I am using a decorator for that specific purpose. It has access to the functions input, output and is called when the function it decorates is called without being in the way. This also makes it *really easy* to trace new functions.
+
+Here is an example implementation of such a `Trace` decorator.
+
+```ts
+export function Trace&lt;A, R&gt;(
+   traceName: string,
+   traceFunction: (span: Span, args: A, result: R) =&gt; void,
+ ) {
+   return function (
+     target: unknown,
+     propertyKey: string,
+     descriptor: PropertyDescriptor,
+   ) {
+     const originalMethod = descriptor.value;
+
+     descriptor.value = async function (args: A) {
+       return await tracer.startActiveSpan(traceName, async (span: Span) =&gt; {
+         const result = await originalMethod.call(this, args);
+         traceFunction(span, args, result);
+         span.end();
+         return result;
+       });
+     };
+     return descriptor;
+   };
+ }
+```
+
+And here is an example on how you can use it. As you can see the business logic in `doingSomeWork()` is completely free of any tracing logic. Removing the `@Trace()` decorator completely removes any tracing from it.
+
+```ts
+type DoingSomeWorkParams = {
+	input: string;
+}
+
+@Trace("Doing Some Work", DoingSomeWorkParams, string)
+async function doingSomeWork(args: DoingSomeWorkParams): Promise&lt;string&gt; {
+	// ... doing some work with args.input
+	return result
+}
+
+function traceDoingSomeWork(span: Span, args: DoingSomeWorkParams, result: string) {
+	span.setAttributes({
+     [SemanticConventions.OPENINFERENCE_SPAN_KIND]: OpenInferenceSpanKind.AGENT,
+     [SemanticConventions.INPUT_VALUE]: args.input,
+     [SemanticConventions.OUTPUT_VALUE]: result,
+    });
+}
+```
+
+Going on with the list of things I learned:
+- either use a `ConsoleSpanExporter` or `diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);` to see a lot of details about the tracing. Especially interesting are the `traceId`, `parentId` and `id` attributes of each span. Here you can check whether the context got propagated nicely between the spans.
+- because I noticed some span exporting issues to Phoenix I tried a different span/traces exporter: `ZipkinExporter` with the [Zipkin UI](https://zipkin.io/) and there is still an [open discussion](https://github.com/Arize-ai/phoenix/discussions/7041#discussioncomment-12736322) on GitHub about the problems I noticed with Phoenix. Will update this post accordingly.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/phoenixllmtracing</guid></item><item><title>OpenTelemetry gRPC Exporter</title><link>https://www.marc-julian.com/blog/posts/grpcphoenix</link><description>This is an update / followup for last weeks post on [OpenTelemetry LLM App Tracing with Phoenix](https://marc-julian.com/blog/posts/phoenixllmtracing/) which ended with following statement:
+
+&gt; because I noticed some span exporting issues to Phoenix I tried a different span/traces exporter: `ZipkinExporter` with the [Zipkin UI](https://zipkin.io/) and there is still an [open discussion](https://github.com/Arize-ai/phoenix/discussions/7041#discussioncomment-12736322) on GitHub about the problems I noticed with Phoenix. Will update this post accordingly.
+
+After further debugging (breaking at every single `span.end()` call) I was able to see that during several span creations, the error `Exception has occurred: Error: read ECONNRESET` and `Exception has occurred: Error: socket hang up` were thrown. Exactly these spans were missing in Phoenix. [Roger Yang](https://github.com/RogerHYang) suggested to use the [experimental gRPC exporter](https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc) like this:
+
+```ts
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
+
+const provider = new NodeTracerProvider({
+  spanProcessors: [
+    new SimpleSpanProcessor(
+      new OTLPTraceExporter({
+        url: "http://localhost:4317",
+      }),
+    ),
+  ],
+});
+
+registerInstrumentations({
+  instrumentations: [new OpenAIInstrumentation()],
+});
+
+provider.register();
+```
+
+This exports spans directly via gRPC to port `4317` of your Phoenix app. Make sure to use the [Docker images provided by Phoenix](https://docs.arize.com/phoenix/self-hosting) which automatically expose this port next to the default `6006` port.
+
+With the above exporter configured, no spans go missing anymore and even complex long running traces are captured nicely.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/grpcphoenix</guid></item><item><title>Implementing a Simple Perceptron for Binary Classification</title><link>https://www.marc-julian.com/blog/posts/simpleperceptron</link><description>We'll be implementing a simple perceptron model for binary classification tasks using Python, and discussing the fundamentals of the perceptron model, including how it makes predictions and updates its weights during training.
+
+The first step in implementing a simple perceptron model is to define a class that contains the weights, training loop, and prediction methods.
+
+```python
+class Perceptron:
+
+	def __init__(self, lr=0.01, epochs=50):
+		self.lr = lr 
+		self.epochs = epochs 
+		self.init_weights() # TODO
+```
+
+Here, we already set default values for hyperparameters like the learning rate (lr) and the number of epochs that the model should be trained for. Additionally, we already initialize the weight and bias values with the `init_weights` method.
+
+## Weight &amp; Bias Initialization
+
+To initialize the weights and bias, we can either use constant values like 0 and 1, or we can choose random numbers.
+Since our training data has two features, we need one weight per feature, so we use two random values for the weights here.
+
+```python
+def init_weights(self):
+	self.weights = torch.rand(2) 
+	self.bias = torch.rand(1)
+```
+
+## Training Loop 
+
+Now we are ready to work on the training loop. The basic idea is that we start predicting classes with random weight values in the model. We then compare the predicted (probably misclassified) class label with the expected class label to compute the error that the model has made. 
+We then use the error to update the weights and bias by a small amount to get better predictions. We iterate over this process until the model converges or we reach the maximum epoch limit.
+
+![](/images/percep8.png)
+
+At each learning step (epoch), we loop through the entire data set and update the weights and bias by a small delta value. 
+
+![](/images/percep2.svg)
+
+In the code, we can use two loops to iteratively update the values. 
+
+```python
+def fit(self, X, y):
+	for epoch in range(self.epochs):
+		# for every data point and label
+		for xi, yi in zip(X, y):
+			weight_delta = ... # TODO 
+			bias_delta = ... # TODO 
+
+			# Update weigths
+			self.weights += self.weight_delta 
+			self.bias += self.bias_delta
+```
+
+Of course, the important part is calculating the correct delta values. 
+
+The current error of the model 
+![](/images/percep3.svg)
+
+can take different values depending on the predictions.
+If the true and predicted classes are the same (0,0 or 1,1), the error will be equal to 0. In this case, everything is fine and we don't need to update the weights.
+In the two cases of misclassification (0,1 or 1,0), the error will be either  -1 or 1. Here we want to update the weights to hopefully get the prediction closer to the correct class in the next epoch. 
+
+As you can see from the formula below, we update the weight with respect to the actual data points. This way, our data has an influence on the weight updates. Large values will have a higher impact than small values. This implies that our model benefits from feature scaling. One of the methods that could be applied is **standardization** where you subtract the mean and divide by the standard deviation to center and scale your data points. 
+
+We multiply by the learning rate to make smaller steps, which helps to get better convergence. The magnitude of the learning rate plays an essential role. Too large values will lead to rapid but unstable convergence, too low values will make the model converge slowly and it may even get stuck in local minima.
+
+![](/images/percep4.svg)
+
+
+
+```python
+def fit(self, X, y):
+	for epoch in range(self.epochs):
+		for xi, yi in zip(X, y):
+			# Compute the error and weight updates
+			error = yi - self.predict(xi) # TODO
+			weight_delta = self.lr * error * xi  
+			bias_delta = self.lr * error
+
+			self.weights += self.weight_delta 
+			self.bias += self.bias_delta
+```
+
+Finally, we have to implement the `predict` method to be able to calculate the error. 
+
+## Prediction 
+
+For prediction, we simply compute a linear combination of the input data using the trained weights and bias. To get the corresponding class labels, we need to clip the values with a step function. This gives us a binary output, just like the target variable. 
+
+```python
+def predict(self, X):
+	output = X @ self.weights + self.bias
+	# Activation Function (in this case a simple step function)
+	pred = torch.where(output &gt;= 0.0, 1, 0) 
+	return pred
+```
+
+## Using the Perceptron Model 
+
+To use the perceptron model, we first need to create some sample data using the scikit-learns `make_classification` function. The resulting synthetic data set has two classes with two features. 
+
+```python
+X_train, y_train = make_classification(n_samples=100, n_features=2, n_informative=2, n_redundant=0, random_state=40)
+
+plt.scatter(X_train[:,0], X_train[:,1], marker='o', c=y_train, s=25)
+plt.show()
+```
+
+![Scatter Plot for Binary Classification Problem](/images/percep5.png)
+### Prediction with Random Weights
+
+First, we create a perceptron instance and predict classes without training the model. 
+
+```python
+perceptron = Perceptron(lr=0.01, epochs=100)
+y_pred = perceptron.predict(X_train)
+
+plt.scatter(X_train[:,0], X_train[:,1], marker='o', c=y_pred, s=25)
+plt.show()
+```
+
+We can see that the random weights did not do a good job of separating the two classes.
+
+![Bad Binary Classification Scatter Plot](/images/percep6.png)
+
+### Prediction with Trained Weights
+ 
+Now, let us fit the perceptron and see whether the results are any better.
+
+```python
+perceptron.fit(X_train, y_train)
+y_pred = perceptron.predict(X_train)
+```
+
+Here we can see two different plots for the predictions. The left one did not use any activation function and therefore shows the full range of values that were predicted. On the right side, the step function from above was used.
+
+![Good Binary Classification Scatter Plot](/images/percep7.png)
+
+After training, the model seems to be able to discriminate between the two classes quite well. However, when comparing the predictions with the original data set we can clearly see that some samples were still misclassified. This is expected because the perceptron model is trying to fit a **linear** decision boundary while the two classes are actually **not linearly** separable.
+We could solve this problem by introducing more features, since in a higher dimensional space there may be a hyperplane that perfectly separates the classes. Of course, this will not always be possible which is why we need more complex models that can fit nonlinear decision boundaries. 
+
+
+## Code 
+
+You can find the complete code here and on [GitHub](https://github.com/marcjulianschwarz/jupyter-notebooks).
+
+```python 
+import torch
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_classification
+
+
+class Perceptron:
+
+    def __init__(self, lr=0.01, epochs=50):
+        self.lr = lr
+        self.epochs = epochs
+        self.init_weights()
+
+    def init_weights(self):
+        self.weights = torch.rand(2)
+        self.bias = torch.Tensor([0])
+
+    def fit(self, X, y):
+        X = torch.Tensor(X)
+        y = torch.Tensor(y)
+        for epoch in range(self.epochs):
+            total_error = 0
+            for xi, yi in zip(X, y):
+                y_pred = self.predict(xi)
+                error = yi - y_pred
+                self.weights += self.lr * error * xi
+                self.bias += self.lr * error
+                total_error += error
+            if epoch % 10 == 0:
+                print(f'epoch {epoch} \t error {total_error}')
+
+    def predict(self, X, activation=True):
+        X = torch.Tensor(X)
+        output = X @ self.weights + self.bias
+        if activation:
+            output = torch.where(output &gt;= 0.0, 1, 0)
+        return output
+
+perceptron = Perceptron(lr=0.01, epochs=200)
+perceptron.fit(X_train, y_train)
+y_pred = perceptron.predict(X_train)
+```</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/simpleperceptron</guid></item><item><title>The Tensor Tournament 2023</title><link>https://www.marc-julian.com/blog/posts/tensortournament</link><description>Recently, I had the opportunity to participate in [The Tensor Tournament Hackathon](https://www.mad.tf.fau.de/2023/01/26/the-tensor-tournament-t3-recap/) (organized by the [Machine Learning and Data Analytics Lab](https://www.mad.tf.fau.de/) at FAU) and I am happy to announce that our team, [Maximilian Kasper](https://www.linkedin.com/in/maximilian-kasper-693648174/) and [me](https://www.linkedin.com/in/marcjulian/), emerged as the winners!
+The hackathon was a six-hour event where teams were given three machine learning and deep learning problems to solve. It was an intense and challenging experience, but it was incredibly rewarding to put our skills to the test and come out on top.
+
+![Winning Team and Organizers](/images/ttt_winners.jpg)
+
+## First Problem: The Gingerbread Chef 
+
+The first problem we were given was to build a machine learning model that could accurately **predict the quality** of gingerbread on a scale of 0 (garbage) to 4 (delicious) based on the ingredients. This required us to use regression or classification models. After trying several models we ended up using a simple regression model. Our scores were good but not as good as we'd like, so we decided to try a rather unconventional approach by leveraging the AutoML package [AutoGluon](https://auto.gluon.ai/stable/index.html) to automatically train and evaluate lots of models with various hyperparameters. In the end, the model produced by AutoGluon was better than any of the other submissions. It seems that simple problems become less relevant as automatic modeling gets better.
+
+![Score Leaderboard](/images/ttt_scores.jpg)
+
+## Second Problem: Keep Your Distance
+
+&gt; Adaptive cruise control is a driver assist feature that automatically keeps a set distance to the car in front, or maintains the set speed if there is none. The correct estimation of the distance between yourself and other vehicles is thus paramount. Instead of costly radar or lidar sensors you intend to use a simple video camera for that purpose.
+
+A total of 1074 images with 1442 vehicles were annotated with bounding boxes around the cars and the measured distance to the car.
+
+The goal of this problem was to **predict the distance** from the given images and bounding boxes for each vehicle. To get a good first baseline we decided to only use the tabular annotation data and leave the images for a later model. 
+To our surprise, after some feature engineering, a simple RandomForest regressor evaluated to a score of 0.95 on the test set. We suspect that the  features *"area of  bounding box"* and "*angle to camera*" were sufficient to explain the distance. Especially the area has a direct causal relationship with the distance. 
+
+![Example Train Image with cars and annotations](/images/ttt_cars.jpg)
+
+## Final Problem: Find The Numbers
+
+The final problem was by far the hardest one as it had an unusual train test split. The train dataset consisted of 24 images while the test set had over 10,000 images. Each image contained a random number of [MNIST](https://www.tensorflow.org/datasets/catalog/mnist) digits between 0 and 9 with random sizes in random positions. 
+The task was to **recognize all digits** in the given images. The prediction for the following image could for example be *776186792825*. The order of digits doesn't matter, so *277698718625* would also be a valid prediction. 
+
+![Example Train Image](/images/tensor_tournament.jpg)
+
+The first approach we tried was to use an OCR-tool like [Python-tesseract](https://pypi.org/project/pytesseract/) to directly recognize the digits embedded in the image. After some preprocessing of the image (e.g. inverting the colors) we were able to classify some images, but the accuracy wasn't great. 
+
+We know that the images were taken from the MNIST dataset. As a lot of good models already exist for classifying MNIST digits, we decided to try cutting out the digits and classify each digit separately. 
+We used several [OpenCV](https://opencv.org/) functions to cut out the digits, scale them to the correct size, sharpen the images, and perform other preprocessing steps to make them look as similar as possible to the MNIST digits. 
+We then trained a simple MNIST model and used it to classify each image in the test set. This approach worked much better than the previous OCR attempt. 
+
+## Conclusion
+
+Overall, the hackathon was an incredible experience and I am grateful to have had the opportunity to participate. I would like to thank the organizers of the hackathon for putting on such a great event, and to Maximilian for being an incredible teammate. I am excited to see what the future holds for us in the world of data science. 
+
+![The Tensor Tournament Banner](/images/ttt_plakat.jpg)</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/tensortournament</guid></item><item><title>Obsidian Raycast Extension - Update</title><link>https://www.marc-julian.com/blog/posts/obsraycastupdate</link><description>My Raycast extension "Obsidian" has been in the [Raycast Store](https://www.raycast.com/marcjulian/obsidian) for a few months now and lots of people are already using it. In this post I would like to introduce some of the new features that were added recently.
+
+## Create Note 
+
+With the new command *Create Note* you can now create new notes on the fly. Just like all of the other commands it can be accessed system-wide which makes it a great tool for quickly jotting down some notes while working in another application.
+
+![Create Note Command](/images/create_note.jpg)
+
+The form accepts a name, local path (the command will automatically create a folder structure when the path doesn't exist), a customizable tag picker and a big content field.
+
+### Customize the tag picker 
+
+Use the Racast Search to find the extensions preferences by searching for *Extensions*. Scroll down to *Obsidian* and select the *Create Note* command. You will see a list of settings pop up on the right side. In the tags section you can enter a comma separated list of tags. For example: "daily, blog, project, todo, read".
+
+### Other settings 
+
+Entering a default path and tag will auto-fill the corresponding fields when running the command. This might be helpful when you always want to add notes to a certain folder or always tag them with the same tag.
+
+## New keyboard shortcuts for Search Note 
+
+The new update comes with two new keyboard shortcuts for the *Search Note* command. You can now use `opt + l` to copy a markdown link for the note to your clipboard or `opt + u` to copy the notes [Obsidian URI](https://help.obsidian.md/Advanced+topics/Using+obsidian+URI).
+
+## Feature Requests
+If you know of a feature that's still missing or want to contribute otherwise, make sure to visit the projects [GitHub repo](https://github.com/marcjulianschwarz/obsidian-raycast).</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/obsraycastupdate</guid></item><item><title>Las Vegas - Strip vs. Nature</title><link>https://www.marc-julian.com/blog/posts/lasvegas</link><description># 1 Rien ne vas plus
+
+„*Rien ne va plus*“, französisch für „*Nichts geht mehr*“. Ein Satz, der vor allem bei dem Glücksspiel Roulette verwendet wird. Am meisten zu hören ist er wahrscheinlich in Las Vegas, der bekanntesten Glücksspielmetropole der Welt.
+
+Las Vegas befindet sich zwischen dem Great Basin und der Mojave Wüste und ist mit etwa 644.000 Einwohnern (Stand 2018), die größte Stadt des US-Bundesstaats Nevada. ([Census 2018](https://www.census.gov/quickfacts/ lasvegascitynevada)) Außerdem wird sie jährlich von ungefähr 40 Millionen Touristen besucht, die ihre Zeit vor allem in Hotels, Casinos, Shoppingmalls oder in einer der vielzahligen Shows verbringen. (Reuschenbach 2014, S.1) Für die meisten ist die ständige Unterhaltung, das was die Stadt ausmacht. An den viel befahrenen Straßen begeistern große und aufwändige Wassershows, ganze Hotelanlagen werden in der Nacht von Scheinwerfern beschienen und es findet sich kaum ein Ort, an dem es keine Neonröhren gibt. Im Inneren der Gebäude wartet gekühlte Luft und Luxus in allen Formen. Die Hotels können ohne Probleme tausende Touristen am Tag rund um die Uhr mit Wasser versorgen und auch die Wasserspiele laufen endlos weiter.
+Doch wie funktioniert die Stadt mitten in der regenärmsten Wüste der USA? Wie wird die Wasserversorgung sichergestellt an einem der heißesten Orte der Welt und wie kann eine Stadt mit so vielen Einwohnern und jährlichen Touristenmassen durchgehend mit Strom versorgt werden?
+Was muss geschehen, damit Las Vegas trotz der Schwierigkeiten weiterhin seinen Glanz behält und es in der Zukunft zu keinem „Rien ne va plus“ kommt? 
+
+Zu Beginn der Arbeit werden allgemeine Daten zu Las Vegas beschrieben, insbesondere der Stadtbau, das Naturvorkommen innerhalb der Stadt und die umliegende Natur mit deren geografischen Gegebenheiten. Daraufhin erfolgt eine Analyse zur Wasserknappheit in Las Vegas, in der auch aktuelle und zukunftsweisende Lösungsansätze dieses Problems beleuchtet werden. Im Anschluss daran folgt eine weitere Analyse, in der das zweite Problem, die herausfordernde Energieversorgung der Stadt, näher betrachtet werden soll. 
+Abschließend wird ein Ausblick auf die Zukunft der Stadt Las Vegas gegeben, in dem sowohl positive als auch negative Aspekte dieser Zukunft angesprochen werden.
+
+# 2 Allgemeine Daten zur Stadt Las Vegas
+
+## 2.1 Stadtbau von Las Vegas
+
+Die Agglomeration Las Vegas Valley lässt sich grob in zwei Bereiche einteilen. Der flächenmäßig größte Bereich der Metropolregion besteht aus den Orten North Las Vegas, Sunrise Manor, Winchester, Spring Valley, Paradise, Henderson, Enterprise, Summerlin, Summerlin South und Las Vegas (s. Abb. 1). Die Bevölkerung hat in der gesamten Metropolregion bereits um die zwei Millionen Einwohner erreicht und nimmt jährlich um circa fünf Prozent weiter zu. Weil der Stadtkern bereits dicht besiedelt ist, werden die Menschen nach außen gedrängt. Durch diese starke Suburbanisierung sind die Vororte von Las Vegas entstanden, die das Stadtbild mit ihren großen Einfamilienhäusern prägen. (Reuschenbach 2014, S.1)
+Das Wachstum dieser Vororte wird allerdings durch Gebirgszüge, Wüsten und Gewässer an den Rändern der Metropole begrenzt. (s. 2.3 Natur im Umfeld von Las Vegas)
+
+Der andere Bereich befindet sich im Zentrum dieser Vororte von Las Vegas, und besteht aus dem Gebiet rund um den „Strip“. Der Strip (engl. für Streifen) ist ein etwa 7 Kilometer langer Abschnitt des Las Vegas Boulevard, der vom Süden aus vom „Mandalay Bay Resort and Casino“ bis zum „Stratosphere Tower“ im Norden verläuft (s. Abb. 1, rot markiert). An diesem Straßenteil befinden sich die größten Casinos und Luxushotels der ganzen Stadt. Unter anderem vier der bekanntesten Hotels, wie das 1,25 Milliarden teure Freizeitzentrum Bellagio, das Venetian Casino Resort, das circa zwei Milliarden Dollar gekostet hat, das Circus Circus Hotel und das Wynn Las Vegas. Sowohl das Hotel Bellagio als auch das Wynn Las Vegas, welches bis zur Eröffnung das teuerste Casino der Welt war, wurden vom Milliardär und Imobilienmongul Steve Wynn finanziert und geplant. 
+(Davis 1999, S.1)
+
+Der „Strip“ bildet also sowohl das Unterhaltungszentrum als auch den bekanntesten und somit von Touristen meistbesuchten Teil von Las Vegas während die restliche Fläche von den eigentlichen Bewohnern genutzt wird.
+
+![Abb. 1: Karte Las Vegas (Einzeichnung "Strip")](/images/lvsn_strip.jpg)
+
+## 2.2 Naturanlagen in Las Vegas
+
+Las Vegas ist nicht gerade für eine atemberaubende Natur bekannt. Und tatsächlich lassen sich in großen Teilen der Stadt nur vereinzelt Pflanzen ausmachen. Am Strip (s. 2.1 Stadtbau von Las Vegas) sieht man zwar hin und wieder eine Palme am Straßenrand, allerdings ist die Umgebung sonst eher von weiten Asphaltflächen und großen Gebäuden gekennzeichnet.
+Im Gegensatz dazu gibt es im Inneren einiger Hotels und Casinos ganze Naturanlagen, bestehend aus vielen exotischen Pflanzen und Tieren, die durch künstliche Bewässerung am Laufen gehalten werden. Ein bekannter botanischer Garten, ist der „Bellagio Conservatory &amp; Botanical Garden“, der sich im Bellagio Hotel befindet. Auf einer Fläche von ungefähr 13.000 Quadratmetern werden dort zu jeder Jahreszeit jeweils passende Pflanzen und andere Sehenswürdigkeiten von Gärtnern und Designern installiert. ([Bellagio Conservatory &amp; Botanical Garden 2019](https://bellagio.mgmresorts.com/en/entertainment/conservatory-botanical-garden.html))
+Weiter vom Mittelpunkt der Stadt entfernt, in Richtung der Vororte von Las Vegas, häufen sich die Grünflächen. Wobei auch diese, vor allem künstlich angelegte Plätze zum Golf, Racket oder Tennis spielen sind und deshalb ständig durch künstliche Bewässerung gepflegt werden um nicht in der extremen Hitze zu vertrocknen.
+In den Gärten der Einfamilienhäuser am Rand der Stadt (s. 2.1 Stadtbau von Las Vegas) gibt es nur vereinzelt Grasflächen, da diese meistens schon durch einen Pool oder einen Sandgarten besetzt sind. ([Google 2019](https://www.google.com/maps/place/Las+Vegas,+Nevada,+USA/)) 
+
+
+## 2.3 Natur im Umfeld von Las Vegas
+
+Las Vegas liegt zwischen der Great Basin Wüste nördlich der Stadt und der Mojave Wüste im Süden. Die Great Basin Wüste ist die größte zusammenhängende Wüste Nordamerikas und erstreckt sich über fast ganz Nevada. Sie wird durch sehr viele Täler und bis zu 3.000 Meter hohe Gebirgsketten gekennzeichnet. In den 1.000 bis 1.500 Meter hoch gelegenen Becken besteht die Vegetation vor allem aus Kleinstrauchsteppen. Ansonsten wachsen hier wegen hoher Temperaturen und geringem Niederschlag nur vereinzelt Pflanzen, wie Kakteen und andere Sträucher. ([Martin 2019](https://www.michael-martin.de/de/wissen_wuesten_der_erde/wuesten_nordamerika.html))
+
+Die Mojave Wüste ist die kleinste nordamerikanische Wüste, welche allerdings von hohen Gebirgen, wie der Sierra Nevada im Westen, den San Bernadino Mountains im Süden und etwas niedrigeren Bergzügen im Norden umgeben ist. Diese fast vollständige Abgrenzung führt dazu, dass feuchte Pazifikwinde, Wolken oder Winterstürme nur schwer in die Wüste gelangen können. Darum gilt die Mojave-Wüste auch als regenärmster Ort Amerikas. Im Death Valley, das etwa 200 km von Las Vegas entfernt liegt, beträgt die durchschnittliche Jahresniederschlagssumme nur etwa 40 mm. Auch die Temperaturen erreichen dort Rekordhöhen, wie etwa im Juli 1913 als die bisher höchste registrierte Temperatur von 57 °C im Schatten gemessen wurde. Die Mojave Wüste ist keine reine Sandwüste, deshalb wachsen hier auch einige Pflanzen. Natürlich können nicht alle in solch einer lebensfeindlichen Region überleben, weswegen auch hier besonders viele kleine Büsche und Kakteen in den tiefer gelegenen Gebieten wachsen. In den höher gelegenen Bereichen stehen größere Pflanzen, sogenannte Joshua Trees, welche nur in der Mojave Wüste vorkommen. (ebd.)
+
+Zwischen der Mojave Wüste und Las Vegas befindet sich die „Sloan Canyon National Conservation Area“, welche eine Höhe von bis zu 1.500 Meter erreicht. (s. Abb. 2, Pfeil) Dort findet man vor allem sogenannte Petroglyphen, also in den Stein gemeißelte prähistorische Felszeichnungen.
+
+Um dieses Kulturgut zu bewahren und vor Vandalismus zu schützen, wird durch das „Bureau of Land Management“ sowohl das Bekanntgeben von exakten Positionen zu den Zeichnungen, als auch Camping und Offroad-Touren in dem Gebiet verboten. 
+([BLM 2019](https://www.blm.gov/programs/national-conservation-lands/nevada/sloan-canyon-nca))
+
+Im Westen von Las Vegas liegt in circa 27 Kilometer Entfernung der „Red Rock Canyon National Park“ mit der für den Park typischen roten Felslandschaft. Die Berge sind hier auch bis zu 2.500 Meter hoch. (s. Abb. 3, roter Kreis)
+
+Die „Lake Mead National Recreation Area“ befindet sich östlich von Las Vegas. In diesem Areal liegen sowohl der Lake Mead als auch der Lake Mojave. Beide Seen sind Stauseen, die durch das Anstauen des Colorado River und seines rechten Nebenfluss Virgin River entstanden sind. (s. Abb. 4)
+
+![Abb. 2: Topografische Karte Nevada (Las Vegas)](/images/lvsn_heightmap.jpg)
+
+Las Vegas wird also von allen Seiten durch Gebirge oder Gewässer natürlich begrenzt. Das hat zur Folge, dass sich die Stadt flächenmäßig nicht mehr viel ausdehnen kann. Allerdings wirken diese Barrieren besonders im Norden, Westen und Süden wie eine Wand. Dadurch können, wie es in der Mojave Wüste selbst schon der Fall ist, Wolken schlecht in das Tal eindringen aber auch der Smog von Las Vegas findet keinen Ausweg. Es sammelt sich also Hitze und schlechte Luft, weswegen es nachts in der Stadt circa 10° Celsius wärmer ist als in der Umgebung.
+(s. Abb. 2)
+
+# 3 Wasserversorgung Las Vegas
+## 3.1 Folgen und Ursachen der Wasserknappheit in Las Vegas
+### 3.1.1 Ursachen der Wasserknappheit
+
+&gt; Der Wasser-Fetischismus Steve Wynns (der einmal vorschlug, die Fremont Street in der Downtown in ein pseudovenezianischen Canale Grande zu verwandeln) setzt den Maßstab für die Wasserverschwendung in Las Vegas: 1586 Liter pro Kopf, gegenüber 930 in Los Angeles, 705 in Tucson, und 485 in Oakland.“ - (Davis 1999, S. 2)
+
+Davis beschreibt hier sehr gut, wie Las Vegas zu Wasser steht. Der Wasser-Fetischismus Steve Wynns bezieht sich auf den Mann, der für den Bau von einigen der größten und teuersten Hotels der ganzen Stadt verantwortlich ist (s. 2.1 Stadtbau von Las Vegas). The Fountains of Bellagio ist ein riesiges Wasserspiel, direkt vor dem gleichnamigen Hotel Steve Wynns, das auf einer Länge von circa 300 Metern mithilfe aufwändiger Technik über 1.000 Wasserstrahlen in komplexen Figuren auf eine Höhe von bis zu 140 Metern schießt. Neue Shows starten an Abenden alle 15 Minuten und sind für Zuschauer kostenlos. ([Bellagio 2019](https://bellagio.mgmresorts.com/en/entertainment/fountains-of-bellagio.html))
+Auch das Venetian Casino Resort trägt zur Wasserverschwendung bei. Das Hotel wurde der Stadt Venedig nachempfunden. Dementsprechend gibt es Kanäle, gefüllt mit Wasser, die sich durch das ganze Gebäude ziehen. Schon am Eingang befindet sich eine große Wasserfläche, auf der Gondeln anlegen, mit denen Besucher durch die Anlage gefahren werden. ([Venetian 2019](https://www.venetian.com/resort/attractions/gondola-rides.html))
+
+Trotz der vielen Touristen, die in den Hotels versorgt werden müssen und dem „Wasser-Fetischismus“, welcher die Stadt prägt, tragen die Hotels nur zu 7 % des gesamten Wasserverbrauchs in Las Vegas bei. (s. Abb. 3)
+Den nächstgrößeren Anteil am Wasserverbrauch hat die großflächige Bewässerung. Damit sind vor allem die vielen Golfplätze gemeint (s. 2.2 Naturanlagen in Las Vegas), welche wie grüne Oasen in der sonst kargen, trockenen Wüste wirken. Mit ganzen 9 % übertreffen sie die Hotels und unterstreichen nochmal wie viel Wasser tatsächlich unnötigerweise verschwendet wird. (s. Abb. 3)
+Sogar Dale Hahn, der für die Instandhaltung des Golfplatz TPC Summerlin zuständig ist, sagt, dass rund 40 Golfplätze für eine Stadt in der Wüste zu viel seien. ([Bergmann 2013](https://www.dw.com/de/las-vegas-versucht-sich-im-wassersparen/a-17015354))
+Auch beim Thema Golfplatz setzt Steve Wynn den Maßstab sehr hoch. In seinem „Wynn Golf Club“ befindet sich nämlich sogar ein ganzer Wasserfall, der den Park ziert. ([Wynn Las Vegas 2019](https://www.wynnlasvegas.com/experiences/golf))
+
+Auf Platz zwei mit 19 % steht die Industrie und der Handel von Las Vegas. Im Vergleich zu anderen großen Städten in Europa ist dieser Prozentsatz relativ gering, da in Las Vegas nur wenige Industrien wie die Glücksspiel- und Tourismusindustrie ansässig sind. (s. Abb. 3) ([Dzombak 2014](https://eu.usatoday.com/story/money/personalfinance/2014/04/26/these-states-have-no-income-tax/8116161/))
+
+An der Spitze steht die Versorgung der Bevölkerung mit 65 %, dazu zählen sowohl der Verbrauch in den Häusern als auch in deren Gärten. Bei insgesamt 2 Millionen Einwohnern, die alle in einer Wüste (s. 2.3 Natur im Umfeld von Las Vegas) leben, ist es verständlich, dass der Wasserverbrauch für den Garten und auch für die eigene tägliche Versorgung höher sein muss als in anderen Regionen. (s. Abb. 3)
+Allerdings wie sich aus den vorher genannten Punkten schließen lässt, dient Wasser in Las Vegas oft als verschwenderischer Luxus. Gerade deswegen steigt der durchschnittliche Wasserverbrauch pro Person auf 1586 Liter. Im Vergleich dazu haben andere Großstädte wie Los Angeles mit 930 Liter pro Kopf, Tucson mit nur 705 Liter und Oakland mit nur einem drittel von dem einer Person in Las Vegas, einen weitaus niedrigeren Verbrauch. (Davis 1999, S. 2)
+Gerade im Vergleich mit Europa, in dem nur 12 % des jährlichen Wasserverbrauchs für Haushalte verwendet wird, fällt der extreme Unterschied auf. ([EEA 2019](https://www.eea.europa.eu/de/signale/signale-2018/artikel/wassernutzung-in-europa-quantitaet-und#tab-nachrichten-und-artikel))
+
+![Abb. 3: Verteilung des gesamten Wasserverbrauchs in Las Vegas 1993 (eigene Darstellung mit Daten von POYNER, 1998: S.5)](/images/diagram.jpg)
+
+## 3.1.2 Folgen des hohen Wasserverbrauchs
+
+Als Tourist sind die Folgen des zu hohen Wasserverbrauchs fast nicht wahrnehmbar. Aufgrund der klimatisierten Gebäude, Wasserspiele oder befeuchteten Fußwege merkt man kaum, dass sich die Stadt in einer Wüste befindet.
+Trotzdem kommt es oft zu erheblichen Versorgungsengpässen. Schätzungen zufolge geht Las Vegas, unter Berücksichtigung des fortschreitenden Klimawandels, Trockenzeiten und Folgen von El Nino, bis 2021 das Wasser vollständig aus. (Reuschenbach 2014, S.2)
+Etwa 10 % des Wassers stammt aus wenigen Grundwasseraquiferen, welche allerdings schon lange nicht mehr erneuert wurden und den Ansprüchen der Stadt nicht mehr gerecht werden. Diese Überbeanspruchung führt nicht nur dazu, dass es schneller zu Engpässen in der Versorgung kommt, sondern auch zu einer weitverbreiteten Absenkung des Baugrundes. Seit den 60er-Jahren hat sich der Strip um einen Meter nach unten verschoben, weswegen die Bebauung in einzelnen Bereichen sogar aufgegeben werden muss. (ebd.)
+Ungefähr 90 % des Wasserbedarfs kommt daher aus dem 50 km von Las Vegas entfernten Lake Mead (ebd.), welcher durch das Aufstauen des Colorado River mithilfe des Hoover Damms entstanden ist. (s. Abb. 4)
+Mit rund 35 Milliarden Kubikmeter Fassungsvermögen ist Lake Mead der größte Stausee der USA. Durch ihn werden die Bundesstaaten Nevada, Arizona als auch Kalifornien mit Wasser versorgt. Die Menge des entnommenen Wassers ist gesetzlich festgelegt und kann somit nicht einfach überschritten werden. Trotzdem ist der Wasserspiegel seit 1998 kontinuierlich gesunken und hat bis heute (Stand 2014) rund 39 Meter an Höhe verloren. Diesen Verlust können selbst regenreiche Winter nicht mehr rückgängig machen, da die Verdunstungsrate des Sees immer höher wird je niedriger der Wasserspiegel ist und auch der Verbrauch der Städte stetig steigt. (Reuschenbach 2014, S.2)
+Aufgrund der explosionsartigen Entwicklung Las Vegas, die größtenteils nicht vorhergesehen war, haben sich vor allem die Umweltschäden im südlichen Nevada und den angrenzenden Distrikten Kaliforniens und Arizonas verschlimmert. Die Stadt ist schon längst so groß geworden, dass sie über ihre eigenen natürlichen Ressourcen hinausgewachsen ist. Deswegen „wendet [Las Vegas] die eigene Verschwendungssucht aggressiv nach außen und veranstaltet einen Umweltterrorismus gegen seine Nachbarn. ‚Gib uns Dein Wasser, oder wir verschmachten‘“. (Davis 1999, S. 2)
+Da sehr viele Politiker Wahlkampfspenden von der Glücksspielindustrie erhalten, müssen sie vielen Forderungen von Las Vegas nachgehen, um diese Geldquelle nicht zu verlieren. Deshalb kann sich die Southern Nevada Water Authority, die für die Wasserversorgung im Las Vegas Valley zuständig ist, ohne weitere Probleme Rechte am Wasser aus dem Virgin River, einem Nebenfluss des Colorado Rivers, aneignen um dieses für künftige Zwecke im Lake Mead zu lagern. 1989 hat sich die Behörde sogar Ansprüche auf Oberflächen- und Grundwasser auf einem 320 Quadratkilometer großem Gebiet im ländlichen Nevada gesichert. Dieses unter offiziellem Namen „kooperative Wasserprojekt“, hatte vor allem schlechte Auswirkungen auf die dort ansässigen Rancher, Farmer, Bergbauarbeiter und andere Bewohner, welche das Projekt als „Wasserklau“ bezeichnen. (Davis, 1999, S. 2)
+
+![Abb. 4: Lake Mead National Recreation Area (Einzeichnung Hoover Dam)](/images/lvsn_lake.jpg)
+
+## 3.2 Lösungsansätze
+
+## 3.2.1 Bisherige Maßnahmen gegen die Wasserknappheit
+
+Bisher wurden bereits verschiedenste Maßnahmen ergriffen, um der Wasserknappheit entgegenzuwirken. Die scheinbar einfachste Möglichkeit ist es, so viel Wasser wie möglich einzusparen. Insgesamt gibt es vier Sektoren in Las Vegas, die den größten Teil des Wasserbrauchs ausmachen. An erster Stelle steht die Bevölkerung mit 65 % (s. Abb. 3), die natürlich zuerst in Angriff genommen wird, um direkt den größten Verbraucher zu minimieren. Um das Gelingen der Sparmaßnahmen zu sichern wurden einige neue Vorschriften verfasst, die den Wasserverbrauch regeln sollen. Beispielsweise darf vor dem Haus kein Rasen wachsen und auch auf der Rückseite darf nur maximal die Hälfte der Fläche bepflanzt sein. (Reuschenbach 2014, S. 3) 
+Damit möglichst wenig Wasser unnötigerweise auf der Straße verdampft, ist das sprengen auf Beton verboten und vom 1. Mai bis zum 1. Oktober ist das Bewässern des Gartens ab dem Mittag bis 19 Uhr sogar komplett verboten. Außerdem sollen die Bewohner stattdessen den Rasen durch wüstenähnliche Landschaften ersetzen. Im Englischen nennt man diese Art des Gartenbaus „xeroscaping“. Für diese Gärten werden xerophile Pflanzen wie Kakteen angepflanzt, die auch mit wenig Wasser in trockenen Gebieten wachsen können. Die Southern Nevada Water Authority möchte die Bevölkerung sogar mithilfe von ausgestellten Demonstrationsgärten und finanzieller Entschädigung ([Bergmann 2013](https://www.dw.com/de/las-vegas-versucht-sich-im-wassersparen/a-17015354)) dazu ermuntern auch diese Alternative zum gewöhnlichen Garten in Betracht zu ziehen. (Poyner 1998, S. 6)
+
+Auch die Hotels und Casinos versuchen Wasser zu sparen. Brady Linen ist eine der größten Wäschereien in Las Vegas. Dort werden zum Beispiel die Handtücher der Hotels von MGM Resorts gewaschen. Eric Brady, Präsident von Brady Linen erklärt: 
+
+&gt; Wir sind in der Endphase eines 13-Millionen-Dollar-Umbaus um diese Wasser sparenden Maschinen einzubauen, die 1,5 Liter Wasser pro Pfund Wäsche verbrauchen.“ 
+
+Mit neuen wassersparenden Technologien wie dieser, schafft es das Unternehmen acht Millionen Liter Wasser am Tag weniger zu verbrauchen als vorher. 
+Auch andere technische Entwicklungen, wie etwa neue Duschen, die einen geringeren Verbrauch als handelsübliche Duschen haben oder intelligente Klimaanlagen, welche basierend auf der Anwesenheit des Gastes die Temperatur selbstständig regeln können, werden in Hotelzimmern von MGM Resorts eingebaut. 
+Des Weiteren wird versucht auch die Golfplätze mit möglichst wenig Trinkwasser zu bewässern. Nur etwa 20 % der Golfflächen werden mit Trinkwasser gesprengt sagt Dale Hahn. Für den Rest wird sogenanntes Grauwasser verwendet, welches aus Abwasser von Spülen und Duschen kommt. Dieses Wasser wird direkt am Platz aufbereitet und dann zum Bewässern der Grasflächen benutzt. Durch die Wiederverwendung von bereits benutztem Wasser konnte der Sektor Bewässerung seinen Anteil am Wasserbrauch von 9 % (s. Abb. 3) auf 6,5 % (Stand 2012) senken. ([Bergmann 2013](https://www.dw.com/de/las-vegas-versucht-sich-im-wassersparen/a-17015354))
+
+Trotz all dieser Maßnahmen, wird der Wasserspiegel des Lake Mead weiterhin sinken. Das liegt daran, dass die Stadt immer noch zu viel verbraucht und durch den voranschreitenden Klimawandel kombiniert mit Trockenzeiten in den Rocky Mountains, der Colorado River weniger Wasser führt als sonst.
+Mithilfe von sogenannten Intakes wird das Wasser aus dem See nach Las Vegas transportiert. Intakes werden oft auch mit Strohhalmen verglichen. Sie sind lange Rohre, welche unterirdisch mit dem Lake Mead verbunden sind. Durch sie wird Wasser aus dem See gepumpt, das dann durch ein Verteilungssystem bis nach Las Vegas gebracht wird. Es gibt schon zwei dieser Rohre, welche in ungefähr derselben Tiefe angebracht sind. Wegen des bereits beschriebenen Absinken des Wasserspiegels werden diese allerdings bald an der Luft liegen und können die Stadt nicht mehr versorgen. Außerdem wird ab einem zu niedrigen Level die Wasserqualität schlechter, da die oberen Wasserschichten stärker von der Sonne erwärmt werden und Keimbildungen dadurch beschleunigt werden.
+Um diesem Problem entgegenzuwirken, wurde 2008 der Bau des Intake No. 3 begonnen, der im September 2015 fertiggestellt wurde. Intake No. 3 befindet sich am Grund des Sees weitaus tiefer unter der Wasseroberfläche als die anderen Rohre. In dieser Tiefe ist das Wasser am kältesten und hat somit die beste Qualität. Außerdem wird durch diesen neuen Anschluss die Versorgung von Las Vegas für mehr Zeit sichergestellt als es mit Intake No. 1 und Intake No. 2 möglich wäre. Eine nachhaltige Lösung ist es allerdings nicht, da der Bau dieses Systems nichts am eigentlichen Problem ändert. ([SNWA 2016](https://www.snwa.com/our-regional-water-system/intake-3/index.html))
+
+
+## 3.2.2 Ideen für zukünftige Lösungsmöglichkeiten der Wasserknappheit
+
+Las Vegas ist also schon auf einem guten Weg den Wasserverbrauch zu senken. Trotzdem gibt es noch viele weitere Möglichkeiten, die in Zukunft in Angriff genommen werden können. Wie bereits festgestellt wurde, ist die Lage von Las Vegas in keinster Weise optimal für eine Millionenstadt. (s. 2.3 Natur im Umfeld von Las Vegas) Dennoch wächst die Stadt beständig weiter, weil immer mehr Menschen dort leben wollen. (s. 2.1 Stadtbau von Las Vegas)
+Um die Auswirkungen der suboptimalen Lage von Las Vegas zu minimieren, muss das rasante Bevölkerungswachstum abgemildert oder sogar ganz gestoppt werden. Durch geschickte Änderungen von Push- und Pull-Faktoren wäre solch eine Änderung möglich. Erschließungen neuer Städte und Verbesserung oder Errichtung neuer Infrastrukturen in Gegenden mit genügend Ressourcen würde den Anreiz dorthin zu ziehen erhöhen. Eine gleichzeitige Erhöhung von Wasserpreisen und Steuern in Las Vegas führt zur Stärkung der Push-Faktoren. Mit weiteren Änderungen an diesen Faktoren wäre es tatsächlich möglich Teile der Bevölkerung umzusiedeln. Allerdings wäre diese Umsiedelung zu komplex und teuer, um sie heutzutage durchzuführen. Diese Möglichkeit gilt eher als Last Minute Lösung, wenn es sonst keinen Ausweg mehr für die Sicherung der Stadt gibt.(Poyner 1998, S. 3–4)
+
+Des Weiteren müssen in Zukunft die bereits vorhandenen Ressourcen besser genutzt werden, indem die Effizienz der Wasserversorgung durch technologische Weiterentwicklung der Wasserwerke gesteigert wird. Die Kosten für Forschung in den Bereichen der Pump- und Verteilungssysteme und in Speichern wie dem Lake Mead sind allerdings relativ hoch, weswegen vernünftigere Wasserpreise vonnöten sind, die auch „versteckte“ Dienstleistungen wie die ständige Verbesserung der Technik mit berücksichtigen. (Poyner 1998, S. 5)
+
+Die wohl wichtigste Rolle spielt das Verhalten der Bewohner von Las Vegas. Um für ein Umdenken zu sorgen, müssen diese zukünftig mehr auf die Probleme aufmerksam gemacht werden. Die Bevölkerung muss mitbekommen, dass ihre Versorgung unter ihrem Konsumverhalten leiden kann. Zusätzlich müssen Programme gestartet werden, in denen weitere Anregungen und Ideen gegeben werden, um Wasser zu sparen, denn laut einer Umfrage, die 1994 in Las Vegas durchgeführt wurde, versuchen bereits 88 % zu Hause ihren Wasserverbrauch einzuschränken. (Poyner 1998, S. 5)
+
+Zuletzt bieten auch andere, neue digitale Technologien Vorteile für die Bürger. Eine intelligente Heimsteuerung kann zum Beispiel verwendet werden, um Rasensprinkler mittels Zeitschaltuhren so zu steuern, dass sie nur während den Morgen- und Abendstunden laufen, um Verdunstung vorzubeugen. Und auch in den Häusern kann durch automatisierte Steuerung von Klimaanlagen, Wasserhähnen und Duschen der Wasserverbrauch gesenkt werden. 
+
+
+# 4 Energieversorgung Las Vegas
+## 4.1 Schwierigkeiten bei der Energiegewinnung- und versorgung
+
+Las Vegas hat allerdings nicht nur mit der Wasserversorgung zu kämpfen. Einhergehend mit der Masse an Bewohnern und Touristen, ist der riesige Energieverbrauch.
+Der bereits angesprochene Wasser-Fetischismus lässt sich genauso auf Strom anwenden. Mit dieser wertvollen Ressource wird mindestens genauso verschwenderisch umgegangen. Gerade der Strip zeigt sich als ein schlechtes Vorbild. Er macht die Nacht regelrecht zum Tag mit seinen vielen Lichtern und Scheinwerfern, die bis zum Morgengrauen leuchten.
+Die meisten Touristen glauben natürlich, dass der Strom für die Stadt am nahegelegenen Hoover Damm erzeugt wird. Tatsächlich wird dort durch Turbinen aus dem fließenden Wasser relativ sauberer Strom generiert. Die meiste Elektrizität wird allerdings nach Südkalifornien exportiert. Der Strom, der wirklich in Las Vegas verwendet wird, stammt aus umweltverschmutzenden Kohlekraftwerken. Diese Kraftwerke stehen am Colorado River und nordöstlich von Las Vegas in dem Moapa-Indianerreservat. Tatsächlich kommt laut Davis (1999, S.2) nur etwa vier Prozent aus sauberen Wasserkraftwerken. (Davis 1999, S. 2)
+
+
+## 4.2 Lösungsansätze
+## 4.2.1 Bisherige Maßnahmen zur Verbesserung der Energiegewinnung
+
+Las Vegas hätte es nicht nötig Strom von Kohlekraftwerken zu nutzen. Gerade die für die Wasserversorgung prekäre Lage der Stadt (s. 2.3 Natur im Umfeld Las Vegas), bietet einige Möglichkeiten erneuerbare und saubere Elektrizität zu gewinnen. Denn Sonne für Fotovoltaikanlagen oder Solarwärmekraftwerk gibt es dort genug.
+Ein Beispiel hierfür ist das Nevada Solar One südöstlich der Sloan National Conservation Area. Das Nevada Solar One ist ein Solarwärmekraftwerk, das 2007 ans Netz gegangen ist. Es nutzt die Kraft der Sonne, indem es mit großen Reflektoren das Licht auf Rohre bündelt. In den Rohren zirkuliert Öl, das durch die Sonnenstrahlen erhitzt wird. Dadurch kann Dampf erzeugt werden, welcher dann eine Turbine antreibt. Mit diesem Kraftwerk werden rein rechnerisch ungefähr 15.000 Haushalte mit Strom versorgt und jährlich etwa 90.000 Tonnen Kohlenstoffdioxidausstoß verhindert. Das in einem Jahr eingesparte Kohlenstoffdioxid wird im Vergleich dazu in einem Kohlekraftwerk nach fünf Tagen bereits an die Umwelt abgegeben. ([Dowideit 2007](https://www.welt.de/wirtschaft/article807206/USA-wollen-Klimawandel-mit-Kohle-%20begegnen.html))
+Zusätzlich befindet sich direkt neben dem Nevada Solar One die Copper Mountain Solar Facility. Mit insgesamt vier Fotovoltaik Anlagen schafft es der gesamte Komplex mit Nevada Solar One (s. Abb. 5) zusammen eine Gesamtleistung von ungefähr einem Gigawatt zu generieren. Das ist etwa die Hälfte von dem, was das Wasserkraftwerk im Hoover Damm produziert. Solaranlagen sind also definitiv eine Alternative, welche in Betracht gezogen werden sollte. (ebd.)
+
+![Abb. 5: Satellitenansicht von Nevada Solar One und Copper Mountain](/images/lvsn_solar.jpg)
+
+## 4.2.2 Ideen für zukünftige Arten der Energiegewinnung
+
+Zukünftig muss Las Vegas weiter in sonnenbetriebene Kraftwerke investieren. Besonders die Forschung erneuerbarer Energiegewinnung muss gefördert werden und besonders finanziell unterstützt werden damit künftig mit angemessenen Kosten große Solarparks gebaut werden.
+Eine Idee, die möglicherweise sogar zwei Probleme auf einmal lösen könnte wäre eine Solarkraftanlage auf dem Lake Mead. In Baden-Württemberg steht seit Frühjahr 2019 auf einem Baggersee in Renchen die größte schwimmende Fotovoltaikanlage Deutschlands. Solch ein System bietet mehrere Vorteile gegenüber Üblichen. Erstens sind an einem See wie dem Lake Mead bereits Teile der nötigen Infrastruktur vorhanden um Strom zu gewinnen, da hier bereits durch Wasserenergie Elektrizität hergestellt wird. Außerdem ist die Wasseroberfläche so groß, dass bereits ein kleiner Teil dieser Fläche für eine große Anlage ausreichen würde. Im Gegenteil zu Solarzellen auf dem Land wird hier kein wertvoller Baugrund verwendet, da der größte Teil des Sees ungenutzt ist. Zusätzlich wird das Wasser vor zu hoher Sonneneinstrahlung geschützt. Im Lake Mead würde das zu einer Abkühlung der oberen Wasserschichten führen, wodurch die Qualität des Wassers erhalten bliebe und somit auch als Trinkwasser verwendbar wäre. Des Weiteren bietet die weite, flache Wasseroberfläche den optimalen Standort um die Solarpanels im perfekten Winkel zur Sonne zu positionieren. Wobei auch Schatten von Bergen oder Häusern keine Rolle mehr spielen. Schließlich ist eine schwimmende Fotovoltaikanlage effizienter als eine auf dem Land. Das liegt an dem kühlenden Effekt des Wassers und an den Reflexionen der Sonnenstrahlen an der Wasseroberfläche, welche den Wirkungsgrad der Solarzellen erhöhen. ([Erdgas Südwest 2019](https://www.erdgas-suedwest.de/natuerlichzukunft/7-gruende-warum-photovoltaik-auf-einem-baggersee-sinnvoll-ist/))
+
+
+# 5 Ausblick auf die Zukunft Las Vegas
+
+Wie der Titel dieser Arbeit bereits [[Implikation|impliziert]] steht Las Vegas in einem Kampf mit der Natur. Wie dieser Kampf ausgehen wird, ist noch unklar. 
+Einerseits hat Las Vegas starke Auswirkungen auf die Natur. Durch die ständige flächenmäßige Ausdehnung der Stadt und der extremen Wasserverschwendung wird immer mehr Tieren und Pflanzen der Lebensraum geraubt. Auch die Umweltbelastungen durch den hohen Autoverkehr in der überdimensionalen Stadt und die Verwendung von schmutzigen Kohlekraftwerken sind nicht zu unterschätzen. 
+Andererseits bringt eine Metropole, gebaut in einer derart lebensfeindlichen Umgebung, bringt deren Einwohner zwangsläufig in echte Schwierigkeiten und führt zu schier unüberwindbaren Herausforderungen in der Zukunft.
+Ohne überlegtes Handeln der Menschen in Las Vegas werden der Stadt relativ bald nötige Ressourcen zum Überleben ausgehen. Der immer weiter voranschreitende Klimawandel wird auch in dieser Region immer stärker und führt zusammen mit Trockenzeiten in den Rocky Mountains dazu, dass der Wasserspiegel des Lake Mead weiter sinkt und das vorhandene Wasser nicht mehr für die Stadt ausreicht. Auch der verschwenderische Lebensstil der Bevölkerung trägt erheblich zu dieser Entwicklung bei. Wenn also alles so weiter geht wie bisher, werden sowohl Las Vegas als auch die Natur großen Schaden erleiden. 
+Circa 600 andere Städte, die in ganz Nevada verteilt liegen, sogenannte Geisterstädte, haben gezeigt, dass der Lebensraum Wüste für den Menschen äußerst ungeeignet ist. Nach kurzer Blüte sind sie alle der Natur verfallen. Damals hat sie der Gold- und Silberrausch überall aus dem Boden sprießen lassen, heute ziehen Glücksspiel und Unterhaltung die Massen in die Wüste. ([Weißenborn 2019](https://www.welt.de/reise/Fern/article188321861/Nevada-Berlin-verkam-nach-kurzer-Bluete-zur-Geisterstadt.html))
+
+![Abb. 6: Vergänglich - Die Überreste eines Geschäfts in Rhyolite](/images/lvsn_ghost.jpg)
+
+# 6 Literaturverzeichnis
+
++Bellagio (2019): Bellagio Conservatory &amp; Botanical Garden. (02.11.2019).
++Bellagio (2019): Fountains of Bellagio. (03.11.2019)
++Bergmann, C. (2013): Las Vegas versucht sich im Wassersparen. (03.11.2019).
++BLM (2019): Sloan Canyon NCA. (03.11.2019).
++Census (2018): Las Vegas Population. (02.11.2019).
++Davis, M. (1999): Las Vegas versus nature.
++Dowideit, M. (2007): USA wollen Klimawandel mit Kohle begegnen. (04.11.2019).
++Dzombak, D. (2014): These states have no income tax. (03.11.2019).
++EEA (2019): Wassernutzung in Europa – Quantität und Qualität stehen vor großen Herausforderungen. (03.11.2019).
++Erdgas Südwest (2019): 7 Gründe, warum Foto­voltaik auf einem Bagger­see sinn­voll ist. (04.11.2019).
++Martin, M. (o. J.): Die Wüsten Nordamerikas. (03.11.2019).
++National Geografic (2019): Definition Xeriscaping. (03.11.2019). 
++Google (2019): Google Maps zu Las Vegas. (02.11.2019).
++Poyner, A. (1998): Watering Las Vegas.
++Reuschenbach, M. (2014): Geht Las Vegas das Wasser aus? Das Mensch-Umwelt-System der Spielerstadt in der Wüste.
++SNWA (2016): Intake No. 3 Documentary. (03.11.2019).
++Topografic Map (o. J.): Topografische Karte Nevada. (03.11.2019).
++Venetian (2019): Gondola Rides. (03.11.2019).
++Weißenborn, S. (2019): Nach kurzer Blüte verkam Berlin zur Geisterstadt. (03.11.2019).
++Wynn (2019): Wynn Golf Club. (03.11.2019).</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/lasvegas</guid></item><item><title>Gaming 2050 - Kerngedanke Szenariostudie</title><link>https://www.marc-julian.com/blog/posts/gaming2050</link><description># Gaming 2050
+
+In den nächsten 30 Jahren bis 2050 wird es besonders viele Entwicklungen in der Computer- und Materialtechnologie geben, welche führende Kräfte in der Zukunft von Gaming sein werden.
+
+
+
+Dazu gehört die Entdeckung neuer organischer Materialien, welche die Produktion von biologischen Chips ermöglichen, die schnell und einfach implantiert werden können. Solche Nanocomputer in Kombination mit anderen Wearables wie Kontaktlinsen und Geruchssimulatoren ermöglichen Spielkonzepte, in denen erstmalig alle menschlichen Sinne stimuliert werden können. Basierend auf diesen technologischen Erfolgen entstehen neue Konsummuster, da auch eine Full Body Experience und somit eine vollständige Immersion in die Spielwelt möglich geworden ist. Ein Unterschied zwischen Spiel und Realität ist nun nicht mehr erkennbar.
+
+
+
+Allerdings gibt es nicht nur in der Darstellung und dem Konsum von Gaming große Veränderungen. Inhaltlich werden Spiele von der immer weiter voranschreitenden Medienkonvergenz profitieren, da nun noch mehr kulturelle Veranstaltungen wie Konzerte, Musicals, Opern und Theater immer auch live in Spielen stattfinden. Dort können Spieler nicht nur zuschauen sondern, auch mit dem jeweiligen Stück interagieren, was zu individuelleren Erlebnissen führt.
+
+
+
+Ein weiterer wichtiger Aspekt ist der E-Sport. Dieser wird in den kommenden Jahrzehnten einen unvergleichlichen Aufschwung erfahren und schafft es somit andere Sportarten in ihrer Popularität zu überholen. Eine neue Art des Tourismus etabliert sich, in dem Fans zu weltweit verteilten Wettbewerben reisen um in riesigen Stadien, welche neu für den E-Sport gebaut wurden, die Spiele anzuschauen.
+
+
+
+Durch die Diversifizierung der Gamingindustrie und dem gleichzeitig stattfindendem globalem Wachstum, wird die Branche Top-Arbeitsplätze in einem weiten Spektrum bieten. Dazu gehören nicht nur Berufe aus der IT, sondern auch aus vielen anderen Bereichen, um die bereits beschriebenen neuen Spielkonzepte zu erstellen, Kultur in Spiele einfließen zu lassen und einen weltweit vertretenen E-Sport am Laufen zu halten.
+
+
+
+Auch der Staat bekommt den Wandel mit und fördert die Industrie um auch Teil am Erfolg zu haben. 
+
+Gleichzeitig wird der Markt aber auch staatlich reguliert um ihn vor extremen Preisschwankungen durch Über- oder Untersättigung zu schützen. Eine Organisation mit Mitgliedern aus allen Ländern, die erfolgreiche Gaming Unternehmen unterstützen, wird die Preise ständig neu evaluieren, um sie dementsprechend anzupassen.
+
+Die Regulierung und Förderung der Gamingindustrie führt zu einer optimalen globalen Verfügbarkeit der Produkte und Dienstleistungen. 
+
+
+
+Restriktionen werden nicht nötig sein, da neue Erkenntnisse aus der Neurosoziologie zeigen werden, dass durch Gaming ausgelöste Veränderungen in der Gehirnstruktur positive Auswirkungen haben. Schneller Reaktionsgeschwindigkeiten, bessere Koordination und eine Stärkung des Gedächtnisses sind nur einige wenige Beispiele an Eigenschaften, die von Gaming profitieren.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/gaming2050</guid></item><item><title>Telekom Datennutzung Widget für iOS 14</title><link>https://www.marc-julian.com/blog/posts/telekom-widget</link><description>Vor etwa 4 Monaten habe ich das Telekom Widget veröffentlicht, das aktuelle Informationen über die Nutzung der mobilen Daten anzeigt. Das Widget läuft über die kostenlose App **[Scriptable](https://apps.apple.com/de/app/scriptable/id1405459188)** und kann problemlos auf allen Apple Geräten installiert werden. Wie das geht, erfährst du weiter unten. 
+
+Da ich nach kurzer Zeit sehr viel positive Rückmeldung erhalten habe, unteranderem mit einem Beitrag auf den Techniknews Seiten [mobiflip.de](https://www.mobiflip.de/shortnews/ios-14-widget-telekom-datenverbrauch/) und [itopnews.de](https://www.itopnews.de/2020/10/ios-14-neues-besseres-widget-fuer-telekom-und-vodafone-datenverbrauch/), gibt es ab sofort diesen kurzen Post für alle, die das Widget noch nicht kennen.
+
+![Telekom Datennutzung Widget für iOS 14](/images/tdu_overview.jpg)
+
+
+
+### Was zeigt das Widget an?
+
++ aktuell verfügbares Datenvolumen
++ bereits verbrauchtes Datenvolumen mit entsprechender Färbung (grün, gelb, orange, rot) je nachdem wie viel bereits verbraucht wurde (+ Prozentanzeige)
++ Datum, bis zu dem das aktuelle Datenvolumen noch verfügbar ist (+ Anzahl Tage und Studen bis zu diesem Datum)
++ "Daten Becher", der den aktuellen Stand des Datenverbrauchs anhand der Füllhöhe anzeigt
++ angepasstest Design für mittlere und kleine Widgets
+
+
+
+### Was kann es noch?
+
++ Widget öffnet bei Berührung automatisch die Telekom Website um noch mehr Infos zur Datennutzung anzuzeigen
++ automatische Synchronisation über iCloud (Datenvolumen kann auch an anderen iCloud Geräten abgelesen werden)
++ (aber auch lokale Speicherung der Daten ist möglich)
+
+
+### Wie kann ich das Widget installieren?
+
+Alle Infos zur Installation findest du auf [GitHub](https://github.com/marcjulianschwarz/telekom-data-usage-widget). 
+
+### Gibts noch mehr?
+
+Klar, in meinem **[scriptable-widgets](https://github.com/marcjulianschwarz/scriptable-widgets)** Ordner auf GitHub findest du noch vier weitere Widgets.
+
+### Fragen?
+
+Gerne beantworte ich alle Fragen und freue mich über Feedback, Anregungen und Ideen, die zur Verbesserung des Widgets beitragen können. Meine Kontaktmöglichkeiten:
+
++ LinkedIn [Marc Julian Schwarz](https://www.linkedin.com/in/marcjulian)
++ Email/Website [marc-julian.de](https://www.marc-julian.de/)</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/telekom-widget</guid></item><item><title>Text Generation using Markov Chains</title><link>https://www.marc-julian.com/blog/posts/textgenmarkov</link><description>Let's create a simple text generation model using Markov chains. You can play with [this demo](https://marcjulianschwarz-markov-chain-text-genera-generate-text-m4bkd9.streamlitapp.com) to see what we're trying to build today.
+
+## What is a Markov Chain?
+
+A basic Markov chain is made up of three main parts 
+- a state space,
+- a transition matrix
+- and an initial distribution
+
+We will go through the example of **Weather Forecast for the next X days** to get a better understanding of the different parts.
+
+For a state space we could think of the following states:
+- Rain 🌧️
+- Sun ☀️
+- Snow ❄️
+
+&gt; Of course, to model the real weather we might want to increase the size of the state space by a lot.
+
+Now, we can model the weather by providing different probabilities to get from one state to another.
+
+The probabilities (also known as **transition matrix**) could for example be 
+- 0.2 for 🌧️  → ☀️ 
+- 0.3 for 🌧️ → ❄️
+- 0.5 for 🌧️ → 🌧️
+- 0.3 for ❄️ → 🌧️
+- 0.1 for ❄️ → ☀️
+- 0.6 for ❄️ → ❄️
+- 0.1 for ☀️ → ❄️
+- 0.2 for ☀️ → 🌧️
+- 0.7 for ☀️ → ☀️
+
+Now let us do a 5 day weather forecast and on day one the sun is shining (this first state is also known as the **Initial Distribution**). We have to sample from our state space with the probabilities from above to determine the next state for a given current state.
+
+**Day 1**
+- Current State: ☀️
+- Sample State: ☀️
+
+**Day 2**
+- Current State: ☀️
+- Sample State: ☀️
+
+**Day 3**
+- Current State: ☀️
+- Sample State: 🌧️
+
+**Day 4**
+- Current State: 🌧️
+- Sample  State: 🌧️
+
+**Day 5**
+- Current State: 🌧️
+- Sample State: ❄️
+
+So, the weather forecast will look like this:
+
+☀️ → ☀️ → 🌧️ → 🌧️ → ❄️ → ...
+
+
+## Text Generation with Markov Chains 
+
+We can apply the same concept to words of a given text. Each unique word represents a single state. A sentence is just a sequence of states that have been sampled from a state space. 
+
+1. Create a state space
+2. Compute probabilities for the transition matrix
+3. Sample from the state space with the transition matrix
+
+### 1. Create a State Space 
+
+We will create the state space from a given source text. 
+
+To do this, we read in the text as a string and split the text into individual words, often called **tokens**. Then we make sure that we have unique states by creating a set which is often called the **vocab**.
+
+```python
+with open("source_text.txt", "r") as f:
+	source_text = f.read()
+
+# Split the text into all tokens (words)
+tokens = source_text.split(" ")
+
+# This will make sure that we only have unique states
+states = list(set(tokens))
+```
+
+### 2. Calculate Probabilites (Transition Matrix)
+
+The transition matrix contains all possibilities of a state i being followed by a state j. So we create a matrix with `len(states)` rows and `len(states)` columns:
+
+```python
+transition_matrix = np.zeroes((len(states), len(states)))
+```
+
+First, we count the number of occurrences for each state and each state transition (i.e. two words following each other).
+
+```python
+state_transition_counts = {}
+state_counts = {}
+
+for i, state in enumerate(states):
+	if i &lt; len(states) - 1:
+		# Get the transition from current to next state
+		state_transition = (state, states[i + 1])
+
+		state_transition_counts[from_to] = state_transition_counts.get(state_transition, 0) + 1
+		state_counts[state] = state_counts.get(state, 0) + 1
+```
+
+Then, for each state transition, we calculate its relative frequency and store this probability in the transition matrix at an index that we get by encoding each state transition with two integers (the two states index in the vocab list). 
+
+```python
+for state_transition, count in state_transition_counts.items():
+	from_state, to_state = state_transition
+	
+	# Relative Frequency 
+	probability = count / state_counts[from_state]
+	
+	matrix_row_index = states.index(from_state)
+	matrix_col_index = states.index(to_state)
+	
+	transition_matrix[matrix_row_index, matrix_col_index] = probability
+```
+
+This is how a transition matrix could look like if you color all non-zero entries.
+![Scatter Plot of a Transition Matrix](/images/transition_matrix.jpg)
+
+### 3. Sample from the Transition Matrix 
+
+Now, we are ready to sample words from the transition matrix. As we saw above, we need a *current* state to begin generating more states. 
+A more sophisticated way than having a fixed first state is to provide an **initial distribution** that contains probabilities for each word to come first.
+
+The initial distribution is a vector of length `len(states)`. With it we can force certain words to be more likely to start the Markov chain. In an extreme case we might want the generated text to start with a certain word (e.g.: *"The"*). So we look for the index of *"The"* in our states and set that index to 1 in the initial distribution vector and all other indices to 0. 
+
+```python
+initial_distribution = np.zeroes((len(states))
+initial_distribution[states.index("The")] = 1
+```
+
+We could also use a list of possible sentence beginnings, all of which should all start a sentence with equal probability.
+
+```python
+initial_distribution = np.zeroes((len(states))
+
+sentence_beginnings = ["The", "This", "I", "You", "We", "That"]
+
+for sentence_beginning in sentence_beginnings:
+								 
+	initial_distribution[states.index(sentence_beginning)] = 1 / len(sentence_beginnings)
+```
+
+To generate a text, we sample words from the list of states with a probability determined by the initial distribution and the transition matrix until we reach a maximum text length. If there is no initial distribution, we just randomly choose a starting word. 
+
+```python 
+def generate_text(tokens: List[str], length: int, P_matrix: np.ndarray, P_init: np.ndarray=None) -&gt; str:
+
+	text = []
+
+	if P_init is not None:
+		current_token = np.random.choice(tokens, p=P_init)
+	else:
+		current_token = np.random.choice(tokens)
+
+	text.append(current_token)
+
+	for i in range(length):
+
+		current_token = np.random.choice(tokens, p=P_matrix[tokens.index(current_token)])
+		text.append(current_token)
+
+	return " ".join(text)
+```
+
+
+## Try it 
+
+Now have fun generating texts. Be sure to try different source texts and see how that affects the quality of the generated text. 
+
+```python
+generate_text(states, 100, transition_matrix)
+```
+
+You can also try out the [text generation web app](https://marcjulianschwarz-markov-chain-text-genera-generate-text-m4bkd9.streamlitapp.com/) I built and take a look at the [GitHub repo](https://github.com/marcjulianschwarz/markov-chain-text-generation) which contains all of the source code.
+
+
+
+## Examples 
+
+Some German examples.
+
+```
+Winchester, Spring Valley, das Anstauen des Colorado River und teuer, um diese Gärten der Wasserknappheit &gt; Wir sind die Bevölkerung muss als in Hotelzimmern von Las Vegas, der Stadt, näher betrachtet werden mit etwa vier Prozent aus dem Haus kein wertvoller Baugrund verwendet, welches bis zu minimieren, muss das Licht auf die Wiederverwendung von Las Vegas. Um die Sicherung der Wasserversorgung
+```
+
+```
+Glücksspielmetropole der Hotels können selbst schon durch diesen neuen wassersparenden Technologien wie Kakteen in der größte Bereich der vielen exotischen Pflanzen und hat sich als in sonnenbetriebene Kraftwerke investieren. Besonders die Zukunft der Bau des Wassers ist der Lebensraum geraubt. Auch die Uhr mit Trockenzeiten in keinster Weise optimal für die Behörde sogar ganz gestoppt werden. Ein bekannter botanischer Garten, ist 
+```
+
+```
+individuellen Leistungsstand an die Höhe in Extremsportarten in den Rest des Selbstbewusstseins und unabhängig an positiven Gefühle, die er sich mit ihr umzugehen und hilft uns vor einem keine allgemeine Definition für sich relativ einfach nur das eigene Wohlempfinden zu gefährden, lässt sich lohnt dieses Risiko verbunden. Durch die Angst. Die Angst die Bremsen nicht vorhanden. 5 Fazit vorgestellt, in Hunderten
+```</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/textgenmarkov</guid></item><item><title>Obsidian for Raycast - Now in New Hands</title><link>https://www.marc-julian.com/blog/posts/obsraycastnew</link><description>As of 15th May 2023, I will no longer be an active developer for the [Obsidian Raycast extension](https://www.raycast.com/KevinBatdorf/obsidian) due to the fact that I want to invest even more time into Data Science related topics. 
+
+I want to thank all of the **20,000** users and especially [Kevin Batdorf](https://github.com/KevinBatdorf/) for his effort in taking over the extension and further maintaining it to keep it alive for the community.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/obsraycastnew</guid></item><item><title>Better File Link plugin for Obsidian</title><link>https://www.marc-julian.com/blog/posts/betterfilelink</link><description># Better File Link
+
+I created the *Better File Link* plugin for the note taking app [Obsidian](https://obsidian.md) to make local file links more accessible. It features an interface to select files right from within Obsidian. No need to open a new Finder/File Explorer window to manually drag and drop files to your note.
+
+You can find it in the official community plugins list right in [Obsidian](https://obsidian.md) or on [GitHub](https://github.com/marcjulianschwarz/obsidian-file-link).
+
+## Other features and settings to improve file links:
++ custom prefix shown before every file link when adding multiple files
++ toggle visibility of file endings
++ decide whether the file or the folder containing the selected file should be linked
++ choose to embed files in the note instead of only linking it
+
+## These file types are supported for embedding:
++ Markdown: **md**
++ Images: **png**, **jpg**, **jpeg**, **gif**, **bmp**, **svg**
++ Audio: **mp3**, **webm**, **wav**, **m4a**, **ogg**, **3gp**, **flac**
++ Video: **mp4**, **webm**, **ogv**
++ PDF: **pdf**</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/betterfilelink</guid></item><item><title>How to create simple iOS widgets using Scriptable and JavaScript.</title><link>https://www.marc-julian.com/blog/posts/codescriptablewidgets</link><description>## An introduction on how to create a simple widget for iOS
+
+You will learn how to create simple web requests, build a good-looking widget and share it with others.
+
+Usually, an iOS widget loads some sort of data from an API, a file or the web and displays it on your home-screen. Within the Scriptable community, people agreed on a basic structure for the code.
+
+It consists of these two methods:
+
++ getData()
++ createWidget(data)
+
+In the following three steps I will show you how to implement them. 
+
+### 1. Getting data.
+A simple web request can be used to load the data. In this case, a JSON file. Notice that the getData(url) method needs the async keyword in front of it because it uses await in its body.
+
+```
+const url = "https://www.github.com/marcjulianschwarz/code/sample.json";
+
+async function getData(url){
+	let request = new Request(url);
+	data = await request.loadJSON();
+	return data;
+}
+
+function processData(data){
+	// Process your data here
+	// ...
+	return processedData;
+}
+```
+
+### 2. Processing data.
+The processData() function can be used to further process the data to your needs. 
+
+
+### 3. Build the widget.
+
+Now it’s time to build the actual widget. Right now Scriptable has so called ListWidgets. After you created a ListWidget() object, you can add text and other media to it.
+In this example the widget will display the text stored in data.sample.
+
+```
+function createWidget(data){
+	var widget = new ListWidget();
+	
+	var text = widget.addText(data.sample);
+	text.textColor = Color.dynamic(Color.black, Color.white);
+	text.font = Font.regularRoundedSystemFont(13);
+
+	widget.backgroundColor = Color.dynamic(Color.white, Color.black);
+
+	return widget;
+}
+```
+
+In the last step, all functions will be called like this:
+
+```
+let data = await getData(url);
+let processedData = processData(data);
+
+let widget = await createWidget(processedData);
+
+Script.setWidget(widget);
+Script.complete();
+```
+
+### 4. Share
+
+Finally, you probably want to share your widget with others.
+To easily achieve this, I would recommend uploading it to GitHub.
+Add a good README file that explains what your widget is doing and how to install it.
+
+
+### 5. Questions?
+If you have any questions or need help, you can always contact me:
+
++ Website: [marc-julian.de](https://www.marc-julian.de/contact.html)
++ LinkedIn [@marcjulianschwarz](https://www.linkedin.com/in/marcjulianschwarz)
+
+You can also check out the Scriptable documentation which is excellent.
+There is also a nice [Scriptable discord server]() which you can visit to share your creations or get help.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/codescriptablewidgets</guid></item><item><title>Ghostty - My Favourite Terminal Emulator</title><link>https://www.marc-julian.com/blog/posts/ghostty</link><description>Recently, I stumbled upon [Ghostty](https://ghostty.org/) a nice looking open source terminal emulator. It feels very fast, comparable to native terminals. I have been using it for the past few weeks in my macOS setup and found it to come quite close to the macOS `Terminal.app` experience.
+
+
+What I enjoy most about Ghostty is its easy configuration. You can open and edit the config file with the keyboard shortcut `cmd + ,` and reload it with `shift + cmd + ,`. These are the settings I am using right now:
+
+```
+background-opacity=0.9
+background-blur-radius=30
+
+font-size = 18
+theme = GitHub Dark
+background = #28394a
+foreground = #fafafb
+palette = 0=#1d1f21
+palette = 1=#c5474e
+palette = 2=#68cd66
+palette = 3=#d4ac3a
+palette = 4=#4386f6
+palette = 5=#d856a6
+palette = 6=#6ae1e4
+palette = 7=#feffff
+palette = 8=#686767
+palette = 9=#c6474e
+palette = 10=#9ce5a3
+palette = 11=#d3ac3a
+palette = 12=#4386f6
+palette = 13=#d856a6
+palette = 14=#6ae1e4
+palette = 15=#feffff
+
+window-padding-x = 15
+window-padding-y = 10
+
+keybind = option+super+left=previous_tab
+keybind = option+super+right=next_tab
+
+working-directory = home
+window-inherit-working-directory = true
+```
+
+&gt; Btw, there is also this beautifully made open source [Ghostty Config Generator](https://ghostty.zerebos.com/).</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/ghostty</guid></item><item><title>Gurobi - Solving Mixed Integer Problems with Python</title><link>https://www.marc-julian.com/blog/posts/gurobi</link><description>Solving a Mixed Integer Programming (MIP) Problem with Gurobi requires the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/) and the Python package [GurobiPy](https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-) to be installed on your system.
+
+The GurobiPy package can be installed with pip or conda:
+
+```bash
+python -m pip install gurobipy
+```
+
+```bash
+conda install -c gurobi gurobi
+```
+
+## Importing package 
+
+When installed, gurobipy can be imported like this:
+
+```python
+import gurobipy as gp
+from gurobipy import GRB
+```
+
+## Initialize Model 
+
+The next step is to initialize a Gurobi model. For this example problem, setting a constant with the name capacitated to `False` will be necessary too. This variable can be changed depending on whether you want to have production capacity constraints (LS-C) or not (LS-U).
+
+```python
+m = gp.Model("ls")
+
+capacitated = False
+```
+
+## Constants 
+
+The situation for the example problem is the following:
+
+A production facility wants to make a plan for the next 8 months. They want to know exactly how many products have to be produced each month to fulfill the demand in that month and reduce the overall costs which consist of
+
+- Production costs for one product: 100€ 
+- Preparing the machines at the beginning of a month (only if the machines are being used in that month):  5000€
+- Storing one product for a month:  5€
+
+These are all constants that won't change during the optimization of the model. That's why they don't have to be added to the model.
+
+```python
+# Time (e.g. months)
+n = 8
+t = range(0, n)
+  
+# Costs for production of one product for each month
+p = [100 for i in t]
+
+# Costs for storing a product for each month
+h = [5 for i in t]  
+
+# Costs for armoring the machines for each month (has to be done at most once for each month)
+q = [5000 for i in t]
+
+# Demand for products for each month
+d = [400, 400, 800, 800, 1200, 1200, 1200, 1200]
+```
+
+## Add Variables
+
+To describe the objective function and constraints of the model, variables with specified types have to be added to the model.
+
+The number of products being produced each month (`x`) will have to be an integer variable as the facility can't produce fractions of a product. The same constraint holds for the storage of products (`s`) where only finished products can be stored.
+The storage amount will have one extra entry in comparison to the other variables as there will be an initial stock from the month before.
+
+The variable `y` is binary as it controls whether the machines have to be prepared (1) or not (0).
+
+The only difference between the Uncapacitated and Capacitated Lot-Sizing problem lies in the definition of the capacity constraining variable `M`. 
+For the uncapacitated case, the variable will be unbounded and will therefore always be big enough to produce any amount of products. In the capacitated case it will consist of a list of capacities.
+In the code example below, the capacities are selected in a way to minimize the preparation costs of the machines.
+
+```python
+# Production Amount for each month
+x = m.addVars(n, name="x", vtype=GRB.INTEGER)
+
+# Storage Amount for each month
+s = m.addVars(n + 1, name="s", vtype=GRB.INTEGER)
+
+# Production Preparation necessary for each month (0 or 1)
+y = m.addVars(n, name="y", vtype=GRB.BINARY)
+
+# Production Capacity for each month (in this case unbounded -&gt; LS-U)
+if capacitated:
+	M = [7000, 0, 0, 0, 0, 0, 0, 0]
+else:
+	M = m.addVars(n, name="M", vtype=GRB.INTEGER)
+```
+
+## Objective Function
+
+As described above, the facility wants to minimize the overall costs. They consist of the sum of costs for producing products, preparing machines, and storing products.
+Thus the objective function has to look like this:
+
+```python
+m.setObjective(gp.quicksum(p[i] * x[i] + q[i] * y[i] + h[i] * s[i+1] for i in t), GRB.MINIMIZE)
+```
+
+## (Linear) Constraints
+
+Last but not least all constraints of the model have to be defined.
+
+The first two constraints make sure that the demand will be fulfilled and that the excess will be stored for the next month.
+
+Constraints three and four will control the initial and final stock.
+
+Constraint five adds capacity constraints to the model. As stated before, `M` will either be unbounded or have specific capacity restrictions.
+
+The last three positivity constraints make sure that no negative amounts of products can be produced or stored.
+
+```python
+# Stored products from the previous month plus the number of products produced in the current
+# month must fulfill the demand while the rest of the products must be stored for the next month
+m.addConstrs((s[i-1] + x[i-1] == d[i-1] + s[i] for i in range(1, n+1)), "c1")
+m.addConstr((s[0] + x[0] == d[0] + s[1]), "c2")
+
+# The number of products stored in the first month must be equal to 200 (Initial stock)
+m.addConstr(s[0] == 200, "c3")
+
+# The number of products stored in the last month must be equal to 0 (Final stock)
+m.addConstr(s[n] == 0, "c4")
+
+# If products are being produced in the current month the machines must be prepared
+m.addConstrs((x[i] &lt;= M[i]*y[i] for i in t), "c5")
+
+# There cant be a negative number of products stored in the warehouse or produced
+m.addConstrs((x[i] &gt;= 0 for i in t), "c6")
+m.addConstrs((s[i] &gt;= 0 for i in t), "c7")
+m.addConstrs((M[i] &gt;= 0 for i in t), "c8");
+```
+
+
+## Mathematical Model 
+
+The resulting mathematical model would look like this:
+
+![Mathematical LP model](/images/LS_U_Problem_Model.svg)
+
+## Optimizing 
+
+The function call
+
+```python
+m.optimize()
+```
+
+does everything we need to solve this optimization problem.
+
+Gurobi will use the Branch-and-Bound algorithm as the model only consists of linear constraints and a linear objective function, with (mixed) integer variables (IP).
+
+## Evaluation 
+
+These are the results for the given problem:     
+
+```
+Gurobi Optimizer version 9.5.2 build v9.5.2rc0 (mac64[rosetta2])
+Thread count: 10 physical cores, 10 logical processors, using up to 10 threads
+Optimize a model with 35 rows, 33 columns and 53 nonzeros
+Model fingerprint: 0xa7ef1cf7
+Model has 8 quadratic constraints
+Variable types: 0 continuous, 33 integer (8 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+00]
+  QMatrix range    [1e+00, 1e+00]
+  QLMatrix range   [1e+00, 1e+00]
+  Objective range  [5e+00, 5e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [2e+02, 1e+03]
+Presolve removed 29 rows and 4 columns
+Presolve time: 0.00s
+Presolved: 30 rows, 53 columns, 74 nonzeros
+Presolved model has 16 SOS constraint(s)
+Variable types: 0 continuous, 53 integer (16 binary)
+Found heuristic solution: objective 859000.00000
+Found heuristic solution: objective 830000.00000
+Found heuristic solution: objective 822000.00000
+
+Root relaxation: objective 7.170501e+05, 13 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 717050.070    0    6 822000.000 717050.070  12.8%     -    0s
+H    0     0                    737000.00000 717050.070  2.71%     -    0s
+H    0     0                    736000.00000 727633.403  1.14%     -    0s
+     0     0 736000.000    0    5 736000.000 736000.000  0.00%     -    0s
+
+Cutting planes:
+  Implied bound: 7
+  Flow cover: 1
+
+Explored 1 nodes (20 simplex iterations) in 0.01 seconds (0.00 work units)
+Thread count was 10 (of 10 available processors)
+
+Solution count 5: 736000 737000 822000 ... 859000
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 7.360000000000e+05, best bound 7.360000000000e+05, gap 0.0000%
+```
+
+As one can see the optimal solution is equal to 736,000€ of overall costs.
+
+Printing out the variables reveals how many products have to be produced in each month to achieve these minimal costs.
+
+```python
+for v in m.getVars():
+
+	if v.varName.startswith("x"):
+		print("Produce {} products in month {}".format(v.x, v.varName[1:]))
+	
+print("--------------------------------")
+print("Total cost: {}".format(m.objVal))
+```
+
+Output:
+
+```
+Produce 600.0 products in month [0] 
+Produce 0.0 products in month [1] 
+Produce 1600.0 products in month [2] 
+Produce 0.0 products in month [3] 
+Produce 1200.0 products in month [4] 
+Produce 1200.0 products in month [5] 
+Produce 1200.0 products in month [6] 
+Produce 1200.0 products in month [7] 
+-------------------------------- 
+Total cost: 736000.0
+```</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/gurobi</guid></item><item><title>Command Line - Aliases and Functions</title><link>https://www.marc-julian.com/blog/posts/tilterminalaliases</link><description>&gt; **Edit** (17.12.2024): After more than a year of using Oh My Zsh and many custom aliases, my most used and favourite aliases are `go &lt;marker-name&gt;` (for going to a marked directory) and `b` (short for back + performing `cd ..`).  Oh My Zsh is awesome!
+
+&gt; **Edit** (20.07.2023): The open source framework [ohmyzsh](https://github.com/ohmyzsh/ohmyzsh)  makes it even easier to manage complex zsh configurations and there are tons of plugins that add useful aliases. 
+
+
+Today I learned ([TIL](https://www.marc-julian.de/tags/TIL.html)) that you can define aliases and functions inside of most command line applications like bash or zsh shells. 
+For zsh, the config file `.zshrc` is located directly in the user folder. You can edit it in any text editer (on some systems, you might need to open it as an admin or run your preferred command with `sudo`).
+
+When you are done, run the following command to execute the file and reload all defined aliases and functions.
+
+```shell
+source .zshrc
+```
+
+Here are some of *my favorites*:
+
+## Conda 
+
+```shell
+# Run to get bash autocomplete functions in zsh shell 
+autoload bashcompinit
+bashcompinit
+autoload -Uz compinit
+compinit
+
+# List all conda environments
+function envs() {
+	conda info --env
+}
+
+# Activate environment with autocompletion
+function aenv(){
+    conda activate $1
+}
+
+function extract_env_names() {
+    # Extracts the names of the environments from the output of `conda info --env`
+    conda info --env | awk -F' ' '{print $1}' | tail -n +3
+}
+
+function _aenv() {
+    # Get the current word being completed
+    local cur=${COMP_WORDS[COMP_CWORD]}
+
+    # Generate possible matches and store them in the COMPREPLY variable
+    # -W expects a list of possible matches
+    COMPREPLY=($(compgen -W "$(extract_env_names)" -- $cur))
+}
+
+# Register the completion function to be called for the aenv command
+complete -F _aenv aenv
+
+function denv(){
+    conda deactivate
+}
+
+# Create a conda environment with a name and python version
+function cenv(){
+    conda create -n $1 python=$2
+}
+
+function renv(){
+    conda remove -n $1 --all
+}
+
+# Create a python kernel from a conda environment
+function envtokernel(){
+    python -m ipykernel install --user --name $1 --display-name "Python ($1)"
+}
+
+# Create a conda environment with some sane default packages that I use a lot in data science projects 
+function defaultenv(){
+    cenv $1 $2
+    conda activate $1
+    pip install pandas numpy matplotlib seaborn scikit-learn notebook
+    envtokernel $1
+}
+```
+
+## Mark paths to directly jump to them from anywhere 
+
+Inspired by the `mark` and `cdd` function in this [blog post](https://chris-said.io/2014/10/16/jumping-quickly-between-deep-directories/) by Chris Said, I added two more additional functions `opend` and `coded` to quickly open a folder in Finder or VSCode.
+
+```shell
+# Run to get bash autocomplete functions in zsh shell 
+autoload bashcompinit
+bashcompinit
+autoload -Uz compinit
+compinit
+
+export MARKPATH="/Users/username/marks"
+
+# jump to a marked path
+function cdd() {
+    # change directory to the marked path, if it does not exist, ignore the error and print "No such mark: $1" instead
+    cd -P "$MARKPATH/$1" 2&gt;/dev/null || echo "No such mark: $1"
+}
+
+function opend() {
+    open "$MARKPATH/$1" 2&gt;/dev/null || echo "No such mark: $1"
+}
+
+function coded() {
+    code "$MARKPATH/$1" 2&gt;/dev/null || echo "No such mark: $1"
+}
+
+# mark a path for quick access
+function mark() {
+    # create a folder to store marks
+    mkdir -p "$MARKPATH"
+
+    # create a symlink in the mark folder to the current directory
+    ln -s "$(pwd)" "$MARKPATH/$1"
+}
+
+# delete a mark
+function unmark() {
+    # remove the symlink
+    rm -i "$MARKPATH/$1"
+}
+
+# list all marks
+function marks() {
+    # list all symlinks in the mark folder with some formatting magic to make it look nicer
+    \ls -l "$MARKPATH" | tail -n +2 | sed 's/  / /g' | cut -d' ' -f9- | awk -F ' -&gt; ' '{printf "%-10s -&gt; %s\n", $1, $2}'
+}
+
+# autocomplete marks
+function _cdd() {
+    # get the current word being completed
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    # generate possible matches and store them in the COMPREPLY variable
+    COMPREPLY=($(compgen -W "$(ls $MARKPATH)" -- $cur))
+}
+
+# register the completion function to be called for the cdd command
+complete -F _cdd cdd
+complete -F _cdd opend
+complete -F _cdd coded
+```
+
+## Python 
+
+```shell
+function py(){
+    python $1
+}
+
+function pyv(){
+    python --version
+}
+```
+
+
+## Streamlit 
+
+```shell
+function strun(){
+    streamlit run $1
+}
+```
+
+## Jupyter 
+
+```shell
+alias jnb="jupyter notebook"
+```
+
+## Git 
+
+```shell
+function gitc(){
+    git commit -m "$1"
+}
+
+alias gits="git status"
+alias gitp="git push"
+alias gitpl="git pull"
+alias gitb="git branch"
+alias gitl="git log"
+alias gitd="git diff"
+```
+
+## NPM 
+
+```shell
+alias ninit="npm init -y"
+alias nstart="npm start"
+alias nbuild="npm run build"
+alias ntest="npm run test"
+alias ninstall="npm install"
+```
+
+## ImageMagick
+
+```shell
+# d for do mogrify 
+# I use this to automatically convert images for this blog 
+function dmog(){
+    mogrify -format jpg -geometry 1300x -quality $1 *.png
+}
+```</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/tilterminalaliases</guid></item><item><title>Hackbay 2023 - A hackathon for everyone</title><link>https://www.marc-julian.com/blog/posts/hackbay</link><description>Last month, I attended the two-day [Hackbay 2023 Hackathon](https://www.hackbay.de/) and, together with [Maximilian Kasper](https://www.linkedin.com/in/maximilian-kasper-693648174/), we worked on DATEV's challenge called *"Disrupting DATEV's HR Process with AI"*.
+
+![Hackathon](/images/hackbay.jpg)
+
+## Our Prototype 
+
+On day one, we started with some brainstorming to generate good ideas that could make the HR process as easy and frictionless as possible for both the applicant and the company. In the end, we decided to concentrate on the part of the process where applicants search for job opportunities and companies try to find fitting candidates for their job offers.
+
+We wanted to create a job-offer platform that uses new advances in Natural Language Processing (NLP) to automatically suggest fitting jobs based on **raw resume text** files. Applicants should be able to upload their resume and instantly see jobs that fit their academic and professional career, their skills, languages, and interests. Also, the applicant should be able to weigh their experiences and interests in a way such that only relevant jobs will be shown.
+
+The platform removes the need for creating a detailed profile and relies only on the applicant's resume. This way, no extra work is necessary.
+
+![Coding at the hackathon](/images/hackbay_mac.jpg)
+
+
+We decided to use [Streamlit](https://streamlit.io/) as the frontend framework to quickly create a user interface that was fast to iterate on. 
+
+For the recommendation system, we used the following approach:
+1. Create an embedding for the resume text 
+	1. Use a `BertTokenizer` to encode the text 
+	2. Use a `BertModel` to embed the encoded tokens 
+2. Create an embedding for every job posting 
+	1. Use a `BertTokenizer` to encode the text 
+	2. Use a `BertModel` to embed the encoded tokens 
+	3. Use an `AnnoyIndex` to store the embedding vectors for easy and fast retrieval via their similarity  ([spotify/annoy](https://github.com/spotify/annoy))
+3. Query the index with the resume embedding to get the **k** most similar job postings 
+4. Filter and sort similar job postings based on the user's selected weights and hard constraints (e.g. location, language, etc.)
+
+So, in the end, an applicant was able to upload their raw resume to the platform, which would automatically find the most fitting job postings and output them as a sorted list. The applicant could then easily apply to one or more of the listed jobs. 
+
+Of course, this was only a prototype, so there were still a lot of issues that one would have to tackle to actually bring the platform into production.
+
+For example, at the moment, companies and/or applicants could easily *hack* the recommender by writing their job postings and resumes in a way such that they are semantically very similar. This could be achieved by long keyword lists that outweigh all other factors.
+
+## Conclusion 
+
+In summary, we developed a prototype job-offer platform that utilizes NLP to suggest fitting job opportunities based solely on a resume text file. The platform removes the need for an applicant to create a detailed profile, simplifying the hiring process for both employers and applicants. 
+
+Overall, attending the Hackbay 2023 Hackathon was a valuable experience that allowed us to challenge ourselves to develop a ML solution within a short timeframe.
+
+Additionally, you can check out the aftermovie for the 2023 Hackbay Hackathon to get a glimpse of the event's highlights:
+
+&lt;iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/IyNvbw1OFq4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen&gt;&lt;/iframe&gt;</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/hackbay</guid></item><item><title>Podcast Note plugin for Obsidian</title><link>https://www.marc-julian.com/blog/posts/podcastnote</link><description># Podcast Note
+
+My plugin *Podcast Note* for the note taking app [Obsidian](https://obsidian.md) is a great way to write notes on podcasts. With a single URL you will get the title, image and description of your podcast.
+Using a custom template you can style the note to your likings.
+More settings and features will be explained further down.
+
+You can find it in the official community plugins list right in [Obsidian](https://obsidian.md) or on [GitHub](https://github.com/marcjulianschwarz/obsidian-podcast-note).
+
+## How to use it
+You can add new podcast notes by opening the command pallete (cmd + p) and searching for "Podcast Note" commands:
+### Add Podcast Note
+A prompt will open where you can enter the URL for the podcast you want to take notes on. 
+Of course you can also specify a keyboard shortcut to trigger the prompt.
+
+### Add Podcast Notes from selection
+This command will only be visible in editor mode. 
+Make sure you have text selected which contains markdown links to podcast episodes. Running the command will create new podcast notes for every url in the selected text. It will also automatically link these notes.
+
+### Supported Podcast services
+So far these podcast services are supported:
++ Apple Podcast
++ Spotify Podcast
++ Google Podcast
++ Pocket Casts
++ Airr
++ Overcast
++ Castro
++ Castbox
+
+## Demo
+
+### Example Podcast Note:
+
+![Podcast Note example](https://user-images.githubusercontent.com/67844154/131222181-e9a52afa-fee2-4eff-83e1-f03deb633df3.png)
+
+## Settings
+### 1. Template
+Here you can specify how the metadata for your podcast notes looks like. 
+Use these three placeholders:
+
++ **{{Title}}** → title of your podcast
++ **{{ImageURL}}** → image url of your podcast
++ **{{Description}}** → short podcast description
++ **{{PodcastURL}}** → url to podcast
++ **{{Date}}** → date (format: Day-Month-Year)
++ **{{Timestamp}}** → current timestamp
+
+#### Example template:
+```
+---
+tags: [Podcast]
+date: {{Date}}
+---
+# {{Title}} 
+![]({{ImageURL}})
+## Description: 
+&gt; {{Description}}
+-&gt; [Podcast Link]({{PodcastURL}})
+
+## Notes:
+```
+
+### 2. Filename template
+Specify whether the podcast note will be inserted at your cursor or whether a new note will be added.
+You can also use a template for the filename.
+Placeholders:
++ **{{Title}}** → title of your podcast
++ **{{Timestamp}}** → timestamp (like zettelkasten id)
++ **{{Date}}** → date (format: Day-Month-Year)
+
+### 3. Folder
+Set the folder where new Podcast notes will be saved. The path is relative to your vault. For example **folder/podcast_folder** will become **path/to/vault/folder/podcastfolder**.
+
+### 4. Insert podcast note at cursor
+Specify whether you want to create a new note or whether you want the metadata to be inserted at your cursor.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/podcastnote</guid></item><item><title>Apple HomePad - The future of HomePod?</title><link>https://www.marc-julian.com/blog/posts/homepad</link><description>Only a few hours after the HomePod got officially discontinued, people on Twitter started discussing about future speaker products by Apple. Content creator and concept designer [@BenGeskin](https://twitter.com/bengeskin) posted a concept image of an *"Apple HomePad"*, a mix between iPad and HomePod.
+
+![Source: @BenGeskin on Twitter](/images/homepad.jpg)
+
+The image shows a screen embedded in a speaker displaying time, date, and weather. But these wouldn't be the only features for such a speaker. With iOS as operating system, the *HomePad* could act like a Streamdeck with shortcuts, a home app to control lights and other smart accessories or a music UI showing lyrics and buttons to control the music. 
+
+
+
+The current HomePod and HomePod Mini already run tvOS, so a switch to iOS seems possible. Apple already proved that they can use iOS in other screen-related products like the Touchbar on their MacBook Pro lineup. It shouldn't be too hard for them to implement it into a speaker too.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/homepad</guid></item><item><title>Serve Hugging Face Models in Ollama</title><link>https://www.marc-julian.com/blog/posts/huggingface-models-in-ollama</link><description>Ollama can serve many Hugging Face models locally. Concretely, you can run any [GGUF](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md) model from the Hugging Face Hub. Use [this GGUF filter](https://huggingface.co/models?library=gguf) on the Hugging Face website to get a list of models that are supported (currently about 121,000 models). From the model card, you can click "*Use this model*" to copy the ollama run command. For example:
+
+```
+ollama run hf.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF:Q4_K_M
+```
+
+The commands are usually structured like this:
+
+```
+ollama run hf.co/{username}/{repository}:{quantization-scheme}
+```
+
+If you leave out the `quantization-scheme` part, Hugging Face will choose either `Q4_K_M` when available and a reasonable version if not. See [this article on Hugging Face](https://huggingface.co/docs/hub/ollama) for more information.
+
+## TypeScript Ollama Client
+
+Given an Ollama server running on `OLLAMA_API_BASE_URL`, you can use the Ollama TypeScript client to do inference on any of those models like this:
+
+```ts
+import { Ollama } from 'ollama';
+
+const ollama = new Ollama({ host: OLLAMA_API_BASE_URL });
+
+// Example to do inference with an embedding model
+const output = await this.ollama.embed({
+      model: "hf.co/chris-code/multilingual-e5-large-Q8_0-GGUF:Q8_0",
+      input: "some text to be embedded",
+    });
+```</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/huggingface-models-in-ollama</guid></item><item><title>Obsidian Raycast Extension - Update 1.4 and 1.5</title><link>https://www.marc-julian.com/blog/posts/obsraycastupdate2</link><description>Since my last post version 1.4 and 1.5 for my [Obsidian Raycast Extension](https://www.raycast.com/marcjulian/obsidian) have been released. Here are all of the new features:
+
+## Daily Note command
+The new *Daily Note* command allows users to quickly open or create a daily note. Just select a vault, press enter and start typing.
+It uses the Advanced URI plugin for Obsidian which is required to run the command. 
+
+## Pinned Notes command 
+Use the *Pinned Notes* command to show a list of all of your pinned notes. You can use the same actions as with the *Search Note* command. This makes it easy to quickly open, edit or view an important note.
+
+## New actions and new look for Search Note command
+
+### Actions 
+With the *Append Selected Text to Note* action you are now able to quickly append selected text to a note. Use the keyboard shortcut `opt + s` to trigger it.
+
+You can now pin and unpin notes using the *Pin Note* and *Unpin Note* actions. Pinned notes will appear in the *Pinned Notes* command.
+
+### New Look
+Enabeling *Detail View* in preferences will show the content of a note on the right side.
+
+![Search Note](/images/search_note.jpg)
+
+
+## New Preferences
+### Append Prefix
+*Append Prefix* is a new preference that you can set so that text will be appended with a given prefix in front of it.
+This makes it really easy to maintain bullet or checkbox lists.
+
+### Open Note on Creation 
+If turned on this setting will open a note created with the *Create Note* command immediatly after creation.
+
+### Hide LaTeX
+You can now hide LaTeX from Quick Look, Detail View and all copy/paste commands.
+
+### Default Note Name 
+If the note name in the *Create Note* command is left empty, this default note name will be used.
+
+### Folder Actions 
+You can now provide a list of folders (paths) to the *Create Note* command. These folders will automatically create keyboard shortcuts (actions) to quickly create notes in a specific folder. This is especially helpful if you are using [Obsidians Templater Plugin](https://silentvoid13.github.io/Templater/introduction.html).
+
+## Store page update 
+
+The store page got a new look with images, category and version history.
+
+![Store Images](/images/store_images.jpg)
+![Store Changelog](/images/store_changelog.jpg)
+
+## Other 
+Commands with only one vault will now trigger immediatly without prior vault selection.
+
+## Feature Requests
+If you know of a feature that's still missing or want to contribute otherwise, make sure to visit the projects [GitHub repo](https://github.com/marcjulianschwarz/obsidian-raycast). With these two updates the entire codebase has been restructured which should make it a lot easier to contribute.</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/obsraycastupdate2</guid></item><item><title>Equinox - Create dynamic macOS wallpapers</title><link>https://www.marc-julian.com/blog/posts/dynamicwallpapers</link><description>Just found this amazing app called [Equinox](https://equinoxmac.com) which allows you to create your own dynamic wallpapers for macOS. It is [open source](https://github.com/rlxone/Equinox) and you can download it on the [Mac App Store](https://apps.apple.com/us/app/equinox-create-wallpaper/id1591510203).
+
+Opening the app will prompt you to select one of three types of dynamic wallpapers:
+- Solar 
+- Time 
+- Appearance 
+
+![Equinox App - Wallpaper Type Selecter](/images/equinox.jpg)
+
+## Appearance-based wallpapers 
+
+Appearance-based wallpapers use the current dark/light mode state to determine the look of the wallpaper.
+To create one you just have to drop in two images and specify which one should be shown in light or dark mode.
+
+![Equinox App - Appearance based editor](/images/appearance.jpg)
+
+## Solar Calculator 
+
+Equinox even features a solar calculator to create wallpapers that match the position of the sun at your exact location.
+Here you will need a few more images but the results are stunning. You might want to check out this [gallery of dynamic wallpapers](https://dynamicwallpaper.club/gallery) to get an idea of what they will look like.
+
+![Equinox App - Solar Calculator](/images/solarcalculator.jpg)</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/dynamicwallpapers</guid></item><item><title>Highlights from ML Prague Conference 2023</title><link>https://www.marc-julian.com/blog/posts/mlprague</link><description>Last week, I joined machine learning enthusiasts from around the world in Prague for Europe's biggest conference on ML and AI applications, [ML Prague 2023](https://mlprague.com/).
+
+![ML Prague Conference 2023 sign at the entrance](/images/mlprague_sign.jpg)
+
+The event featured a broad lineup of speakers, covering a wide range of topics - from the latest breakthroughs in natural language processing to cutting-edge computer vision applications. In this blog post, I want to write about some of the most interesting talks from the conference and highlight the key takeaways. So, without further ado, let's dive in and start with two topics from the area of image processing.
+
+## Image Processing 
+### 3D Pose Estimation in Sport 
+
+[Piotr Skalski](https://www.linkedin.com/in/piotr-skalski-36b5b4122/) from Roboflow showed us how he was able to reproduce parts of the Video Assistant Referee (VAR) system shown in the following clip.
+
+&lt;iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/WycjDx6giVE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen&gt;&lt;/iframe&gt;
+
+He used [YOLOv7](https://github.com/WongKinYiu/yolov7) and two cameras that record from different perspectives to track a skeleton of his body.
+
+When using this technique, there are some key points to consider: 
+-  Use **at least** two cameras with the same configuration 
+	- For best results, position them above the playing field to reduce player occlusions 
+	- For better results, use more than two cameras 
+-  Avoid or remove any lens distortion before processing the video recordings.
+
+Take a look at his [GitHub repository](https://github.com/SkalskiP/sport) to see the results.
+
+### Multi-Model Machine Learning based Industrial Vision Tool for Assembly Part Quality Control
+
+[Aimira Baitieva](https://www.linkedin.com/in/aimira-baitieva/?originalSubdomain=cz) from Valeo offered insights into anomaly detection in images using neural networks. 
+
+One interesting idea was to train a model that outputs embeddings for images, which represent their information well enough. You could then create a *"good"* embedding for normal parts (without anomalies) to compare against. If an embedded image has a dissimilarity above a certain threshold when compared with the good embedding, one can mark it as an anomaly.
+
+Their final **multi-model** approach, however, consisted of three steps: 
+1. Create a segmented anomaly map: 
+	1. Segment the image to get a segmentation map 
+	2. Use an anomaly detector to get an anomaly map 
+	3. Combine both maps
+2. Extract features from this map 
+3. Classify the image based on the features.
+
+![Image at Conference of multi-model approach](/images/mlprague_valeo.jpg)
+
+This turned out to work quite well and is currently in use.
+
+## Large Language Models 
+
+### LLM-driven Game Characters 
+
+[Marek Rosa](https://www.linkedin.com/in/marekrosa1/?originalSubdomain=cz) from GoodAI shared their progress in creating LLM-driven game characters. 
+
+In their AI Game, characters use a large language model to generate their thoughts, actions and speech. The player can interact with them via a chat interface and with normal in-game actions like exchanging objects. 
+
+&lt;iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/G7ZAPwji4i0?start=92" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen&gt;&lt;/iframe&gt;
+
+Every character has a long-term memory which has been implemented via a vector database. New thoughts and interactions are preprocessed and then saved into the database. 
+When needed, the database will be queried with respect to 
+- recency 
+- importance 
+- and relevance.
+
+The short-term memory is controlled with the current context of the language model.
+
+This combination of short and long-term memory lets agents learn continually by using it to plan actions based on past observations, experience, its current environment and thoughts. 
+
+Personally, I think that LLMs will completely redefine the role of NPCs (Non-Player Characters) in video games. Today, the player-controlled character is often the central figure in the game's story while other characters are less important.
+In the near future, the player will take on a more supporting role and the game does not have a clearly defined protagonist. The story will be open-ended and allows the players **and** NPCs to make choices that affect the outcome and direction of it. 
+More games will adopt a sandbox-style approach, similar to Minecraft, where there is no apparent goal or ending of the game. 
+
+Other interesting projects that try to use LLMs to create autonomous agents are 
+- [AutoGPT](https://github.com/Significant-Gravitas/Auto-GPT)
+- [Voyager Minecraft Agent](https://github.com/MineDojo/Voyager)
+
+## Conclusion 
+
+In conclusion, the ML Prague Conference 2023 was a fantastic opportunity for ML professionals to come together, learn about the latest trends and innovations in the field, and connect with others. I had a great time and am glad that I was able to be there. I hope you enjoyed this short recap of the conference. If you've been there too, let's connect on [LinkedIn](https://www.linkedin.com/in/marcjulian/) and have a chat about **your** favorite talks.
+
+![Prague City with evening sun](/images/mlprague_evening.jpg)</description><guid isPermaLink="false">https://www.marc-julian.com/blog/posts/mlprague</guid></item></channel></rss>

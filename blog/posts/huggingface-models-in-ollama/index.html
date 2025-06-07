@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/huggingface-models-in-ollama/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="Ollama can serve many Hugging Face models locally. Concretely, you can run any [GGUF](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md) model from the" />
+<meta name="keywords" content="EN,LLM,ML,TypeScript,2025" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="Serve Hugging Face Models in Ollama" />
+<meta name="og:description" content="Ollama can serve many Hugging Face models locally. Concretely, you can run any [GGUF](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md) model from the" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/huggingface-models-in-ollama/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Serve Hugging Face Models in Ollama</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Serve Hugging Face Models in Ollama</h1>
+                    <h2></h2>
+                    <p class="date">2025-05-31</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/llm/">
+    <div class="tag tag-post">LLM</div>
+</a>
+  <a href="/blog/tags/ml/">
+    <div class="tag tag-post">ML</div>
+</a>
+  <a href="/blog/tags/typescript/">
+    <div class="tag tag-post">TypeScript</div>
+</a>
+  <a href="/blog/tags/2025/">
+    <div class="tag tag-year">2025</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>Ollama can serve many Hugging Face models locally. Concretely, you can run any <a href="https://github.com/ggml-org/ggml/blob/master/docs/gguf.md" target="_blank">GGUF</a> model from the Hugging Face Hub. Use <a href="https://huggingface.co/models?library=gguf" target="_blank">this GGUF filter</a> on the Hugging Face website to get a list of models that are supported (currently about 121,000 models). From the model card, you can click &ldquo;<em>Use this model</em>&rdquo; to copy the ollama run command. For example:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">ollama run hf.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF:Q4_K_M
+</span></span></code></pre>
+<p>The commands are usually structured like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">ollama run hf.co/{username}/{repository}:{quantization-scheme}
+</span></span></code></pre>
+<p>If you leave out the <code>quantization-scheme</code> part, Hugging Face will choose either <code>Q4_K_M</code> when available and a reasonable version if not. See <a href="https://huggingface.co/docs/hub/ollama" target="_blank">this article on Hugging Face</a> for more information.</p>
+
+<h2 id="typescript-ollama-client">TypeScript Ollama Client</h2>
+
+<p>Given an Ollama server running on <code>OLLAMA_API_BASE_URL</code>, you can use the Ollama TypeScript client to do inference on any of those models like this:</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="kr">import</span> <span class="p">{</span> <span class="nx">Ollama</span> <span class="p">}</span> <span class="kr">from</span> <span class="s1">&#39;ollama&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">ollama</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ollama</span><span class="p">(</span><span class="p">{</span> <span class="nx">host</span>: <span class="kt">OLLAMA_API_BASE_URL</span> <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Example to do inference with an embedding model
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">output</span> <span class="o">=</span> <span class="k">await</span> <span class="k">this</span><span class="p">.</span><span class="nx">ollama</span><span class="p">.</span><span class="nx">embed</span><span class="p">(</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">model</span><span class="o">:</span> <span class="s2">&#34;hf.co/chris-code/multilingual-e5-large-Q8_0-GGUF:Q8_0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">input</span><span class="o">:</span> <span class="s2">&#34;some text to be embedded&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="p">)</span><span class="p">;</span>
+</span></span></code></pre></article>
+        </main>
+    </body>
+</html>
