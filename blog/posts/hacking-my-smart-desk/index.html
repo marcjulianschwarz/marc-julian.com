@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/hacking-my-smart-desk/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="## Project Overview
+
+The goal of this project is to control a height-adjustable desk from a Home Assistant button while still preserving the functionality of" />
+<meta name="keywords" content="EN,Python,SmartHome,Hardware,Raycast,2022" />
+<meta name="author" content="" />
+
+<meta property="og:title" content="ESP8266 Height-Adjustable Desk Control with Home Assistant Integration" />
+<meta name="og:description" content="## Project Overview
+
+The goal of this project is to control a height-adjustable desk from a Home Assistant button while still preserving the functionality of" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/hacking-my-smart-desk/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>ESP8266 Height-Adjustable Desk Control with Home Assistant Integration</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>ESP8266 Height-Adjustable Desk Control with Home Assistant Integration</h1>
+                    <h2></h2>
+                    <p class="date">2022-05-12</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/python/">
+    <div class="tag tag-post">Python</div>
+</a>
+  <a href="/blog/tags/smarthome/">
+    <div class="tag tag-post">SmartHome</div>
+</a>
+  <a href="/blog/tags/hardware/">
+    <div class="tag tag-post">Hardware</div>
+</a>
+  <a href="/blog/tags/raycast/">
+    <div class="tag tag-post">Raycast</div>
+</a>
+  <a href="/blog/tags/2022/">
+    <div class="tag tag-year">2022</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><h2 id="project-overview">Project Overview</h2>
+
+<p>The goal of this project is to control a height-adjustable desk from a Home Assistant button while still preserving the functionality of the manual button controls on the table itself.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>These are the exact tools, hardware, and software I used. However, you can exchange most components with other similar ones.</p>
+
+<h3 id="hardware">Hardware</h3>
+
+<ul>
+<li>NodeMCU Lua Lolin V3 Module ESP8266 ESP-12F WIFI Development Board with CH340</li>
+<li>At least 8 jumper wires</li>
+<li>One <em>2-Channel Relay Module 5V with Optocoupler Low-Level Trigger</em></li>
+<li>Three <em>WAGO 221 Terminal Block 3 Connectors</em></li>
+<li>USB-A to Micro-USB cable for powering the board and flashing code</li>
+</ul>
+
+<h3 id="tools">Tools</h3>
+
+<ul>
+<li>Scissors to cut the cable<br>
+</li>
+<li>Cable insulation stripping tool</li>
+</ul>
+
+<h3 id="software">Software</h3>
+
+<ul>
+<li><a href="https://docs.arduino.cc/software/ide/#ide-v2" target="_blank">Arduino IDE</a></li>
+<li>Running <a href="https://www.home-assistant.io/" target="_blank">Home Assistant</a> instance</li>
+</ul>
+
+<h2 id="safety-warnings">Safety Warnings</h2>
+
+<p>The instructions contain steps that permanently alter parts of the desk. If not followed correctly, they <strong>CAN damage</strong> the desk controller, engine, and other parts on or around the table. Make sure to remove any items on, around, and under the desk before performing the steps.</p>
+
+<p>The instructions are relatively safe to follow, as they only deal with low-voltage parts of the table. Nonetheless, be careful and do NOT make any changes to parts that run high voltages. Always check the components with a multimeter before working on them and unplug all cables.</p>
+
+<h2 id="step-by-step-guide">Step-by-Step Guide</h2>
+
+<h3 id="understanding-the-desk-controls">Understanding the Desk Controls</h3>
+
+<p>The desk controls are made up of three cables. The following figures show a schematic view of those cables. The colors are only for illustrative purposes and might be different for your specific desk.</p>
+
+<p>The green (left) cable connects the controller with the <code>Raise</code> button, and the blue (right) one connects with the <code>Lower</code> button. One black cable connects both buttons back to the table to form a closed loop that is only interrupted by the open buttons themselves. Pressing a button closes the respective circuit, letting the desk controller know to start the engine for raising or lowering the table.</p>
+
+<p><img src="/blog/media/desk-diag.jpg" alt="" /></p>
+
+<p>At this point, it is quite straightforward to intercept the button presses by directly connecting the green and blue wires with the orange wire, thereby creating a closed circuit before the button is even reached. The same connection can be made with the blue cable, lowering the table.</p>
+
+<h3 id="cut-the-cable">Cut the Cable</h3>
+
+<p>To get access to the individual cables, the cable running from the button controls to the desk has to be cut, and the insulation around it and the individual smaller cables has to be removed for about 1-2 cm.</p>
+
+<h4 id="automating-a-button-click">Automating a Button Click</h4>
+
+<p><img src="/blog/media/desk-relay-diag.jpg" alt="" /></p>
+
+<h4 id="controlling-the-relays">Controlling the Relays</h4>
+
+<p>Relays don&rsquo;t do anything on their own. A microcontroller is needed. For example, you can use the NodeMCU ESP8266 development board. The board has to provide power, ground, and two data pins. Each data pin controls one of the relays. Now the circuit is complete, and the ESP can be programmed.</p>
+
+<p><img src="/blog/media/desk-controller-diag.jpg" alt="" /></p>
+
+<h3 id="programming-the-controller">Programming the Controller</h3>
+
+<p>Open <a href="/esp8266.ino">esp8266.ino</a> in the Arduino IDE and set all configuration variables.</p>
+
+<h3 id="home-assistant-setup">Home Assistant Setup</h3>
+
+<h4 id="1-install-mqtt-broker">1. Install MQTT Broker</h4>
+
+<ul>
+<li>Install <a href="https://www.home-assistant.io/integrations/mqtt/" target="_blank">Mosquitto Broker Add-on</a></li>
+<li>Start Add-on with default configuration</li>
+<li>Add new <code>mqtt</code> user under <code>Settings &gt; People</code> and allow login</li>
+</ul>
+
+<h4 id="2-add-mqtt-integration">2. Add MQTT Integration</h4>
+
+<ul>
+<li>The MQTT integration should appear under <code>Settings &gt; Devices &amp; services</code></li>
+<li>Add the integration</li>
+<li>Here you can try publishing packets to the <code>desk</code> topic. Set your payload to <code>down</code> or <code>up</code>.</li>
+</ul>
+
+<h4 id="3-add-switch-in-home-assistant-configuration">3. Add Switch in Home Assistant Configuration</h4>
+
+<p>Use the Text Editor add-on to edit the <code>configuration.yaml</code> file of your Home Assistant instance. Add the following entry to the file.</p>
+<pre class="chroma"><code><span class="line"><span class="cl"><span class="nt">mqtt</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="w">  </span><span class="nt">switch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Desk Switch&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">unique_id</span><span class="p">:</span><span class="w"> </span><span class="l">desk_switch</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">command_topic</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;desk&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">payload_on</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;up&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">payload_off</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;down&#34;</span><span class="w">
+</span></span></span></code></pre>
+<p>After restarting Home Assistant, this will add a new switch device that sends <code>up</code> and <code>down</code> payloads to the <code>desk</code> MQTT topic.</p>
+
+<h2 id="optional-raycast-integration">Optional Raycast Integration</h2>
+
+<p>The repository includes <a href="https://github.com/marcjulianschwarz/ha-desk-automation/blob/main/raycast-scripts" target="_blank">two python files</a> that can be included in a <a href="https://github.com/raycast/script-commands" target="_blank">script commands directory</a> for <a href="https://www.raycast.com/" target="_blank">Raycast</a>. They will add the commands <code>⬆️ Raise Desk</code> and <code>⬇️ Lower Desk</code>.</p>
+
+<p><img src="/blog/media/raycast.jpg" alt="Screenshot of Raycast Script Commands in Raycast Search" /></p>
+
+<h3 id="install">Install</h3>
+
+<p>To use the scripts, install the MQTT python client.</p>
+<pre class="chroma"><code><span class="line"><span class="cl">pip install paho-mqtt
+</span></span></code></pre>
+<p>Then change the shebang line to point to the Python environment where you installed the client, set the MQTT broker hostname, user, password, and add both Python scripts to your script commands directory. You should now be able to raise and lower your desk from Raycast 🎉.</p>
+</article>
+        </main>
+    </body>
+</html>
