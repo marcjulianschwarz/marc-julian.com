@@ -94,7 +94,7 @@ At the end of this guide" />
 
 <h2 id="import-modules">Import modules</h2>
 
-<p>The only modules needed are numpy and matplotlib. Import them like this:</p>
+<p>The modules needed are numpy and matplotlib. Import them like this:</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">animation</span> <span class="kn">import</span> <span class="n">FuncAnimation</span>
@@ -112,9 +112,9 @@ At the end of this guide" />
 </span></span><span class="line"><span class="cl">	<span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mf">0.06</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span><span class="p">]</span>
 </span></span><span class="line"><span class="cl"><span class="p">]</span>
 </span></span></code></pre>
-<p><code>data</code> is a list of the different features that you want to plot. Every feature list contains the individual datapoints that will be plotted at frame <code>i</code>. This means all lists have to be the same length.</p>
+<p><code>data</code> is a list of the different features that you want to plot. Every feature list contains the individual datapoints that the animation plots at frame ⁠<code>i</code>. This means all lists have to be the same length.</p>
 
-<p>Now, the first feature list will need to be copied to the end of the data list. This will ensure that the radar plot will be a closed polygon. The first and last datapoint will overlap and therefore close the shape.</p>
+<p>Now, you copy the first feature list to the end of the data list. This will ensure that the radar plot will be a closed polygon. The first and last datapoint will overlap and close the shape.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">]</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># This works too </span>
@@ -143,32 +143,32 @@ At the end of this guide" />
 </span></span></code></pre>
 <h2 id="initialize-plot">Initialize plot</h2>
 
-<p>For every animation in matplotlib an initial plot (using the first datapoints) is needed. To create a radar plot it is important to set the projection method to <code>polar</code>.</p>
+<p>Matplotlib animations require an initial plot using the first datapoints. To create a radar plot, set the projection method to <code>polar</code>.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="p">,</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="sa"></span><span class="s1">&#39;</span><span class="s1">projection</span><span class="s1">&#39;</span><span class="p">:</span> <span class="sa"></span><span class="s1">&#39;</span><span class="s1">polar</span><span class="s1">&#39;</span><span class="p">}</span><span class="p">)</span>
 </span></span></code></pre>
 <p>In a radar plot the x-values will correspond to the positions on the circle (0-360 degrees) and the y-values are the distances from the middle point of the circle.</p>
 
-<p>Therefore the x-values will be the label positions and the y-values will be the datapoints. For the initial plot the first datapoints will be selected using a list comprehension.</p>
+<p>The x-values will be the label positions and the y-values will be the datapoints. A list comprehension will select the first datapoints for the initial plot.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">radar_ln</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label_loc</span><span class="p">,</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">Legend</span><span class="s2">&#34;</span><span class="p">)</span>
 </span></span></code></pre>
-<p>The labels themselves will be placed at the previously calculated positions around the circle by converting the radians to degrees and setting the labels in the <code>set_thetagrids</code> method.</p>
+<p>The code places the labels at the calculated positions around the circle by converting radians to degrees and setting them in the <code>⁠set_thetagrids</code> method.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_thetagrids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">label_loc</span><span class="p">)</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">lower left</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">)</span><span class="p">)</span>
 </span></span></code></pre>
-<p>The limits in a radar plot can be changed too:</p>
+<p>You can change the limits in a radar plot too:</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_rmax</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">ax</span><span class="o">.</span><span class="n">set_rmin</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
 </span></span></code></pre>
 <h2 id="update-function">Update function</h2>
 
-<p>Animating a plot with matplotlib will always include an <code>update(i)</code> function which will update the plot with new data for every frame <code>i</code>. In this case the new data will again be selected with a list comprehension (the same way the plot was initialized).</p>
+<p>Animating a plot with matplotlib will always include an <code>update(i)</code> function which will update the plot with new data for every frame <code>i</code>. In this case, a list comprehension selects the new data (the same way you initialized the plot).</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">radar_ln</span><span class="p">,</span> <span class="n">label_loc</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span><span class="p">:</span>
 </span></span><span class="line"><span class="cl">	<span class="n">radar_ln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">label_loc</span><span class="p">,</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="n">radar_ln</span>
 </span></span></code></pre>
 <h2 id="rendering-and-saving-the-animation">Rendering and saving the animation</h2>
 
-<p>Finally, it is only a matter of assigning the correct variables to <code>FuncAnimation</code> before running the <code>save()</code> method.</p>
+<p>The last step is assigning the correct variables to <code>FuncAnimation</code> before running the <code>save()</code> method.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">ani</span> <span class="o">=</span> <span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">,</span> <span class="n">fargs</span><span class="o">=</span><span class="p">(</span><span class="n">radar_ln</span><span class="p">,</span> <span class="n">label_loc</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">animation.mp4</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>

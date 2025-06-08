@@ -77,8 +77,7 @@ My plugin *Podcast Note* for the note taking app [Obsidian](https://obsidian.md)
             <article class="post-content"><h1 id="podcast-note">Podcast Note</h1>
 
 <p>My plugin <em>Podcast Note</em> for the note taking app <a href="https://obsidian.md" target="_blank">Obsidian</a> is a great way to write notes on podcasts. With a single URL you will get the title, image and description of your podcast.
-Using a custom template you can style the note to your likings.
-More settings and features will be explained further down.</p>
+Using a custom template you can style the note to your likings. I will explain more settings and features further down.</p>
 
 <p>You can find it in the official community plugins list right in <a href="https://obsidian.md" target="_blank">Obsidian</a> or on <a href="https://github.com/marcjulianschwarz/obsidian-podcast-note" target="_blank">GitHub</a>.</p>
 
@@ -93,20 +92,20 @@ Of course you can also specify a keyboard shortcut to trigger the prompt.</p>
 
 <h3 id="add-podcast-notes-from-selection">Add Podcast Notes from selection</h3>
 
-<p>This command will only be visible in editor mode.
-Make sure you have text selected which contains markdown links to podcast episodes. Running the command will create new podcast notes for every url in the selected text. It will also automatically link these notes.</p>
+<p>This command will be visible in editor mode. Make sure you have text selected which contains markdown links to podcast episodes. Running the command will create new podcast notes for every url in the selected text. It will also automatically link these notes.</p>
 
 <h3 id="supported-podcast-services">Supported Podcast services</h3>
 
-<p>So far these podcast services are supported:
-+ Apple Podcast
-+ Spotify Podcast
-+ Google Podcast
-+ Pocket Casts
-+ Airr
-+ Overcast
-+ Castro
-+ Castbox</p>
+<ul>
+<li>Apple Podcast</li>
+<li>Spotify Podcast</li>
+<li>Google Podcast</li>
+<li>Pocket Casts</li>
+<li>Airr</li>
+<li>Overcast</li>
+<li>Castro</li>
+<li>Castbox</li>
+</ul>
 
 <h2 id="demo">Demo</h2>
 
@@ -145,20 +144,20 @@ Use these three placeholders:</p>
 </span></span></code></pre>
 <h3 id="2-filename-template">2. Filename template</h3>
 
-<p>Specify whether the podcast note will be inserted at your cursor or whether a new note will be added.
-You can also use a template for the filename.
-Placeholders:
+<p>Specify whether you want the plugin to insert the podcast note at your cursor or whether it should create a new note. You can also use a template for the filename.</p>
+
+<p>Possible placeholders for this template are:
 + <strong>{{Title}}</strong> → title of your podcast
 + <strong>{{Timestamp}}</strong> → timestamp (like zettelkasten id)
 + <strong>{{Date}}</strong> → date (format: Day-Month-Year)</p>
 
 <h3 id="3-folder">3. Folder</h3>
 
-<p>Set the folder where new Podcast notes will be saved. The path is relative to your vault. For example <strong>folder/podcast_folder</strong> will become <strong>path/to/vault/folder/podcastfolder</strong>.</p>
+<p>Set the folder where the plugin will save new podcast notes to. The path is relative to your vault. For example <strong>folder/podcast_folder</strong> will become <strong>path/to/vault/folder/podcastfolder</strong>.</p>
 
 <h3 id="4-insert-podcast-note-at-cursor">4. Insert podcast note at cursor</h3>
 
-<p>Specify whether you want to create a new note or whether you want the metadata to be inserted at your cursor.</p>
+<p>Specify whether you want to create a new note or whether you want it to insert metadata at your cursor.</p>
 </article>
         </main>
     </body>

@@ -33,16 +33,16 @@
 
 <meta name="robots" content="index, follow" />
 
-<meta name="description" content="So I wanted to setup tracing for an LLM app with [Phoenix](https://phoenix.arize.com/) and while doing so I had some learnings that I wanted to document:
+<meta name="description" content="I wanted to setup tracing for an LLM app with [Phoenix](https://phoenix.arize.com/) and while doing so I had some learnings that I wanted to document:
 
--" />
+- you" />
 <meta name="keywords" content="EN,TypeScript,LLM,2025" />
 <meta name="author" content="" />
 
 <meta property="og:title" content="OpenTelemetry LLM App Tracing with Phoenix" />
-<meta name="og:description" content="So I wanted to setup tracing for an LLM app with [Phoenix](https://phoenix.arize.com/) and while doing so I had some learnings that I wanted to document:
+<meta name="og:description" content="I wanted to setup tracing for an LLM app with [Phoenix](https://phoenix.arize.com/) and while doing so I had some learnings that I wanted to document:
 
--" />
+- you" />
 <meta property="og:image" content="/assets/logo.png" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1234/blog/posts/phoenixllmtracing/" />
@@ -77,13 +77,13 @@
             </article>
             
 
-            <article class="post-content"><p>So I wanted to setup tracing for an LLM app with <a href="https://phoenix.arize.com/" target="_blank">Phoenix</a> and while doing so I had some learnings that I wanted to document:</p>
+            <article class="post-content"><p>I wanted to setup tracing for an LLM app with <a href="https://phoenix.arize.com/" target="_blank">Phoenix</a> and while doing so I had some learnings that I wanted to document:</p>
 
 <ul>
-<li>you have to take <code>SimpleSpanProcessor</code> by its name. It really only is a <strong>simple</strong> span processor. It is nice for development but for production you should be using the <code>BatchSpanProcessor</code> because it batches span exports, saving tons of network requests and probably avoiding some concurrency issues</li>
+<li>you have to take <code>SimpleSpanProcessor</code> by its name. It&rsquo;s a <strong>simple</strong> span processor. It&rsquo;s nice for development but for production you should be using the <code>BatchSpanProcessor</code> because it batches span exports, saving tons of network requests and probably avoiding some concurrency issues</li>
 <li>always make sure to end spans at the correct position, not too early, not too late, with <code>span.end()</code>. If you are using one central place to create spans, end them right there after you added attributes to it</li>
-<li>if you use <code>SemanticConventions</code>, make sure to check which attributes actually need to be set to get any visual on some dashboards (like Phoenix)</li>
-<li>tracing should be separated from business logic as much as possible. I am using a decorator for that specific purpose. It has access to the functions input, output and is called when the function it decorates is called without being in the way. This also makes it <em>really easy</em> to trace new functions.</li>
+<li>if you use <code>SemanticConventions</code>, make sure to check which attributes you actually need to set to get any visual on some dashboards (like Phoenix)</li>
+<li>separate tracing from business logic as much as possible. I am using a decorator for that specific purpose. It has access to the functions input, output and you call it by decorating a function with it. Now it stays out of the way of your business logic.</li>
 </ul>
 
 <p>Here is an example implementation of such a <code>Trace</code> decorator.</p>
@@ -110,7 +110,7 @@
 </span></span><span class="line"><span class="cl">   <span class="p">}</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"> <span class="p">}</span>
 </span></span></code></pre>
-<p>And here is an example on how you can use it. As you can see the business logic in <code>doingSomeWork()</code> is completely free of any tracing logic. Removing the <code>@Trace()</code> decorator completely removes any tracing from it.</p>
+<p>And here is an example on how you can use it. As you can see the business logic in <code>doingSomeWork()</code> is free of any tracing logic. Removing the <code>@Trace()</code> decorator removes any tracing from it.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="kr">type</span> <span class="nx">DoingSomeWorkParams</span> <span class="o">=</span> <span class="p">{</span>
 </span></span><span class="line"><span class="cl">	<span class="nx">input</span>: <span class="kt">string</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
@@ -129,8 +129,8 @@
 </span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="p">)</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre>
-<p>Going on with the list of things I learned:
-- either use a <code>ConsoleSpanExporter</code> or <code>diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);</code> to see a lot of details about the tracing. Especially interesting are the <code>traceId</code>, <code>parentId</code> and <code>id</code> attributes of each span. Here you can check whether the context got propagated nicely between the spans.
+<p>Going on with the list of learnings:
+- either use a <code>ConsoleSpanExporter</code> or <code>diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);</code> to see a lot of details about the tracing. Interesting are the <code>traceId</code>, <code>parentId</code> and <code>id</code> attributes of each span. Here you can check whether the context got propagated nicely between the spans.
 - because I noticed some span exporting issues to Phoenix I tried a different span/traces exporter: <code>ZipkinExporter</code> with the <a href="https://zipkin.io/" target="_blank">Zipkin UI</a> and there is still an <a href="https://github.com/Arize-ai/phoenix/discussions/7041#discussioncomment-12736322" target="_blank">open discussion</a> on GitHub about the problems I noticed with Phoenix. Will update this post accordingly.</p>
 </article>
         </main>

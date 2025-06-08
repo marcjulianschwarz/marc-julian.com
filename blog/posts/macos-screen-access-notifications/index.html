@@ -70,13 +70,13 @@
             </article>
             
 
-            <article class="post-content"><p>With a recent macOS Sequoia update, apps capturing your screen would trigger a new notification that shows next to the menubar. For apps like <a href="https://alt-tab-macos.netlify.app/" target="_blank">AltTab</a> which take screenshots of your screen for their functionality, this results in a constant flood of notifications every time the app is used.</p>
+            <article class="post-content"><p>With a recent macOS Sequoia update, apps capturing your screen would trigger a new notification that shows next to the menubar. For apps like <a href="https://alt-tab-macos.netlify.app/" target="_blank">AltTab</a> which take screenshots of your screen for their functionality, this results in a constant flood of notifications every time you use the app.</p>
 
-<p>Apparently, this new <em>feature</em> was not on purpose. It was supposed to only show a notification once every 30 days. But through some misconfiguration of the timestamps in the <code>ScreenCaptureApprovals.plist</code> file, the notification was not limited to 30 days.
+<p>Apparently, this new <em>&ldquo;feature&rdquo;</em> was not on purpose. It should show a notification once every 30 days. But through some misconfiguration of the timestamps in the <code>ScreenCaptureApprovals.plist</code> file, the notification was not limited to 30 days.
 To fix this, find the file with:</p>
 <pre class="chroma"><code><span class="line"><span class="cl">open <span class="nv">$HOME</span>/Library/Group<span class="se">\ </span>Containers/group.com.apple.replayd
 </span></span></code></pre>
-<p>and move or delete the <code>ScreenCaptureApprovals.plist</code> file from the opened folder. Then directly restart your Mac. The macOS system will automatically rewrite the file with corrected timestamps and the screen capture notifications are finally gone.</p>
+<p>and move or delete the <code>ScreenCaptureApprovals.plist</code> file from the opened folder. Then directly restart your Mac. The macOS system will automatically rewrite the file with corrected timestamps and the screen capture notifications don&rsquo;t show up anymore.</p>
 </article>
         </main>
     </body>

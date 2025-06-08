@@ -89,7 +89,7 @@ The goal of this project is to control a height-adjustable desk from a Home Assi
 
 <h2 id="prerequisites">Prerequisites</h2>
 
-<p>These are the exact tools, hardware, and software I used. However, you can exchange most components with other similar ones.</p>
+<p>These are the exact tools, hardware, and software I used. You can exchange most components with other similar ones.</p>
 
 <h3 id="hardware">Hardware</h3>
 
@@ -118,25 +118,25 @@ The goal of this project is to control a height-adjustable desk from a Home Assi
 
 <h2 id="safety-warnings">Safety Warnings</h2>
 
-<p>The instructions contain steps that permanently alter parts of the desk. If not followed correctly, they <strong>CAN damage</strong> the desk controller, engine, and other parts on or around the table. Make sure to remove any items on, around, and under the desk before performing the steps.</p>
+<p>The instructions contain steps that permanently alter parts of the desk. If not followed properly, they <strong>CAN damage</strong> the desk controller, engine, and other parts on or around the table. Make sure to remove any items on, around, and under the desk before performing the steps.</p>
 
-<p>The instructions are relatively safe to follow, as they only deal with low-voltage parts of the table. Nonetheless, be careful and do NOT make any changes to parts that run high voltages. Always check the components with a multimeter before working on them and unplug all cables.</p>
+<p>The instructions are generally safe to follow, as they deal with low-voltage parts of the table. Nonetheless, be careful and do NOT make any changes to parts that run high voltages. Always check the components with a multimeter before working on them and unplug all cables.</p>
 
 <h2 id="step-by-step-guide">Step-by-Step Guide</h2>
 
 <h3 id="understanding-the-desk-controls">Understanding the Desk Controls</h3>
 
-<p>The desk controls are made up of three cables. The following figures show a schematic view of those cables. The colors are only for illustrative purposes and might be different for your specific desk.</p>
+<p>The desk controls consist of three cables. The following figures show a schematic view of those cables. The colors are for illustrative purposes and might be different for your specific desk.</p>
 
-<p>The green (left) cable connects the controller with the <code>Raise</code> button, and the blue (right) one connects with the <code>Lower</code> button. One black cable connects both buttons back to the table to form a closed loop that is only interrupted by the open buttons themselves. Pressing a button closes the respective circuit, letting the desk controller know to start the engine for raising or lowering the table.</p>
+<p>The green (left) cable connects the controller with the <code>Raise</code> button, and the blue (right) one connects with the <code>Lower</code> button. One black cable connects both buttons back to the table to form a closed circuit. The open buttons interrupt this loop. Pressing a button closes the respective circuit, letting the desk controller know to start the engine for raising or lowering the table.</p>
 
 <p><img src="/blog/media/desk-diag.jpg" alt="" /></p>
 
-<p>At this point, it is quite straightforward to intercept the button presses by directly connecting the green and blue wires with the orange wire, thereby creating a closed circuit before the button is even reached. The same connection can be made with the blue cable, lowering the table.</p>
+<p>At this point, it&rsquo;s straightforward to intercept the button presses by directly connecting the green and blue wires with the orange wire, thereby creating a closed circuit before the button is even reached.</p>
 
 <h3 id="cut-the-cable">Cut the Cable</h3>
 
-<p>To get access to the individual cables, the cable running from the button controls to the desk has to be cut, and the insulation around it and the individual smaller cables has to be removed for about 1-2 cm.</p>
+<p>To get access to the individual cables, cut the cable running from the button controls to the desk, and remove the insulation around it and the individual smaller cables for about 1-2 cm.</p>
 
 <h4 id="automating-a-button-click">Automating a Button Click</h4>
 
@@ -144,7 +144,7 @@ The goal of this project is to control a height-adjustable desk from a Home Assi
 
 <h4 id="controlling-the-relays">Controlling the Relays</h4>
 
-<p>Relays don&rsquo;t do anything on their own. A microcontroller is needed. For example, you can use the NodeMCU ESP8266 development board. The board has to provide power, ground, and two data pins. Each data pin controls one of the relays. Now the circuit is complete, and the ESP can be programmed.</p>
+<p>Relays don&rsquo;t do anything on their own. You need a microcontroller to control them. For example, you can use the NodeMCU ESP8266 development board. The board has to provide power, ground, and two data pins. Each data pin controls one of the relays. Now the circuit is complete, and you can program the ESP.</p>
 
 <p><img src="/blog/media/desk-controller-diag.jpg" alt="" /></p>
 
@@ -185,7 +185,7 @@ The goal of this project is to control a height-adjustable desk from a Home Assi
 
 <h2 id="optional-raycast-integration">Optional Raycast Integration</h2>
 
-<p>The repository includes <a href="https://github.com/marcjulianschwarz/ha-desk-automation/blob/main/raycast-scripts" target="_blank">two python files</a> that can be included in a <a href="https://github.com/raycast/script-commands" target="_blank">script commands directory</a> for <a href="https://www.raycast.com/" target="_blank">Raycast</a>. They will add the commands <code>⬆️ Raise Desk</code> and <code>⬇️ Lower Desk</code>.</p>
+<p>The repository includes <a href="https://github.com/marcjulianschwarz/ha-desk-automation/blob/main/raycast-scripts" target="_blank">two python files</a> that you can include in a <a href="https://github.com/raycast/script-commands" target="_blank">script commands directory</a> for <a href="https://www.raycast.com/" target="_blank">Raycast</a>. They will add the commands <code>⬆️ Raise Desk</code> and <code>⬇️ Lower Desk</code>.</p>
 
 <p><img src="/blog/media/raycast.jpg" alt="Screenshot of Raycast Script Commands in Raycast Search" /></p>
 

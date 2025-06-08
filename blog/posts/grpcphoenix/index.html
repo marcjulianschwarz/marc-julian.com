@@ -79,7 +79,7 @@
 <p>because I noticed some span exporting issues to Phoenix I tried a different span/traces exporter: <code>ZipkinExporter</code> with the <a href="https://zipkin.io/" target="_blank">Zipkin UI</a> and there is still an <a href="https://github.com/Arize-ai/phoenix/discussions/7041#discussioncomment-12736322" target="_blank">open discussion</a> on GitHub about the problems I noticed with Phoenix. Will update this post accordingly.</p>
 </blockquote>
 
-<p>After further debugging (breaking at every single <code>span.end()</code> call) I was able to see that during several span creations, the error <code>Exception has occurred: Error: read ECONNRESET</code> and <code>Exception has occurred: Error: socket hang up</code> were thrown. Exactly these spans were missing in Phoenix. <a href="https://github.com/RogerHYang" target="_blank">Roger Yang</a> suggested to use the <a href="https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc" target="_blank">experimental gRPC exporter</a> like this:</p>
+<p>After further debugging (breaking at every single <code>span.end()</code> call) I was able to see that during some span creations, the error <code>Exception has occurred: Error: read ECONNRESET</code> and <code>Exception has occurred: Error: socket hang up</code> showed up. These spans were missing in Phoenix. <a href="https://github.com/RogerHYang" target="_blank">Roger Yang</a> suggested to use the <a href="https://www.npmjs.com/package/@opentelemetry/exporter-trace-otlp-grpc" target="_blank">experimental gRPC exporter</a> like this:</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="kr">import</span> <span class="p">{</span> <span class="nx">OTLPTraceExporter</span> <span class="p">}</span> <span class="kr">from</span> <span class="s2">&#34;@opentelemetry/exporter-trace-otlp-grpc&#34;</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">provider</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NodeTracerProvider</span><span class="p">(</span><span class="p">{</span>
@@ -100,7 +100,7 @@
 </span></span></code></pre>
 <p>This exports spans directly via gRPC to port <code>4317</code> of your Phoenix app. Make sure to use the <a href="https://docs.arize.com/phoenix/self-hosting" target="_blank">Docker images provided by Phoenix</a> which automatically expose this port next to the default <code>6006</code> port.</p>
 
-<p>With the above exporter configured, no spans go missing anymore and even complex long running traces are captured nicely.</p>
+<p>With the above exporter configured, no spans go missing anymore and Phoenix captures even complex long running traces.</p>
 </article>
         </main>
     </body>

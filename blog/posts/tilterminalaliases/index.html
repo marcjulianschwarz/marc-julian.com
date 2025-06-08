@@ -33,12 +33,12 @@
 
 <meta name="robots" content="index, follow" />
 
-<meta name="description" content="&gt; **Edit** (17.12.2024): After more than a year of using Oh My Zsh and many custom aliases, my most used and favourite aliases are `go &lt;marker-name&gt;` (for" />
+<meta name="description" content="&gt; **Edit** (17.12.2024): After more than a year of using Oh My Zsh and custom aliases, my most used and favourite aliases are `go &lt;marker-name&gt;` (for going to" />
 <meta name="keywords" content="EN,TIL,Python,Misc,2023" />
 <meta name="author" content="" />
 
 <meta property="og:title" content="Command Line - Aliases and Functions" />
-<meta name="og:description" content="&gt; **Edit** (17.12.2024): After more than a year of using Oh My Zsh and many custom aliases, my most used and favourite aliases are `go &lt;marker-name&gt;` (for" />
+<meta name="og:description" content="&gt; **Edit** (17.12.2024): After more than a year of using Oh My Zsh and custom aliases, my most used and favourite aliases are `go &lt;marker-name&gt;` (for going to" />
 <meta property="og:image" content="/assets/logo.png" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1234/blog/posts/tilterminalaliases/" />
@@ -77,15 +77,15 @@
             
 
             <article class="post-content"><blockquote>
-<p><strong>Edit</strong> (17.12.2024): After more than a year of using Oh My Zsh and many custom aliases, my most used and favourite aliases are <code>go &lt;marker-name&gt;</code> (for going to a marked directory) and <code>b</code> (short for back + performing <code>cd ..</code>).  Oh My Zsh is awesome!</p>
+<p><strong>Edit</strong> (17.12.2024): After more than a year of using Oh My Zsh and custom aliases, my most used and favourite aliases are <code>go &lt;marker-name&gt;</code> (for going to a marked directory) and <code>b</code> (short for back + performing <code>cd ..</code>).  Oh My Zsh is awesome!</p>
 
 <p><strong>Edit</strong> (20.07.2023): The open source framework <a href="https://github.com/ohmyzsh/ohmyzsh" target="_blank">ohmyzsh</a>  makes it even easier to manage complex zsh configurations and there are tons of plugins that add useful aliases.</p>
 </blockquote>
 
 <p>Today I learned (<a href="https://www.marc-julian.de/tags/TIL.html" target="_blank">TIL</a>) that you can define aliases and functions inside of most command line applications like bash or zsh shells.
-For zsh, the config file <code>.zshrc</code> is located directly in the user folder. You can edit it in any text editer (on some systems, you might need to open it as an admin or run your preferred command with <code>sudo</code>).</p>
+For zsh, you can find the <code>.zshrc</code> config file directly in the user folder. You can edit it in any text editor (on some systems, you might need to open it as an admin or run your preferred command with <code>sudo</code>).</p>
 
-<p>When you are done, run the following command to execute the file and reload all defined aliases and functions.</p>
+<p>Run the following command to execute the file and reload all defined aliases and functions.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="nb">source</span> .zshrc
 </span></span></code></pre>
 <p>Here are some of <em>my favorites</em>:</p>
@@ -152,7 +152,7 @@ For zsh, the config file <code>.zshrc</code> is located directly in the user fol
 </span></span></code></pre>
 <h2 id="mark-paths-to-directly-jump-to-them-from-anywhere">Mark paths to directly jump to them from anywhere</h2>
 
-<p>Inspired by the <code>mark</code> and <code>cdd</code> function in this <a href="https://chris-said.io/2014/10/16/jumping-quickly-between-deep-directories/" target="_blank">blog post</a> by Chris Said, I added two more additional functions <code>opend</code> and <code>coded</code> to quickly open a folder in Finder or VSCode.</p>
+<p>Inspired by the <code>mark</code> and <code>cdd</code> function in this <a href="https://chris-said.io/2014/10/16/jumping-quickly-between-deep-directories/" target="_blank">blog post</a> by Chris Said, I added two more functions <code>opend</code> and <code>coded</code> to  open a folder in Finder or VSCode.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Run to get bash autocomplete functions in zsh shell </span>
 </span></span><span class="line"><span class="cl">autoload bashcompinit
 </span></span><span class="line"><span class="cl">bashcompinit

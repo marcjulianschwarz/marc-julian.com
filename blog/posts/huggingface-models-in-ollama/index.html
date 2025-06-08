@@ -76,10 +76,10 @@
             </article>
             
 
-            <article class="post-content"><p>Ollama can serve many Hugging Face models locally. Concretely, you can run any <a href="https://github.com/ggml-org/ggml/blob/master/docs/gguf.md" target="_blank">GGUF</a> model from the Hugging Face Hub. Use <a href="https://huggingface.co/models?library=gguf" target="_blank">this GGUF filter</a> on the Hugging Face website to get a list of models that are supported (currently about 121,000 models). From the model card, you can click &ldquo;<em>Use this model</em>&rdquo; to copy the ollama run command. For example:</p>
+            <article class="post-content"><p>Ollama can serve many Hugging Face models locally. Concretely, you can run any <a href="https://github.com/ggml-org/ggml/blob/master/docs/gguf.md" target="_blank">GGUF</a> model from the Hugging Face Hub. Use <a href="https://huggingface.co/models?library=gguf" target="_blank">this GGUF filter</a> on the Hugging Face website to get a list of models that Ollama support  (about 121,000 models at the time of writing). From the model card, you can click &ldquo;<em>Use this model</em>&rdquo; to copy the ollama run command. For example:</p>
 <pre class="chroma"><code><span class="line"><span class="cl">ollama run hf.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF:Q4_K_M
 </span></span></code></pre>
-<p>The commands are usually structured like this:</p>
+<p>The commands have following structure:</p>
 <pre class="chroma"><code><span class="line"><span class="cl">ollama run hf.co/{username}/{repository}:{quantization-scheme}
 </span></span></code></pre>
 <p>If you leave out the <code>quantization-scheme</code> part, Hugging Face will choose either <code>Q4_K_M</code> when available and a reasonable version if not. See <a href="https://huggingface.co/docs/hub/ollama" target="_blank">this article on Hugging Face</a> for more information.</p>

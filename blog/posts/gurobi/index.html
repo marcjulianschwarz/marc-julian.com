@@ -73,21 +73,21 @@
             </article>
             
 
-            <article class="post-content"><p>Solving a Mixed Integer Programming (MIP) Problem with Gurobi requires the <a href="https://www.gurobi.com/products/gurobi-optimizer/" target="_blank">Gurobi Optimizer</a> and the Python package <a href="https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-" target="_blank">GurobiPy</a> to be installed on your system.</p>
+            <article class="post-content"><p>Solving a Mixed Integer Programming (MIP) Problem with Gurobi requires the <a href="https://www.gurobi.com/products/gurobi-optimizer/" target="_blank">Gurobi Optimizer</a> and the Python package <a href="https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-" target="_blank">GurobiPy</a>.</p>
 
-<p>The GurobiPy package can be installed with pip or conda:</p>
+<p>Install the GurobiPy package with pip or conda:</p>
 <pre class="chroma"><code><span class="line"><span class="cl">python -m pip install gurobipy
 </span></span></code></pre><pre class="chroma"><code><span class="line"><span class="cl">conda install -c gurobi gurobi
 </span></span></code></pre>
 <h2 id="importing-package">Importing package</h2>
 
-<p>When installed, gurobipy can be imported like this:</p>
+<p>Import <code>gurobipy</code> like this:</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">gurobipy</span> <span class="k">as</span> <span class="nn">gp</span>
 </span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">gurobipy</span> <span class="kn">import</span> <span class="n">GRB</span>
 </span></span></code></pre>
 <h2 id="initialize-model">Initialize Model</h2>
 
-<p>The next step is to initialize a Gurobi model. For this example problem, setting a constant with the name capacitated to <code>False</code> will be necessary too. This variable can be changed depending on whether you want to have production capacity constraints (LS-C) or not (LS-U).</p>
+<p>The next step is to initialize a Gurobi model. For this example problem, setting a constant with the name capacitated to <code>False</code> will be necessary too. This variable defines whether you want to have production capacity constraints (LS-C) or not (LS-U).</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">m</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">ls</span><span class="s2">&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">capacitated</span> <span class="o">=</span> <span class="kc">False</span>
@@ -96,15 +96,15 @@
 
 <p>The situation for the example problem is the following:</p>
 
-<p>A production facility wants to make a plan for the next 8 months. They want to know exactly how many products have to be produced each month to fulfill the demand in that month and reduce the overall costs which consist of</p>
+<p>A production facility wants to make a plan for the next 8 months. They want to know the amount of products that the factory has to produce each month to fulfill the demand in that month and reduce the costs which consist of</p>
 
 <ul>
 <li>Production costs for one product: 100€</li>
-<li>Preparing the machines at the beginning of a month (only if the machines are being used in that month):  5000€</li>
+<li>Preparing the machines at the beginning of a month (if the machines are running in that month):  5000€</li>
 <li>Storing one product for a month:  5€</li>
 </ul>
 
-<p>These are all constants that won&rsquo;t change during the optimization of the model. That&rsquo;s why they don&rsquo;t have to be added to the model.</p>
+<p>These are all constants that won&rsquo;t change during the optimization of the model. That&rsquo;s why you don&rsquo;t have to add them to the model.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Time (e.g. months)</span>
 </span></span><span class="line"><span class="cl"><span class="n">n</span> <span class="o">=</span> <span class="mi">8</span>
 </span></span><span class="line"><span class="cl"><span class="n">t</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
@@ -115,7 +115,7 @@
 </span></span><span class="line"><span class="cl"><span class="c1"># Costs for storing a product for each month</span>
 </span></span><span class="line"><span class="cl"><span class="n">h</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>  
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># Costs for armoring the machines for each month (has to be done at most once for each month)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Costs for armoring the machines for each month (at most once for each month)</span>
 </span></span><span class="line"><span class="cl"><span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5000</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Demand for products for each month</span>
@@ -123,16 +123,16 @@
 </span></span></code></pre>
 <h2 id="add-variables">Add Variables</h2>
 
-<p>To describe the objective function and constraints of the model, variables with specified types have to be added to the model.</p>
+<p>To describe the objective function and constraints of the model, add variables with specified types to the model.</p>
 
-<p>The number of products being produced each month (<code>x</code>) will have to be an integer variable as the facility can&rsquo;t produce fractions of a product. The same constraint holds for the storage of products (<code>s</code>) where only finished products can be stored.
+<p>The number of products produced each month (<code>x</code>) will have to be an integer variable as the facility can&rsquo;t produce fractions of a product. The same constraint holds for the storage of finished products (<code>s</code>).
 The storage amount will have one extra entry in comparison to the other variables as there will be an initial stock from the month before.</p>
 
-<p>The variable <code>y</code> is binary as it controls whether the machines have to be prepared (1) or not (0).</p>
+<p>The variable <code>y</code> is binary as it controls whether the facility has to prepare the machines (1) or not (0).</p>
 
-<p>The only difference between the Uncapacitated and Capacitated Lot-Sizing problem lies in the definition of the capacity constraining variable <code>M</code>.
-For the uncapacitated case, the variable will be unbounded and will therefore always be big enough to produce any amount of products. In the capacitated case it will consist of a list of capacities.
-In the code example below, the capacities are selected in a way to minimize the preparation costs of the machines.</p>
+<p>The one difference between the Uncapacitated and Capacitated Lot-Sizing problem lies in the definition of the capacity constraining variable <code>M</code>.
+For the uncapacitated case, the variable has no bound and will always be big enough to produce any amount of products. In the capacitated case it will consist of a list of capacities.
+In the code example below, the model selects capacities in a way to minimize the preparation costs of the machines.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Production Amount for each month</span>
 </span></span><span class="line"><span class="cl"><span class="n">x</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">addVars</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">x</span><span class="s2">&#34;</span><span class="p">,</span> <span class="n">vtype</span><span class="o">=</span><span class="n">GRB</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
@@ -150,21 +150,21 @@ In the code example below, the capacities are selected in a way to minimize the 
 </span></span></code></pre>
 <h2 id="objective-function">Objective Function</h2>
 
-<p>As described above, the facility wants to minimize the overall costs. They consist of the sum of costs for producing products, preparing machines, and storing products.
-Thus the objective function has to look like this:</p>
+<p>As described above, the facility wants to minimize the costs. They consist of the sum of costs for producing products, preparing machines, and storing products.
+Thus, the objective function has to look like this:</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">setObjective</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">quicksum</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">t</span><span class="p">)</span><span class="p">,</span> <span class="n">GRB</span><span class="o">.</span><span class="n">MINIMIZE</span><span class="p">)</span>
 </span></span></code></pre>
 <h2 id="linear-constraints">(Linear) Constraints</h2>
 
-<p>Last but not least all constraints of the model have to be defined.</p>
+<p>Now, define all constraints of the model.</p>
 
-<p>The first two constraints make sure that the demand will be fulfilled and that the excess will be stored for the next month.</p>
+<p>The first two constraints ensure that the facility fulfills their demand and stores the excess for the next month.</p>
 
 <p>Constraints three and four will control the initial and final stock.</p>
 
-<p>Constraint five adds capacity constraints to the model. As stated before, <code>M</code> will either be unbounded or have specific capacity restrictions.</p>
+<p>Constraint five adds capacity constraints to the model. As stated before, <code>M</code> will either not have a bound or have specific capacity restrictions.</p>
 
-<p>The last three positivity constraints make sure that no negative amounts of products can be produced or stored.</p>
+<p>The last three positivity constraints make sure that the machines don&rsquo;t produce negative amounts of products and that the storage does not contain a negative amount of stored products.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="c1"># Stored products from the previous month plus the number of products produced in the current</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># month must fulfill the demand while the rest of the products must be stored for the next month</span>
 </span></span><span class="line"><span class="cl"><span class="n">m</span><span class="o">.</span><span class="n">addConstrs</span><span class="p">(</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">c1</span><span class="s2">&#34;</span><span class="p">)</span>
@@ -197,7 +197,7 @@ Thus the objective function has to look like this:</p>
 </span></span></code></pre>
 <p>does everything we need to solve this optimization problem.</p>
 
-<p>Gurobi will use the Branch-and-Bound algorithm as the model only consists of linear constraints and a linear objective function, with (mixed) integer variables (IP).</p>
+<p>Gurobi will use the Branch-and-Bound algorithm as the model consists solely of linear constraints and a linear objective function, with (mixed) integer variables (IP).</p>
 
 <h2 id="evaluation">Evaluation</h2>
 
@@ -246,9 +246,9 @@ Thus the objective function has to look like this:</p>
 </span></span><span class="line"><span class="cl">Optimal solution found (tolerance 1.00e-04)
 </span></span><span class="line"><span class="cl">Best objective 7.360000000000e+05, best bound 7.360000000000e+05, gap 0.0000%
 </span></span></code></pre>
-<p>As one can see the optimal solution is equal to 736,000€ of overall costs.</p>
+<p>As one can see the optimal solution is equal to 736,000€ of costs.</p>
 
-<p>Printing out the variables reveals how many products have to be produced in each month to achieve these minimal costs.</p>
+<p>Printing out the variables reveals the number of products that the facility has to produce in each month to achieve these minimal costs.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">getVars</span><span class="p">(</span><span class="p">)</span><span class="p">:</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">varName</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">x</span><span class="s2">&#34;</span><span class="p">)</span><span class="p">:</span>

@@ -80,7 +80,7 @@
 
 <h2 id="what-is-a-markov-chain">What is a Markov Chain?</h2>
 
-<p>A basic Markov chain is made up of three main parts
+<p>A basic Markov chain consist of three main parts
 - a state space,
 - a transition matrix
 - and an initial distribution</p>
@@ -137,7 +137,7 @@
 
 <h2 id="text-generation-with-markov-chains">Text Generation with Markov Chains</h2>
 
-<p>We can apply the same concept to words of a given text. Each unique word represents a single state. A sentence is just a sequence of states that have been sampled from a state space.</p>
+<p>We can apply the same concept to words of a given text. Each unique word represents a single state. A sentence is a sequence of states that were sampled from a state space.</p>
 
 <ol>
 <li>Create a state space</li>
@@ -161,7 +161,7 @@
 </span></span></code></pre>
 <h3 id="2-calculate-probabilites-transition-matrix">2. Calculate Probabilites (Transition Matrix)</h3>
 
-<p>The transition matrix contains all possibilities of a state i being followed by a state j. So we create a matrix with <code>len(states)</code> rows and <code>len(states)</code> columns:</p>
+<p>The transition matrix contains all possibilities of a state <code>i</code> followed by a state <code>j</code>. So we create a matrix with <code>len(states)</code> rows and <code>len(states)</code> columns:</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">transition_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeroes</span><span class="p">(</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">)</span><span class="p">)</span>
 </span></span></code></pre>
 <p>First, we count the number of occurrences for each state and each state transition (i.e. two words following each other).</p>
@@ -196,11 +196,11 @@
 <p>Now, we are ready to sample words from the transition matrix. As we saw above, we need a <em>current</em> state to begin generating more states.
 A more sophisticated way than having a fixed first state is to provide an <strong>initial distribution</strong> that contains probabilities for each word to come first.</p>
 
-<p>The initial distribution is a vector of length <code>len(states)</code>. With it we can force certain words to be more likely to start the Markov chain. In an extreme case we might want the generated text to start with a certain word (e.g.: <em>&ldquo;The&rdquo;</em>). So we look for the index of <em>&ldquo;The&rdquo;</em> in our states and set that index to 1 in the initial distribution vector and all other indices to 0.</p>
+<p>The initial distribution is a vector of length <code>len(states)</code>. With it we can force certain words to be more likely to start the Markov chain. In an extreme case we might want the generated text to start with a certain word (e.g.: <em>&ldquo;The&rdquo;</em>). We look for the index of <em>&ldquo;The&rdquo;</em> in our states and set that index to 1 in the initial distribution vector and all other indices to 0.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">initial_distribution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeroes</span><span class="p">(</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">initial_distribution</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">The</span><span class="s2">&#34;</span><span class="p">)</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 </span></span></code></pre>
-<p>We could also use a list of possible sentence beginnings, all of which should all start a sentence with equal probability.</p>
+<p>We could also use a list of possible sentence beginnings, which should all start a sentence with equal probability.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">initial_distribution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeroes</span><span class="p">(</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">states</span><span class="p">)</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">sentence_beginnings</span> <span class="o">=</span> <span class="p">[</span><span class="sa"></span><span class="s2">&#34;</span><span class="s2">The</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">This</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">I</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">You</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">We</span><span class="s2">&#34;</span><span class="p">,</span> <span class="sa"></span><span class="s2">&#34;</span><span class="s2">That</span><span class="s2">&#34;</span><span class="p">]</span>
@@ -209,7 +209,7 @@ A more sophisticated way than having a fixed first state is to provide an <stron
 </span></span><span class="line"><span class="cl">								 
 </span></span><span class="line"><span class="cl">	<span class="n">initial_distribution</span><span class="p">[</span><span class="n">states</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sentence_beginning</span><span class="p">)</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence_beginnings</span><span class="p">)</span>
 </span></span></code></pre>
-<p>To generate a text, we sample words from the list of states with a probability determined by the initial distribution and the transition matrix until we reach a maximum text length. If there is no initial distribution, we just randomly choose a starting word.</p>
+<p>To generate a text, we sample words from the list of states with a probability determined by the initial distribution and the transition matrix until we reach a maximum text length. If there is no initial distribution, we randomly choose a starting word.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">generate_text</span><span class="p">(</span><span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">P_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">P_init</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-</span><span class="o">&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">	<span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span>
@@ -233,7 +233,7 @@ A more sophisticated way than having a fixed first state is to provide an <stron
 <p>Now have fun generating texts. Be sure to try different source texts and see how that affects the quality of the generated text.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">generate_text</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">transition_matrix</span><span class="p">)</span>
 </span></span></code></pre>
-<p>You can also try out the <a href="https://marcjulianschwarz-markov-chain-text-genera-generate-text-m4bkd9.streamlitapp.com/" target="_blank">text generation web app</a> I built and take a look at the <a href="https://github.com/marcjulianschwarz/markov-chain-text-generation" target="_blank">GitHub repo</a> which contains all of the source code.</p>
+<p>You can also try out the <a href="https://marcjulianschwarz-markov-chain-text-genera-generate-text-m4bkd9.streamlitapp.com/" target="_blank">text generation web app</a> I built and take a look at the <a href="https://github.com/marcjulianschwarz/markov-chain-text-generation" target="_blank">GitHub repo</a> which contains the source code.</p>
 
 <h2 id="examples">Examples</h2>
 

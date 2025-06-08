@@ -33,12 +33,12 @@
 
 <meta name="robots" content="index, follow" />
 
-<meta name="description" content="Hey there, in this post I want to share a side project of mine that I have been working on for a few days – a minimalist, *keyboard-centric* todo app. While s" />
+<meta name="description" content="I want to share a side project of mine that I have been working on for some days – a minimalist, *keyboard-centric* todo app. While showcasing the main f" />
 <meta name="keywords" content="EN,React,TypeScript,Web,2023" />
 <meta name="author" content="" />
 
 <meta property="og:title" content="Wrote this Keyboard-Centric Todo App with React - What did I learn?" />
-<meta name="og:description" content="Hey there, in this post I want to share a side project of mine that I have been working on for a few days – a minimalist, *keyboard-centric* todo app. While s" />
+<meta name="og:description" content="I want to share a side project of mine that I have been working on for some days – a minimalist, *keyboard-centric* todo app. While showcasing the main f" />
 <meta property="og:image" content="/assets/logo.png" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1234/blog/posts/reacttodoapp/" />
@@ -76,35 +76,35 @@
             </article>
             
 
-            <article class="post-content"><p>Hey there, in this post I want to share a side project of mine that I have been working on for a few days – a minimalist, <em>keyboard-centric</em> todo app. While showcasing the main features, I will refer you to some of the React resources and concepts that I used during the development of the app.</p>
+            <article class="post-content"><p>I want to share a side project of mine that I have been working on for some days – a minimalist, <em>keyboard-centric</em> todo app. While showcasing the main features, I will refer you to some of the React resources and concepts that I used during the development of the app.</p>
 
 <h2 id="landing-page-creating-your-first-todo-list">Landing Page - Creating Your First Todo List</h2>
 
-<p>When you first open the app, you are presented with a rather minimalist-looking landing page. You can see the main keyboard shortcuts, and simply typing a name will create your very first todo list.</p>
+<p>When you first open the app, you see a rather minimalist-looking landing page. It shows the main keyboard shortcuts, and typing a name will create your first todo list.</p>
 
 <p><img src="/blog/media/todo_start.jpg" alt="Start Page of the todo app" /></p>
 
 <blockquote>
-<p>Implementing all of the keyboard shortcuts and navigation throughout the app taught me a lot about reference management via the <a href="https://react.dev/reference/react/useRef#manipulating-the-dom-with-a-ref" target="_blank">useRef React hook</a> to control the focus of various HTML elements through the DOM.</p>
+<p>Implementing the keyboard shortcuts and navigation throughout the app taught me a lot about reference management via the <a href="https://react.dev/reference/react/useRef#manipulating-the-dom-with-a-ref" target="_blank">useRef React hook</a> to control the focus of  HTML elements through the DOM.</p>
 </blockquote>
 
-<p>The user interface was intentionally kept simple, to feel just like a piece of paper sitting right there on your desktop, waiting for you to jot down todos. Striking them through with a single keyboard click should feel as seamless and delightful as possible. That&rsquo;s why all of your actions will trigger the dynamic HUD to give you instant feedback.</p>
+<p>The user interface was intentionally kept simple, to feel like a piece of paper sitting right there on your desktop, waiting for you to jot down todos. Striking them through with a single keyboard click should feel as seamless and delightful as possible. That&rsquo;s why all your actions will trigger the dynamic HUD to give you instant feedback.</p>
 
 <p><img src="/blog/media/todo_list_done.jpg" alt="" /></p>
 
 <p><img src="/blog/media/todo_hud.jpg" alt="" /></p>
 
 <blockquote>
-<p>Implementing the HUD made me use and learn a surprising amount of new React concepts. First, I created a <a href="https://react.dev/reference/react/cloneElement#extracting-logic-into-a-custom-hook" target="_blank">custom React Hook</a> to abstract away the logic of showing and hiding the HUD element. Then, I used a <a href="https://react.dev/reference/react-dom/createPortal#rendering-a-modal-dialog-with-a-portal" target="_blank">React portal</a> to correctly position it above all other content of the app. Lastly, I used the Publish-Subscribe Pattern to implement app-wide messaging via a <a href="https://react.dev/learn/passing-data-deeply-with-context" target="_blank">React context and context provider</a> to facilitate the necessary methods.</p>
+<p>Implementing the HUD made me use and learn a surprising amount of new React concepts. First, I created a <a href="https://react.dev/reference/react/cloneElement#extracting-logic-into-a-custom-hook" target="_blank">custom React Hook</a> to abstract away the logic of showing and hiding the HUD element. Then, I used a <a href="https://react.dev/reference/react-dom/createPortal#rendering-a-modal-dialog-with-a-portal" target="_blank">React portal</a> to position it above all other content of the app. Lastly, I used the Publish-Subscribe Pattern to add app-wide messaging via a <a href="https://react.dev/learn/passing-data-deeply-with-context" target="_blank">React context and context provider</a> to provide the necessary methods.</p>
 </blockquote>
 
 <h2 id="when-one-list-is-not-enough">When One List Is Not Enough</h2>
 
-<p>Of course, a todo app would be nothing without the ability to create more than one list. None of your brilliant ideas will get lost again; just add them to your second &ldquo;Ideas&rdquo; list.</p>
+<p>Of course, a todo app would be nothing without the ability to create more than one list. None of your brilliant ideas will get lost again. Add them to your second &ldquo;Ideas&rdquo; list.</p>
 
 <p><img src="/blog/media/todo_two_list.jpg" alt="" /></p>
 
-<p>But I didn&rsquo;t stop there. You can go crazy and add as many lists as you please. Productivity has never been this easy before 😉.</p>
+<p>But I didn&rsquo;t stop there. You can go crazy and add as many lists as you want. Productivity has never been this easy before 😉.</p>
 
 <p><img src="/blog/media/todo_four_list.jpg" alt="" /></p>
 
@@ -114,16 +114,15 @@
 
 <p><img src="/blog/media/todo_cmd.jpg" alt="" /></p>
 
-<p>The command bar let&rsquo;s you create new lists, delete the ones you don&rsquo;t need anymore, and toggle the currently selected todo item.</p>
+<p>The command bar let&rsquo;s you create new lists, delete the ones you don&rsquo;t need anymore, and toggle the selected todo item.</p>
 
 <blockquote>
-<p>Implementing the command bar made me use the <a href="https://kentcdodds.com/blog/the-state-reducer-pattern-with-react-hooks" target="_blank">Reducer Pattern</a> (also see <a href="https://react.dev/reference/react/useReducer" target="_blank">useReducer</a>) so that actions could be fired from everywhere within the app. These actions then trigger all of the backend operations (in this case local storage). Also UI changes are performed, such as showing the already mentioned HUD.</p>
+<p>Implementing the command bar made me use the <a href="https://kentcdodds.com/blog/the-state-reducer-pattern-with-react-hooks" target="_blank">Reducer Pattern</a> (also see <a href="https://react.dev/reference/react/useReducer" target="_blank">useReducer</a>) so that I could fire actions from everywhere within the app. These actions then trigger the backend operations (in this case local storage). And they perform UI changes, such as showing the already mentioned HUD.</p>
 </blockquote>
 
 <h2 id="conclusion">Conclusion</h2>
 
-<p>Overall, this project taught me a lot about the various interesting concepts in the React framework. I had to build reusable components, write lots of CSS and think about ways to communicate between parts of the app.
-So, quite a success.</p>
+<p>This project taught me a lot about interesting concepts in the React framework. I had to build reusable components, write lots of CSS and think about ways to communicate between parts of the app.</p>
 </article>
         </main>
     </body>

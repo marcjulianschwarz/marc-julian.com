@@ -86,7 +86,7 @@
 </span></span><span class="line"><span class="cl">		<span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="n">epochs</span> 
 </span></span><span class="line"><span class="cl">		<span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="p">)</span> <span class="c1"># TODO</span>
 </span></span></code></pre>
-<p>Here, we already set default values for hyperparameters like the learning rate (lr) and the number of epochs that the model should be trained for. Additionally, we already initialize the weight and bias values with the <code>init_weights</code> method.</p>
+<p>Here, we already set default values for hyperparameters like the learning rate (lr) and the number of epochs that the model should train for. We already initialize the weight and bias values with the <code>init_weights</code> method.</p>
 
 <h2 id="weight-bias-initialization">Weight &amp; Bias Initialization</h2>
 
@@ -98,8 +98,9 @@ Since our training data has two features, we need one weight per feature, so we 
 </span></span></code></pre>
 <h2 id="training-loop">Training Loop</h2>
 
-<p>Now we are ready to work on the training loop. The basic idea is that we start predicting classes with random weight values in the model. We then compare the predicted (probably misclassified) class label with the expected class label to compute the error that the model has made.
-We then use the error to update the weights and bias by a small amount to get better predictions. We iterate over this process until the model converges or we reach the maximum epoch limit.</p>
+<p>Now we are ready to work on the training loop. The basic idea is that we start predicting classes with random weight values in the model. We then compare the predicted (probably misclassified) class label with the expected class label to compute the error that the model has made.</p>
+
+<p>We then use the error to update the weights and bias by a small amount to get better predictions. We iterate over this process until the model converges or we reach the maximum epoch limit.</p>
 
 <p><img src="/blog/media/percep8.png" alt="" /></p>
 
@@ -128,7 +129,7 @@ We then use the error to update the weights and bias by a small amount to get be
 If the true and predicted classes are the same (0,0 or 1,1), the error will be equal to 0. In this case, everything is fine and we don&rsquo;t need to update the weights.
 In the two cases of misclassification (0,1 or 1,0), the error will be either  -1 or 1. Here we want to update the weights to hopefully get the prediction closer to the correct class in the next epoch.</p>
 
-<p>As you can see from the formula below, we update the weight with respect to the actual data points. This way, our data has an influence on the weight updates. Large values will have a higher impact than small values. This implies that our model benefits from feature scaling. One of the methods that could be applied is <strong>standardization</strong> where you subtract the mean and divide by the standard deviation to center and scale your data points.</p>
+<p>As you can see from the formula below, we update the weight according to the actual data points. This way, our data has an influence on the weight updates. Large values will have a higher impact than small values. This implies that our model benefits from feature scaling. One of the methods that could help is <strong>standardization</strong> where you subtract the mean and divide by the standard deviation to center and scale your data points.</p>
 
 <p>We multiply by the learning rate to make smaller steps, which helps to get better convergence. The magnitude of the learning rate plays an essential role. Too large values will lead to rapid but unstable convergence, too low values will make the model converge slowly and it may even get stuck in local minima.</p>
 
@@ -144,11 +145,11 @@ In the two cases of misclassification (0,1 or 1,0), the error will be either  -1
 </span></span><span class="line"><span class="cl">			<span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_delta</span> 
 </span></span><span class="line"><span class="cl">			<span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">+</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias_delta</span>
 </span></span></code></pre>
-<p>Finally, we have to implement the <code>predict</code> method to be able to calculate the error.</p>
+<p>Lastly, we have to implement the <code>predict</code> method to be able to calculate the error.</p>
 
 <h2 id="prediction">Prediction</h2>
 
-<p>For prediction, we simply compute a linear combination of the input data using the trained weights and bias. To get the corresponding class labels, we need to clip the values with a step function. This gives us a binary output, just like the target variable.</p>
+<p>For prediction, we compute a linear combination of the input data using the trained weights and bias. To get the corresponding class labels, we need to clip the values with a step function. This gives us a binary output, like the target variable.</p>
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="p">:</span>
 </span></span><span class="line"><span class="cl">	<span class="n">output</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span>
 </span></span><span class="line"><span class="cl">	<span class="c1"># Activation Function (in this case a simple step function)</span>
@@ -184,11 +185,11 @@ In the two cases of misclassification (0,1 or 1,0), the error will be either  -1
 <pre class="chroma"><code><span class="line"><span class="cl"><span class="n">perceptron</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">y_pred</span> <span class="o">=</span> <span class="n">perceptron</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
 </span></span></code></pre>
-<p>Here we can see two different plots for the predictions. The left one did not use any activation function and therefore shows the full range of values that were predicted. On the right side, the step function from above was used.</p>
+<p>Here we can see two different plots for the predictions. For the left one, I did not use any activation function which is why it shows the full range of values that the model predicted. For the right side, I used the step function from above.</p>
 
 <p><img src="/blog/media/percep7.png" alt="Good Binary Classification Scatter Plot" /></p>
 
-<p>After training, the model seems to be able to discriminate between the two classes quite well. However, when comparing the predictions with the original data set we can clearly see that some samples were still misclassified. This is expected because the perceptron model is trying to fit a <strong>linear</strong> decision boundary while the two classes are actually <strong>not linearly</strong> separable.
+<p>After training, the model seems to be able to discriminate between the two classes. But, when comparing the predictions with the original data set we can see that some samples were still misclassified. This is expected because the perceptron model is trying to fit a <strong>linear</strong> decision boundary while the two classes are actually <strong>not linearly</strong> separable.
 We could solve this problem by introducing more features, since in a higher dimensional space there may be a hyperplane that perfectly separates the classes. Of course, this will not always be possible which is why we need more complex models that can fit nonlinear decision boundaries.</p>
 
 <h2 id="code">Code</h2>

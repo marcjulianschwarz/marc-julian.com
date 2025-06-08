@@ -33,16 +33,16 @@
 
 <meta name="robots" content="index, follow" />
 
-<meta name="description" content="## An introduction on how to create a simple widget for iOS
+<meta name="description" content="You will learn how to create simple web requests, build a good-looking widget and share it with others.
 
-You will learn how to create simple web requests, build a good-looking widget and share it with" />
+An iOS widget often loads some sort of data from an" />
 <meta name="keywords" content="EN,Scriptable,iOS,2020" />
 <meta name="author" content="" />
 
 <meta property="og:title" content="How to create simple iOS widgets using Scriptable and JavaScript." />
-<meta name="og:description" content="## An introduction on how to create a simple widget for iOS
+<meta name="og:description" content="You will learn how to create simple web requests, build a good-looking widget and share it with others.
 
-You will learn how to create simple web requests, build a good-looking widget and share it with" />
+An iOS widget often loads some sort of data from an" />
 <meta property="og:image" content="/assets/logo.png" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1234/blog/posts/codescriptablewidgets/" />
@@ -77,24 +77,20 @@ You will learn how to create simple web requests, build a good-looking widget an
             </article>
             
 
-            <article class="post-content"><h2 id="an-introduction-on-how-to-create-a-simple-widget-for-ios">An introduction on how to create a simple widget for iOS</h2>
+            <article class="post-content"><p>You will learn how to create simple web requests, build a good-looking widget and share it with others.</p>
 
-<p>You will learn how to create simple web requests, build a good-looking widget and share it with others.</p>
-
-<p>Usually, an iOS widget loads some sort of data from an API, a file or the web and displays it on your home-screen. Within the Scriptable community, people agreed on a basic structure for the code.</p>
+<p>An iOS widget often loads some sort of data from an API, a file or the web and displays it on your home-screen. Within the Scriptable community, people agreed on a basic structure for the code.</p>
 
 <p>It consists of these two methods:</p>
 
 <ul>
-<li>getData()</li>
-<li>createWidget(data)</li>
+<li><code>getData()</code></li>
+<li><code>createWidget(data)</code></li>
 </ul>
 
-<p>In the following three steps I will show you how to implement them.</p>
+<h2 id="1-getting-data">1. Getting data.</h2>
 
-<h3 id="1-getting-data">1. Getting data.</h3>
-
-<p>A simple web request can be used to load the data. In this case, a JSON file. Notice that the getData(url) method needs the async keyword in front of it because it uses await in its body.</p>
+<p>A simple web request downloads the necessary data. In this case, a JSON file. Notice that the <code>getData(url)</code> method needs the <code>async</code> keyword in front of it because it uses <code>await</code> in its body.</p>
 <pre class="chroma"><code><span class="line"><span class="cl">const url = &#34;https://www.github.com/marcjulianschwarz/code/sample.json&#34;;
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">async function getData(url){
@@ -109,14 +105,13 @@ You will learn how to create simple web requests, build a good-looking widget an
 </span></span><span class="line"><span class="cl">	return processedData;
 </span></span><span class="line"><span class="cl">}
 </span></span></code></pre>
-<h3 id="2-processing-data">2. Processing data.</h3>
+<h2 id="2-processing-data">2. Processing data.</h2>
 
-<p>The processData() function can be used to further process the data to your needs.</p>
+<p>The optional <code>processData()</code> function further processes the data to your needs.</p>
 
-<h3 id="3-build-the-widget">3. Build the widget.</h3>
+<h2 id="3-build-the-widget">3. Build the widget.</h2>
 
-<p>Now it’s time to build the actual widget. Right now Scriptable has so called ListWidgets. After you created a ListWidget() object, you can add text and other media to it.
-In this example the widget will display the text stored in data.sample.</p>
+<p>Now it’s time to build the actual widget. Right now, Scriptable has so called <code>ListWidget</code> objects. You can add text and other media to it. In this example, the widget will display the text stored in <code>data.sample</code>.</p>
 <pre class="chroma"><code><span class="line"><span class="cl">function createWidget(data){
 </span></span><span class="line"><span class="cl">	var widget = new ListWidget();
 </span></span><span class="line"><span class="cl">	
@@ -129,7 +124,7 @@ In this example the widget will display the text stored in data.sample.</p>
 </span></span><span class="line"><span class="cl">	return widget;
 </span></span><span class="line"><span class="cl">}
 </span></span></code></pre>
-<p>In the last step, all functions will be called like this:</p>
+<p>As a last step, call all functions in this order:</p>
 <pre class="chroma"><code><span class="line"><span class="cl">let data = await getData(url);
 </span></span><span class="line"><span class="cl">let processedData = processData(data);
 </span></span><span class="line"><span class="cl">
@@ -138,23 +133,20 @@ In this example the widget will display the text stored in data.sample.</p>
 </span></span><span class="line"><span class="cl">Script.setWidget(widget);
 </span></span><span class="line"><span class="cl">Script.complete();
 </span></span></code></pre>
-<h3 id="4-share">4. Share</h3>
+<h2 id="4-share">4. Share</h2>
 
-<p>Finally, you probably want to share your widget with others.
-To easily achieve this, I would recommend uploading it to GitHub.
-Add a good README file that explains what your widget is doing and how to install it.</p>
+<p>You probably want to share your widget with others. To achieve this, I would recommend uploading it to GitHub. Add a good <code>README</code> file that explains what your widget is doing and how to install it.</p>
 
-<h3 id="5-questions">5. Questions?</h3>
+<h2 id="5-questions">5. Questions?</h2>
 
 <p>If you have any questions or need help, you can always contact me:</p>
 
 <ul>
-<li>Website: <a href="https://www.marc-julian.de/contact.html" target="_blank">marc-julian.de</a></li>
+<li>Website: <a href="https://www.marc-julian.coml" target="_blank">marc-julian.com</a></li>
 <li>LinkedIn <a href="https://www.linkedin.com/in/marcjulianschwarz" target="_blank">@marcjulianschwarz</a></li>
 </ul>
 
-<p>You can also check out the Scriptable documentation which is excellent.
-There is also a nice <a href="">Scriptable discord server</a> which you can visit to share your creations or get help.</p>
+<p>You can also check out the Scriptable documentation which is great. Or join the <a href="">Scriptable discord server</a> which let&rsquo;s you share your creations or get help.</p>
 </article>
         </main>
     </body>
