@@ -38,45 +38,49 @@
     h4,
     h5,
     h6 {
-        margin-top: 32px;
-        margin-bottom: 24px;
         font-weight: 600;
         line-height: 1.25;
+        margin-top: 1.7em;
+        margin-bottom: 0.5em;
+    }
+
+    /* Reduce spacing for consecutive headings */
+    h1 + h2,
+    h2 + h3,
+    h3 + h4,
+    h4 + h5,
+    h5 + h6 {
+        margin-top: 0.7em;
     }
 
     h1 {
-        margin: 0.67em 0;
-        font-weight: 600;
-        padding-bottom: 0.3em;
         font-size: 2rem;
+        margin-top: 0; /* No top margin for h1 at page start */
+        margin-bottom: 0.75em;
+        padding-bottom: 0.3em;
     }
 
     h2 {
-        font-weight: 600;
-        padding-bottom: 0.5em; /*for border-bottom */
         font-size: 1.5rem;
-        border-bottom: 2px solid #30363dcb;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid #30363dff;
     }
 
     h3 {
-        font-weight: 600;
         font-size: 1.25rem;
-        padding-bottom: 0.5em; /*for border-bottom */
-        border-bottom: 2px solid #30363dcb;
+        padding-bottom: 0.3em;
+        border-bottom: 1px solid #30363dff;
     }
 
     h4 {
-        font-weight: 600;
         font-size: 1rem;
     }
 
     h5 {
-        font-weight: 600;
         font-size: 0.875rem;
     }
 
     h6 {
-        font-weight: 600;
         font-size: 0.85rem;
         color: #8d96a0;
     }
