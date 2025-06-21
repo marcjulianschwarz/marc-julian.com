@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="canonical" href="http://localhost:1234/blog/posts/obsidian-dataview-serializer/" />
+
+<link rel="stylesheet" href="/styles/main.css" />
+<link rel="stylesheet" href="/styles/blog.css" />
+<link rel="stylesheet" href="/styles/theme.css" />
+<link rel="stylesheet" href="/styles/code.css" />
+
+
+<link
+    rel="icon"
+    type="image/png"
+    href="/assets/favicons/favicon-96x96.png"
+    sizes="96x96"
+/>
+<link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg" />
+<link rel="shortcut icon" href="/assets/favicons/favicon.ico" />
+<link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="/assets/favicons/apple-touch-icon.png"
+/>
+<meta name="apple-mobile-web-app-title" content="MJ's Blog" />
+<link rel="manifest" href="/assets/favicons/site.webmanifest" />
+
+
+<meta name="msapplication-TileColor" content="#000000" />
+<meta name="theme-color" content="#000000" />
+
+<meta name="robots" content="index, follow" />
+
+<meta name="description" content="The popular [Obsidian Dataview plugin](https://github.com/blacksmithgu/obsidian-dataview) let&#39;s you query markdown notes with SQL-like syntax. It uses the YAML" />
+<meta name="keywords" content="EN,Obsidian,Markdown,2025" />
+<meta name="author" content="Marc Julian Schwarz" />
+
+<meta property="og:title" content="Obsidian Dataview Serializer" />
+<meta name="og:description" content="The popular [Obsidian Dataview plugin](https://github.com/blacksmithgu/obsidian-dataview) let&#39;s you query markdown notes with SQL-like syntax. It uses the YAML" />
+<meta property="og:image" content="/assets/logo.png" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1234/blog/posts/obsidian-dataview-serializer/" />
+<meta property="og:site_name" content="MJ's Blog" />
+
+        <title>Obsidian Dataview Serializer</title>
+    </head>
+    <body>
+        <main class="ablogpost main-width-control">
+            <article class="post-header">
+                <a class="back-btn" href="/blog">&#8592; Back</a>
+
+                <div>
+                    <h1>Obsidian Dataview Serializer</h1>
+                    <h2></h2>
+                    <p class="date">2025-06-21</p>
+                </div>
+                <div class="tags"> <a href="/blog/tags/en/">
+    <div class="tag tag-post">EN</div>
+</a>
+  <a href="/blog/tags/obsidian/">
+    <div class="tag tag-post">Obsidian</div>
+</a>
+  <a href="/blog/tags/markdown/">
+    <div class="tag tag-post">Markdown</div>
+</a>
+  <a href="/blog/tags/2025/">
+    <div class="tag tag-year">2025</div>
+</a>
+ </div>
+
+            </article>
+            
+
+            <article class="post-content"><p>The popular <a href="https://github.com/blacksmithgu/obsidian-dataview" target="_blank">Obsidian Dataview plugin</a> let&rsquo;s you query markdown notes with SQL-like syntax. It uses the YAML frontmatter (also known as Obsidian properties) as attributes. This enables powerful workflows. For example, <a href="https://github.com/marcjulianschwarz/obsidian-vault-blog" target="_blank">all of my blog posts</a> contain these YAML properties:</p>
+
+<ul>
+<li><code>blog-title</code></li>
+<li><code>blog-tags</code></li>
+<li><code>blog-published</code></li>
+<li><code>blog-author</code></li>
+<li><code>blog-archived</code></li>
+<li><code>blog-skip</code></li>
+</ul>
+
+<p>With these, I can create lists and tables about my blog posts. Here, the query results in a table of all posts that are online at the moment, sorted by publishing date:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">TABLE blog-published
+</span></span><span class="line"><span class="cl">FROM &#34;Posts&#34;
+</span></span><span class="line"><span class="cl">WHERE blog-skip != true and blog-archive != true
+</span></span><span class="line"><span class="cl">SORT blog-published desc
+</span></span></code></pre>
+<p>But you can also build more complex queries. The following adds a markdown formatted link to the actual published blog post website as a new column:</p>
+<pre class="chroma"><code><span class="line"><span class="cl">TABLE WITHOUT ID (&#34;[&#34; + blog-title + &#34;](&#34; + &#34;https://marc-julian.com/blog/posts/&#34; + replace(file.name, &#34;.md&#34;, &#34;&#34;) + &#34;)&#34;) AS &#34;URL&#34;, blog-published as &#34;Published&#34; FROM &#34;Posts&#34; 
+</span></span><span class="line"><span class="cl">WHERE blog-skip != true and blog-archive != true 
+</span></span><span class="line"><span class="cl">SORT blog-published desc
+</span></span></code></pre>
+<p>Now these tables created with dataview are great inside of the Obsidian editor, but they won&rsquo;t render in other markdown editors/viewers (e.g. GitHub READMEs). <a href="https://github.com/dsebastien/obsidian-dataview-serializer" target="_blank">The Obsidian Dataview Serializer</a> solves this specific problem by live-updating a <em>&ldquo;serialized&rdquo;</em> markdown version of the table. Every time the underlying data or the query changes, the plugin will update the markdown table accordingly. Check out <a href="https://github.com/marcjulianschwarz/obsidian-vault-blog" target="_blank">this README of my blog post repository</a> on GitHub to see it in action. It uses the second more complex query to provide links to all posts right in the README. There you should even be able to see the exact post you are reading right now.</p>
+
+<p>What I like about this approach is that it works in all places that can render markdown tables. For example, I am also using the plugin to render a table of different types of coffee bean varieties on my German coffee and espresso wiki <a href="https://the-brew-code.de/Kaffee/Kaffee-%C3%9Cbersicht" target="_blank">the-brew-code.de</a>.</p>
+</article>
+        </main>
+    </body>
+</html>

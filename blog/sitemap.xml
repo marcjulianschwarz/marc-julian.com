@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://localhost:1234/blog/posts/obsidian-dataview-serializer/</loc>
+    <lastmod>2025-06-21</lastmod>
+  </url>
+  <url>
     <loc>http://localhost:1234/blog/posts/huggingface-models-in-ollama/</loc>
     <lastmod>2025-05-31</lastmod>
   </url>
@@ -101,7 +105,7 @@
     <lastmod>2022-01-06</lastmod>
   </url>
   <url>
-    <loc>http://localhost:1234/blog/posts/cdustartup/</loc>
+    <loc>http://localhost:1234/blog/posts/betterfilelink/</loc>
     <lastmod>2021-09-09</lastmod>
   </url>
   <url>
@@ -109,7 +113,7 @@
     <lastmod>2021-09-09</lastmod>
   </url>
   <url>
-    <loc>http://localhost:1234/blog/posts/betterfilelink/</loc>
+    <loc>http://localhost:1234/blog/posts/cdustartup/</loc>
     <lastmod>2021-09-09</lastmod>
   </url>
   <url>
@@ -226,6 +230,10 @@
   </url>
   <url>
     <loc>http://localhost:1234/blog/tags/macos/</loc>
+    <lastmod></lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:1234/blog/tags/markdown/</loc>
     <lastmod></lastmod>
   </url>
   <url>
