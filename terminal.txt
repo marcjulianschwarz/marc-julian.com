@@ -28,7 +28,5 @@
 Commands:
 ═════════
 
-$ curl marc-julian.com              → Get this page
-$ curl marc-julian.com/about        → Detailed about section
-$ curl marc-julian.com/projects     → View my latest projects
-$ curl marc-julian.com/contact      → Get in touch with me
+$ curl marc-julian.com                 → Get this page
+$ curl marc-julian.com/email | sh      → Get in touch with me
