@@ -1,0 +1,17 @@
+Welcome to marc-julian.com!
+    __  __                       _       _ _             
+   |  \/  | __ _ _ __ ___       | |_   _| (_) __ _ _ __  
+   | |\/| |/ _` | '__/ __|   _  | | | | | | |/ _` | '_ \ 
+   | |  | | (_| | | | (__   | |_| | |_| | | | (_| | | | |
+   |_|  |_|\__,_|_|  \___|   \___/ \__,_|_|_|\__,_|_| |_|
+
+📍 Location: Germany
+💼 Role: Software Developer | Data Scientist
+📧 Email: terminal @ marc-julian.de
+🐙 GitHub: https://github.com/marcjulianschwarz
+🌐 Website: https://marc-julian.com
+
+Commands:
+  curl marc-julian.com/about    - More about me
+  curl marc-julian.com/projects - My projects
+  curl marc-julian.com/contact  - Get in touch
