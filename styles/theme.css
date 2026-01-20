@@ -25,6 +25,8 @@
     --primary-text: rgb(255, 255, 255);
     --secondary-text: rgb(185, 185, 185);
     --special: rgb(115, 126, 252);
+    --terminal-color: rgb(155, 165, 255);
+    --terminal-color-rgb: 155, 165, 255;
     --default-font-family:
         -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif, color-emoji;
 }

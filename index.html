@@ -66,237 +66,399 @@
             <article id="navigation" class="article-control">
                 <a href="#myprojects">Projects &#8599;</a>
                 <a href="/blog/">Blog &#8599;</a>
+                <a href="#terminal">Terminal &#8599;</a>
                 <a href="#mytools">Tools &#8599;</a>
             </article>
 
-            <article id="whatamidoing" class="article-control">
-                <div class="article-heading">
-                    <h2 id="whatamidoing-link">About me</h2>
-                    <p>
-                        I love building and using software. At day I develop
-                        Qira, the all-in-one intelligent automotive assistant.
-                        My nights and weekends are spent working on personal
-                        projects.
-                    </p>
-                </div>
+            <article id="terminal" class="article-control">
+                <div class="terminal-container">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                        </div>
+                        <div class="terminal-title">zsh</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="comment"># Get my contact info</span>
+                        </div>
+                        <div
+                            class="terminal-command"
+                            data-command="curl marc-julian.com"
+                        >
+                            <span class="cmd-text">curl marc-julian.com</span>
+                            <span class="copy-indicator">Click to copy</span>
+                        </div>
 
-                <div class="timeline">
-                    <div class="timeline-event">
-                        <p class="time">2024 - Today (Hamburg, Germany)</p>
-                        <h2>AHEAD Automotive</h2>
-                        <p class="description">
-                            Data Scientist / Software Engineer at a young and
-                            innovative startup. We are working on
-                            <a href="https://www.qira.net/">Qira</a>, an
-                            intelligent assistant that provides instant answers
-                            for every repair.
-                        </p>
+                        <div class="terminal-line spacer">
+                            <span class="prompt">$</span>
+                            <span class="comment"># Open my email client</span>
+                        </div>
+                        <div
+                            class="terminal-command"
+                            data-command="curl marc-julian.com/email | sh"
+                        >
+                            <span class="cmd-text"
+                                >curl marc-julian.com/email | sh</span
+                            >
+                            <span class="copy-indicator">Click to copy</span>
+                        </div>
+
+                        <div class="terminal-line spacer">
+                            <span class="prompt">$</span>
+                            <span class="comment"
+                                ># See what else I'm up to</span
+                            >
+                        </div>
+                        <div
+                            class="terminal-command"
+                            data-command="curl marc-julian.com/terminal"
+                        >
+                            <span class="cmd-text"
+                                >curl marc-julian.com/terminal</span
+                            >
+                            <span class="copy-indicator">Click to copy</span>
+                        </div>
+
+                        <div class="terminal-cursor">_</div>
                     </div>
-                    <div class="timeline-event">
-                        <p class="time">2022 - 2024 (Nuremberg, Germany)</p>
-                        <h2>AI Office at DATEV</h2>
-                        <p class="description">
-                            Data Scientist / Working Student at DATEV's in-house
-                            AI and ML team. Worked on semantic-preserving PII
-                            anonymization, mixed integer program optimization,
-                            retrieval augmented generation, fine-tuning of large
-                            language models and overall support for bringing
-                            intelligent software solutions into the different
-                            areas at DATEV.
-                        </p>
+                </div>
+            </article>
+
+            <article id="whatamidoing" class="article-control">
+                <div class="terminal-container about-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                        </div>
+                        <div class="terminal-title">tree ~/career</div>
                     </div>
-                    <div class="timeline-event">
-                        <p class="time">2021 - 2022 (Nuremberg, Germany)</p>
-                        <h2>Fraunhofer IIS</h2>
-                        <p class="description">
-                            Research Assistant / Working Student in the "Machine
-                            Learning and Validation" research group. Supported
-                            the team in analyzing motion capture data, built a
-                            Python Flask API and an accompanying web application
-                            to display our results in a nice looking dashboard.
-                        </p>
-                    </div>
-                    <div class="timeline-event">
-                        <p class="time">2002 - Today</p>
-                        <h2>Personal Projects</h2>
-                        <p class="description">
-                            Several open and closed source projects, some of
-                            which you can find on this page.
-                        </p>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="cmd-text"
+                                >tree ~/career --timeline</span
+                            >
+                        </div>
+                        <div class="tree-output">
+                            <div class="tree-line">
+                                <span class="tree-structure">.</span>
+                            </div>
+                            <div class="tree-item">
+                                <span class="tree-structure">├── </span
+                                ><span class="tree-folder">2024-Today/</span>
+                                <span class="tree-location"
+                                    >Hamburg, Germany</span
+                                >
+                            </div>
+                            <div class="tree-item-details">
+                                <span class="tree-structure">│ ├── </span
+                                ><span class="tree-role">AHEAD Automotive</span>
+                            </div>
+                            <div class="tree-item-details">
+                                <span class="tree-structure">│ └── </span
+                                ><span class="tree-desc"
+                                    >Data Scientist / Software Engineer at a
+                                    young and innovative startup. Working on
+                                    <a href="https://www.qira.net/">Qira</a>, an
+                                    intelligent assistant that provides instant
+                                    answers for every repair.</span
+                                >
+                            </div>
+                            <div class="tree-spacer"></div>
+                            <div class="tree-item">
+                                <span class="tree-structure">├── </span
+                                ><span class="tree-folder">2022-2024/</span>
+                                <span class="tree-location"
+                                    >Nuremberg, Germany</span
+                                >
+                            </div>
+                            <div class="tree-item-details">
+                                <span class="tree-structure">│ ├── </span
+                                ><span class="tree-role"
+                                    >AI Office at DATEV</span
+                                >
+                            </div>
+                            <div class="tree-item-details">
+                                <span class="tree-structure">│ └── </span
+                                ><span class="tree-desc"
+                                    >Data Scientist / Working Student at DATEV's
+                                    in-house AI and ML team. Worked on
+                                    semantic-preserving PII anonymization, mixed
+                                    integer program optimization, retrieval
+                                    augmented generation, fine-tuning of large
+                                    language models.</span
+                                >
+                            </div>
+                            <div class="tree-spacer"></div>
+                            <div class="tree-item">
+                                <span class="tree-structure">├── </span
+                                ><span class="tree-folder">2021-2022/</span>
+                                <span class="tree-location"
+                                    >Nuremberg, Germany</span
+                                >
+                            </div>
+                            <div class="tree-item-details">
+                                <span class="tree-structure">│ ├── </span
+                                ><span class="tree-role">Fraunhofer IIS</span>
+                            </div>
+                            <div class="tree-item-details">
+                                <span class="tree-structure">│ └── </span
+                                ><span class="tree-desc"
+                                    >Research Assistant / Working Student in the
+                                    "Machine Learning and Validation" research
+                                    group. Supported the team in analyzing
+                                    motion capture data, built a Python Flask
+                                    API and web application dashboard.</span
+                                >
+                            </div>
+                            <div class="tree-spacer"></div>
+                            <div class="tree-item">
+                                <span class="tree-structure">└── </span
+                                ><span class="tree-folder">2002-Today/</span>
+                                <span class="tree-location"
+                                    >Personal Projects</span
+                                >
+                            </div>
+                            <div class="tree-item-details last">
+                                <span class="tree-structure"> └── </span
+                                ><span class="tree-desc"
+                                    >Several open and closed source projects,
+                                    some of which you can find on this
+                                    page.</span
+                                >
+                            </div>
+                        </div>
+                        <div class="terminal-cursor">_</div>
                     </div>
                 </div>
             </article>
 
             <article id="myprojects" class="article-control">
-                <div class="article-heading">
-                    <h2 id="myprojects-link">Apps and Projects</h2>
-                    <p>
-                        A collection of some of my open source projects. Click
-                        on a box to find out more.
-                    </p>
-                </div>
-                <div class="projects">
-                    <a href="https://mdsnip.com">
-                        <div class="project">
-                            <h1>mdsnip.com</h1>
-                            <p>
-                                Instantly share beautifully formatted markdown
-                                snippets with a short URL. Let the snippet
-                                expire after some time, add password-protection,
-                                download as PDF and choose one of many themes.
-                            </p>
+                <div class="terminal-container projects-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
                         </div>
-                    </a>
-                    <a href="https://www.raycast.com/marcjulian/obsidian">
-                        <div class="project">
-                            <h1>Obsidian for Raycast</h1>
-                            <p>
-                                Puts your Obsidian markdown notes at your
-                                fingertips my making them available everywhere
-                                and anytime on your Mac. Search, open, create,
-                                edit, copy, paste and much more.
-                            </p>
+                        <div class="terminal-title">ls ~/projects</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="cmd-text">ls -lah ~/projects</span>
                         </div>
-                    </a>
-                    <a href="https://www.raycast.com/boosteblume/personio">
-                        <div class="project">
-                            <h1>Personio for Raycast</h1>
-                            <p>
-                                Mange your Personio attendance times for work.
-                                Created in collaboration with Max Blum.
-                            </p>
+                        <div class="ls-output">
+                            <a href="https://mdsnip.com" class="ls-item">
+                                <span class="ls-name">mdsnip.com</span>
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >Instantly share beautifully formatted
+                                    markdown snippets</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://www.raycast.com/marcjulian/obsidian"
+                                class="ls-item"
+                            >
+                                <span class="ls-name">obsidian-raycast</span>
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >Obsidian notes at your fingertips on
+                                    Mac</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://www.raycast.com/boosteblume/personio"
+                                class="ls-item"
+                            >
+                                <span class="ls-name">personio-raycast</span>
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >Manage Personio attendance times</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://github.com/marcjulianschwarz/obsidian-podcast-note"
+                                class="ls-item"
+                            >
+                                <span class="ls-name"
+                                    >podcast-note-obsidian</span
+                                >
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >Take notes on podcasts with rich
+                                    metadata</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://github.com/marcjulianschwarz/obsidian-file-link"
+                                class="ls-item"
+                            >
+                                <span class="ls-name">file-link-obsidian</span>
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >Link to local files outside vault</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://github.com/marcjulianschwarz/telekom-data-usage-widget"
+                                class="ls-item"
+                            >
+                                <span class="ls-name">telekom-widget</span>
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >iOS widget for data usage tracking</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://marc-julian.com/blog"
+                                class="ls-item"
+                            >
+                                <span class="ls-name">blog</span>
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >Tech articles and things I learned</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://github.com/marcjulianschwarz"
+                                class="ls-item"
+                            >
+                                <span class="ls-name"
+                                    >github.com/marcjulianschwarz</span
+                                >
+                                <span class="ls-arrow">→</span>
+                                <span class="ls-desc"
+                                    >More projects and contributions</span
+                                >
+                            </a>
                         </div>
-                    </a>
-                    <a
-                        href="https://github.com/marcjulianschwarz/obsidian-podcast-note"
-                    >
-                        <div class="project">
-                            <h1>Podcast Note for Obsidian</h1>
-                            <p>
-                                Take notes on your favorite podcasts with rich
-                                metadata extracted from the show page, right
-                                within Obsidian.
-                            </p>
-                        </div>
-                    </a>
-                    <a
-                        href="https://github.com/marcjulianschwarz/obsidian-file-link"
-                    >
-                        <div class="project">
-                            <h1>Better File Link for Obsidian</h1>
-                            <p>
-                                Easily add links to local files outside of your
-                                vault.
-                            </p>
-                        </div>
-                    </a>
-                    <a
-                        href="https://github.com/marcjulianschwarz/telekom-data-usage-widget"
-                    >
-                        <div class="project">
-                            <h1>Telekom Data Usage Widget</h1>
-                            <p>
-                                This one is close to my heart. One of my oldest
-                                open source contributions and at that time the
-                                very first one that people actually used and
-                                enjoyed.
-                            </p>
-                        </div>
-                    </a>
-                    <a href="https://marc-julian.com/blog">
-                        <div class="project">
-                            <h1>Blog</h1>
-                            <p>
-                                A blog where I mostly write about tech-related
-                                topics, things I learned and other fun stuff
-                                that I enjoy.
-                            </p>
-                        </div>
-                    </a>
-                    <a href="https://github.com/marcjulianschwarz">
-                        <div class="project">
-                            <h1>More?</h1>
-                            <p>
-                                Follow me on GitHub to never miss out on new
-                                stuff.
-                            </p>
-                        </div>
-                    </a>
+                        <div class="terminal-cursor">_</div>
+                    </div>
                 </div>
             </article>
 
             <article id="blog" class="article-control">
-                <div class="article-heading">
-                    <h2 id="blog-link">Recent Blog Posts</h2>
-                    <p></p>
+                <div class="terminal-container blog-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
+                        </div>
+                        <div class="terminal-title">git log ~/blog</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="cmd-text"
+                                >git log --oneline --decorate</span
+                            >
+                        </div>
+                        <div class="git-log-output">
+                            <a
+                                href="/blog/posts/obsidian-dataview-serializer/"
+                                class="git-commit"
+                            >
+                                <span class="commit-hash">a3f2b9c</span>
+                                <span class="commit-date">2025-06-21</span>
+                                <span class="commit-message"
+                                    >Obsidian Dataview Serializer</span
+                                >
+                            </a>
+
+                            <a
+                                href="/blog/posts/huggingface-models-in-ollama"
+                                class="git-commit"
+                            >
+                                <span class="commit-hash">d8c1e5a</span>
+                                <span class="commit-date">2025-05-31</span>
+                                <span class="commit-message"
+                                    >Serve Hugging Face Models in Ollama</span
+                                >
+                            </a>
+
+                            <a
+                                href="/blog/posts/copy-permalink-to-line-in-zed"
+                                class="git-commit"
+                            >
+                                <span class="commit-hash">f7b2d4e</span>
+                                <span class="commit-date">2025-05-31</span>
+                                <span class="commit-message"
+                                    >Copy Permalink to Line in Zed</span
+                                >
+                            </a>
+
+                            <a
+                                href="/blog/posts/grpcphoenix"
+                                class="git-commit"
+                            >
+                                <span class="commit-hash">c4a9f1b</span>
+                                <span class="commit-date">2025-04-12</span>
+                                <span class="commit-message"
+                                    >OpenTelemetry gRPC Exporter</span
+                                >
+                            </a>
+
+                            <a
+                                href="/blog/posts/macos-screen-access-notifications"
+                                class="git-commit"
+                            >
+                                <span class="commit-hash">e2d8c7f</span>
+                                <span class="commit-date">2025-04-12</span>
+                                <span class="commit-message"
+                                    >Remove macOS Sequoia Screen Capture
+                                    Notifications</span
+                                >
+                            </a>
+
+                            <a
+                                href="/blog/posts/til-debugger-nestjs"
+                                class="git-commit"
+                            >
+                                <span class="commit-hash">b5f3a2d</span>
+                                <span class="commit-date">2025-04-12</span>
+                                <span class="commit-message"
+                                    >Debugger Nest.js App</span
+                                >
+                            </a>
+
+                            <a
+                                href="/blog/posts/phoenixllmtracing"
+                                class="git-commit"
+                            >
+                                <span class="commit-hash">9a7e4c1</span>
+                                <span class="commit-date">2025-04-06</span>
+                                <span class="commit-message"
+                                    >OpenTelemetry LLM App Tracing with
+                                    Phoenix</span
+                                >
+                            </a>
+                        </div>
+
+                        <div class="git-footer">
+                            <a href="/blog" class="git-more"
+                                >View full git log →</a
+                            >
+                        </div>
+
+                        <div class="terminal-cursor">_</div>
+                    </div>
                 </div>
-                <div class="posts">
-                    <a href="/blog/posts/obsidian-dataview-serializer/">
-                        <div class="post">
-                            <div class="meta">
-                                <h2>Obsidian Dataview Serializer</h2>
-                                <p>21.06.2025</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/blog/posts/huggingface-models-in-ollama">
-                        <div class="post">
-                            <div class="meta">
-                                <h2>Serve Hugging Face Models in Ollama</h2>
-                                <p>31.05.2025</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/blog/posts/copy-permalink-to-line-in-zed">
-                        <div class="post">
-                            <div class="meta">
-                                <h2>Copy Permalink to Line in Zed</h2>
-                                <p>31.05.2025</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/blog/posts/grpcphoenix">
-                        <div class="post">
-                            <div class="meta">
-                                <h2>OpenTelemetry gRPC Exporter</h2>
-                                <p>12.04.2025</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/blog/posts/macos-screen-access-notifications">
-                        <div class="post">
-                            <div class="meta">
-                                <h2>
-                                    Remove macOS Sequoia Screen Capture
-                                    Notifications
-                                </h2>
-                                <p>12.04.2025</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/blog/posts/til-debugger-nestjs">
-                        <div class="post">
-                            <div class="meta">
-                                <h2>Debugger Nest.js App</h2>
-                                <p>12.04.2025</p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="/blog/posts/phoenixllmtracing">
-                        <div class="post">
-                            <div class="meta">
-                                <h2>
-                                    OpenTelemetry LLM App Tracing with Phoenix
-                                </h2>
-                                <p>06.04.2025</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <p class="readon-text">
-                    There are more posts.
-                    <a class="readon-link" href="/blog">Want to read on?</a>
-                </p>
             </article>
 
             <!-- <article id="photography" class="article-control">
@@ -363,77 +525,132 @@
       </article> -->
 
             <article id="mytools" class="article-control">
-                <div class="article-heading">
-                    <h2>Tools</h2>
-                    <p>These are the tools I use and enjoy the most.</p>
-                </div>
-                <div class="tool-list">
-                    <a href="https://zed.dev/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/zed.png" />
-                            <p>Zed</p>
+                <div class="terminal-container tools-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <span class="terminal-dot red"></span>
+                            <span class="terminal-dot yellow"></span>
+                            <span class="terminal-dot green"></span>
                         </div>
-                    </a>
-                    <a href="https://ghostty.org/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/ghostty.png" />
-                            <p>Ghostty</p>
+                        <div class="terminal-title">which</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-line">
+                            <span class="prompt">$</span>
+                            <span class="cmd-text"
+                                >which zed ghostty raycast cleanshot obsidian
+                                docker</span
+                            >
                         </div>
-                    </a>
-                    <a href="https://www.raycast.com/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/raycast.png" />
-                            <p>Raycast</p>
+                        <div class="which-output">
+                            <a href="https://zed.dev/" class="which-item">
+                                <img
+                                    src="/assets/tool_icons/zed.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/usr/local/bin/zed</span
+                                >
+                            </a>
+
+                            <a href="https://ghostty.org/" class="which-item">
+                                <img
+                                    src="/assets/tool_icons/ghostty.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/usr/local/bin/ghostty</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://www.raycast.com/"
+                                class="which-item"
+                            >
+                                <img
+                                    src="/assets/tool_icons/raycast.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/Applications/Raycast.app</span
+                                >
+                            </a>
+
+                            <a href="https://cleanshot.com/" class="which-item">
+                                <img
+                                    src="/assets/tool_icons/cleanshot.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/Applications/CleanShot X.app</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://macmousefix.com/de"
+                                class="which-item"
+                            >
+                                <img
+                                    src="/assets/tool_icons/macmousefix.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/Applications/Mac Mouse Fix.app</span
+                                >
+                            </a>
+
+                            <a href="https://obsidian.md/" class="which-item">
+                                <img
+                                    src="/assets/tool_icons/obsidian.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/Applications/Obsidian.app</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://alt-tab-macos.netlify.app/"
+                                class="which-item"
+                            >
+                                <img
+                                    src="/assets/tool_icons/alttab.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/Applications/AltTab.app</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://www.docker.com/"
+                                class="which-item"
+                            >
+                                <img
+                                    src="/assets/tool_icons/docker.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/usr/local/bin/docker</span
+                                >
+                            </a>
+
+                            <a
+                                href="https://netnewswire.com/"
+                                class="which-item"
+                            >
+                                <img
+                                    src="/assets/tool_icons/netnewswire.png"
+                                    class="which-icon"
+                                />
+                                <span class="which-path"
+                                    >/Applications/NetNewsWire.app</span
+                                >
+                            </a>
                         </div>
-                    </a>
-                    <a href="https://cleanshot.com/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/cleanshot.png" />
-                            <p>CleanShot X</p>
-                        </div>
-                    </a>
-                    <a href="https://macmousefix.com/de">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/macmousefix.png" />
-                            <p>Mac Mouse Fix</p>
-                        </div>
-                    </a>
-                    <a href="https://obsidian.md/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/obsidian.png" />
-                            <p>Obsidian</p>
-                        </div>
-                    </a>
-                    <a href="https://alt-tab-macos.netlify.app/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/alttab.png" />
-                            <p>AltTab</p>
-                        </div>
-                    </a>
-                    <!-- <a href="https://hyperkey.app/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/hyperkey.png" />
-                            <p>Hyperkey</p>
-                        </div>
-                    </a> -->
-                    <!-- <a href="https://www.zotero.org/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/zotero.png" />
-                            <p>Zotero</p>
-                        </div>
-                    </a> -->
-                    <a href="https://www.docker.com/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/docker.png" />
-                            <p>Docker</p>
-                        </div>
-                    </a>
-                    <a href="https://netnewswire.com/">
-                        <div class="tool">
-                            <img src="/assets/tool_icons/netnewswire.png" />
-                            <p>NetNewsWire</p>
-                        </div>
-                    </a>
+
+                        <div class="terminal-cursor">_</div>
+                    </div>
                 </div>
             </article>
 
@@ -448,5 +665,35 @@
                 ><img src="/assets/linkedin-64.png"
             /></a>
         </footer>
+
+        <script>
+            // Terminal command copy functionality
+            document.addEventListener("DOMContentLoaded", function () {
+                const commands = document.querySelectorAll(".terminal-command");
+
+                commands.forEach((cmd) => {
+                    cmd.addEventListener("click", async function () {
+                        const commandText = this.getAttribute("data-command");
+                        const indicator = this.querySelector(".copy-indicator");
+
+                        try {
+                            await navigator.clipboard.writeText(commandText);
+                            indicator.textContent = "Copied!";
+                            indicator.classList.add("copied");
+
+                            setTimeout(() => {
+                                indicator.textContent = "Click to copy";
+                                indicator.classList.remove("copied");
+                            }, 2000);
+                        } catch (err) {
+                            indicator.textContent = "Failed to copy";
+                            setTimeout(() => {
+                                indicator.textContent = "Click to copy";
+                            }, 2000);
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>
