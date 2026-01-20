@@ -56,10 +56,11 @@
         <title>Marc Julian Schwarz</title>
     </head>
     <body>
-        <main id="#home" class="main-width-control">
+        <main id="home" class="main-width-control">
             <article class="article-control">
                 <div class="title-header">
                     <h1><span class="special">Marc Julian</span> Schwarz</h1>
+                    <p class="intro-text">I love building and using software. At day I develop <a href="https://www.qira.net/" target="_blank" rel="noopener noreferrer">Qira</a>, the all-in-one intelligent automotive assistant. My nights and weekends are spent working on personal projects.</p>
                 </div>
             </article>
 
@@ -81,24 +82,24 @@
                         <div class="terminal-title">zsh</div>
                     </div>
                     <div class="terminal-body">
-                        <div class="terminal-line">
+                        <div class="terminal-line desktop-only">
                             <span class="prompt">$</span>
                             <span class="comment"># Get my contact info</span>
                         </div>
                         <div
-                            class="terminal-command"
+                            class="terminal-command desktop-only"
                             data-command="curl marc-julian.com"
                         >
                             <span class="cmd-text">curl marc-julian.com</span>
                             <span class="copy-indicator">Click to copy</span>
                         </div>
 
-                        <div class="terminal-line spacer">
+                        <div class="terminal-line spacer desktop-only">
                             <span class="prompt">$</span>
                             <span class="comment"># Send me an email</span>
                         </div>
                         <div
-                            class="terminal-command"
+                            class="terminal-command desktop-only"
                             data-command="curl marc-julian.com/email | sh"
                         >
                             <span class="cmd-text"
@@ -107,8 +108,13 @@
                             <span class="copy-indicator">Click to copy</span>
                         </div>
 
+                        <div class="terminal-line mobile-only">
+                            <span class="prompt">$</span>
+                            <span class="cmd-text">echo "Contact Me"</span>
+                        </div>
+
                         <div class="terminal-actions">
-                            <div class="action-divider">or</div>
+                            <div class="action-divider desktop-only">or</div>
                             <div class="action-buttons">
                                 <a href="mailto:hi@marc-julian.de" class="terminal-action-btn">
                                     <span class="action-text">send email</span>
@@ -137,6 +143,12 @@
                     </div>
                 </div>
             </article>
+
+            <div class="section-divider">
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+            </div>
 
             <article id="whatamidoing" class="article-control">
                 <div class="terminal-container about-terminal">
@@ -260,6 +272,12 @@
                     </div>
                 </div>
             </article>
+
+            <div class="section-divider">
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+            </div>
 
             <article id="myprojects" class="article-control">
                 <div class="terminal-container projects-terminal">
@@ -388,6 +406,12 @@
                     </div>
                 </div>
             </article>
+
+            <div class="section-divider">
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+            </div>
 
             <article id="blog" class="article-control">
                 <div class="terminal-container blog-terminal">
@@ -578,6 +602,12 @@
         </div>
       </article> -->
 
+            <div class="section-divider">
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+                <span class="divider-icon">∨</span>
+            </div>
+
             <article id="mytools" class="article-control">
                 <div class="terminal-container tools-terminal">
                     <div class="terminal-header">
@@ -743,6 +773,13 @@
           <h2>Photography</h2>
           <p>Doing some analog photography now. You can view my art here.</p>
         </div> -->
+
+            <div class="back-to-top-container">
+                <a href="#home" class="back-to-top-btn">
+                    <span class="back-icon">↑</span>
+                    <span class="back-text">Back to top</span>
+                </a>
+            </div>
         </main>
         <footer>
             <p>Imprint</p>
