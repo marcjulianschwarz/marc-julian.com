@@ -161,10 +161,10 @@
 
     h1 {
         font-size: 8rem;
-        font-weight: 900;
-        letter-spacing: 1px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
         text-align: center;
-        line-height: 1.1;
+        line-height: 1.05;
         background: linear-gradient(
             135deg,
             var(--primary-text) 0%,
@@ -239,14 +239,15 @@
 
     .intro-text {
         font-size: 1.2rem;
-        font-weight: 400;
-        color: rgba(255, 255, 255, 0.7);
+        font-weight: 450;
+        color: rgba(255, 255, 255, 0.75);
         margin-top: 2rem;
         text-align: center;
         max-width: 700px;
-        line-height: 1.7;
+        line-height: 1.8;
         margin-left: auto;
         margin-right: auto;
+        letter-spacing: -0.01em;
 
         a {
             color: var(--terminal-color);
@@ -1026,38 +1027,67 @@
 /* Styles for /blog/ page */
 .posts {
     width: 90%;
-    max-width: 635px;
+    max-width: 800px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 12px;
 }
 
 .post {
-    background-color: var(--tertiary-background);
-    padding: 20px;
-    transition: cubic-bezier(0.075, 0.82, 0.165, 1) 300ms;
-    box-shadow: 0 0 0 1px rgb(76, 76, 76);
-    border-radius: 20px;
+    background: rgba(var(--terminal-color-rgb), 0.05);
+    padding: 14px 16px;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    border: 1px solid rgba(var(--terminal-color-rgb), 0.15);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(var(--terminal-color-rgb), 0.1),
+            transparent
+        );
+        transition: left 0.5s;
+    }
 
     .meta {
         width: 100%;
 
         h2 {
-            font-size: 1.1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
         p {
-            margin-top: 0.5em;
-            color: rgb(125, 125, 125);
+            font-size: 0.85rem;
+            margin-top: 0;
+            color: rgba(255, 255, 255, 0.5);
         }
     }
 
     &:hover {
-        transform: scale(1.02);
-        box-shadow:
-            0 0 0 2px rgb(243, 243, 243),
-            0 0px 50px rgba(255, 255, 255, 0.4);
+        background: rgba(var(--terminal-color-rgb), 0.1);
+        border-color: rgba(var(--terminal-color-rgb), 0.4);
+        transform: translateX(4px);
+        box-shadow: 0 0 15px rgba(var(--terminal-color-rgb), 0.15);
+
+        &::before {
+            left: 100%;
+        }
+
+        .meta h2 {
+            text-shadow: 0 0 8px rgba(var(--terminal-color-rgb), 0.5);
+        }
     }
 }
 
