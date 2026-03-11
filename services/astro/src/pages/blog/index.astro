@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+import BlogLayout from "../../layouts/BlogLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import TagChip from "../../components/TagChip.astro";
+import { blogConfig } from "@config";
+
+const allPosts = await getCollection("blog", (e) => !e.data["blog-skip"]);
+
+allPosts.sort((a, b) => {
+  const da = a.data["blog-published"]?.getTime() ?? 0;
+  const db = b.data["blog-published"]?.getTime() ?? 0;
+  return db - da;
+});
+
+const posts = allPosts.filter((p) => !p.data["blog-archived"]);
+const archived = allPosts.filter((p) => p.data["blog-archived"]);
+
+const tagSet = new Set<string>();
+for (const post of allPosts) {
+  for (const tag of post.data["blog-tags"]) tagSet.add(tag);
+}
+const tags = Array.from(tagSet).sort();
+
+function isYear(tag: string) {
+  return /^\d{4}$/.test(tag);
+}
+
+function tagSlug(tag: string) {
+  return tag.toLowerCase().replace(/ /g, "-");
+}
+---
+
+<BlogLayout>
+  <header class="mb-10">
+    <a href="/" class="text-sm text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 no-underline transition-colors">
+      ← Back
+    </a>
+    <h1 class="mt-4 text-3xl font-bold tracking-tight">
+      <span class="text-blue-500">MJ's</span> Blog
+    </h1>
+  </header>
+
+  <section class="mb-10">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-3">Tags</h2>
+    <div class="flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <TagChip
+          name={tag}
+          href={`${blogConfig.tagsBase}/${tagSlug(tag)}`}
+          year={isYear(tag)}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-3">Posts</h2>
+    <div class="flex flex-col gap-3">
+      {posts.map((post) => (
+        <PostCard
+          title={post.data["blog-title"]}
+          subtitle={post.data["blog-subtitle"]}
+          date={post.data["blog-published"]}
+          tags={post.data["blog-tags"]}
+          href={`${blogConfig.postsBase}/${post.id}`}
+        />
+      ))}
+    </div>
+  </section>
+
+  {archived.length > 0 && (
+    <section>
+      <h2 class="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-3">Archived</h2>
+      <div class="flex flex-col gap-3">
+        {archived.map((post) => (
+          <PostCard
+            title={post.data["blog-title"]}
+            subtitle={post.data["blog-subtitle"]}
+            date={post.data["blog-published"]}
+            tags={post.data["blog-tags"]}
+            href={`${blogConfig.postsBase}/${post.id}`}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+</BlogLayout>

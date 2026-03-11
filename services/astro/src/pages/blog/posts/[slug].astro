@@ -1,0 +1,72 @@
+---
+import { getCollection, render } from "astro:content";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import TagChip from "../../../components/TagChip.astro";
+import { blogConfig } from "@config";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", (e) => !e.data["blog-skip"]);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const data = post.data;
+const title = data["blog-title"];
+const subtitle = data["blog-subtitle"];
+const date = data["blog-published"];
+const tags = data["blog-tags"] ?? [];
+
+const formattedDate = date?.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+function isYear(tag: string) { return /^\d{4}$/.test(tag); }
+function tagSlug(tag: string) { return tag.toLowerCase().replace(/ /g, "-"); }
+---
+
+<BlogLayout title={title}>
+  <nav class="mb-8">
+    <a
+      href={blogConfig.blogBase}
+      class="text-sm text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 no-underline transition-colors"
+    >
+      ← Back
+    </a>
+  </nav>
+
+  <article>
+    <header class="mb-8 pb-8 border-b border-neutral-200 dark:border-neutral-800">
+      <h1 class="text-2xl font-bold tracking-tight leading-snug mb-1">{title}</h1>
+      {subtitle && (
+        <p class="text-lg text-neutral-500 dark:text-neutral-400 mb-3">{subtitle}</p>
+      )}
+      {date && (
+        <time dateTime={date.toISOString()} class="text-sm text-neutral-400 dark:text-neutral-500">
+          {formattedDate}
+        </time>
+      )}
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          {tags.map((tag) => (
+            <TagChip
+              name={tag}
+              href={`${blogConfig.tagsBase}/${tagSlug(tag)}`}
+              year={isYear(tag)}
+            />
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-a:text-blue-500 prose-a:no-underline hover:prose-a:underline prose-code:text-sm prose-pre:rounded-xl">
+      <Content />
+    </div>
+  </article>
+</BlogLayout>
