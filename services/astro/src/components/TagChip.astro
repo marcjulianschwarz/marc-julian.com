@@ -10,11 +10,8 @@ const { name, href, year = false } = Astro.props;
 
 <a
   href={href}
-  class={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium no-underline transition-opacity hover:opacity-70 ${
-    year
-      ? "bg-neutral-200 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300"
-      : "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
-  }`}
+  class={`inline-block border rounded px-2 py-0.5 text-xs tracking-wide no-underline transition-colors ${year ? "border-dashed border-[#d9d8d8] text-[#abb0b6] hover:text-[#575f66] hover:border-[#abb0b6]" : "border-[#d9d8d8] text-[#575f66] hover:text-[#f29718] hover:border-[#f29718]"}`}
+  style="font-family: 'JetBrains Mono', monospace;"
 >
   {name}
 </a>

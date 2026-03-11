@@ -12,7 +12,7 @@ const pageTitle = title ? `${title} — ${blogConfig.title}` : blogConfig.title;
 ---
 
 <!doctype html>
-<html lang="en" class="antialiased">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,8 +22,8 @@ const pageTitle = title ? `${title} — ${blogConfig.title}` : blogConfig.title;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
   </head>
-  <body class="bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 min-h-screen">
-    <div class="max-w-2xl mx-auto px-4 py-12">
+  <body class="antialiased" style="font-family: 'Lora', Georgia, serif; background: #fafafa; color: #575f66;">
+    <div class="max-w-2xl mx-auto px-6 py-16">
       <slot />
     </div>
   </body>

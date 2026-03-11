@@ -35,19 +35,23 @@ const { tagName, posts } = Astro.props;
 ---
 
 <BlogLayout title={tagName}>
-  <nav class="mb-8">
-    <a href={blogConfig.blogBase} class="text-sm text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 no-underline transition-colors">
-      ← Back
+  <nav class="mb-10">
+    <a
+      href={blogConfig.blogBase}
+      class="text-xs text-[#abb0b6] hover:text-[#575f66] transition-colors"
+      style="font-family: 'JetBrains Mono', monospace;"
+    >
+      ← back
     </a>
   </nav>
 
   <header class="mb-8">
-    <p class="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mb-1">Tag</p>
-    <h1 class="text-2xl font-bold tracking-tight">{tagName}</h1>
-    <p class="text-sm text-neutral-400 mt-1">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+    <p class="text-xs text-[#abb0b6] uppercase tracking-widest mb-1" style="font-family: 'JetBrains Mono', monospace;">Tag</p>
+    <h1 class="text-2xl font-semibold" style="font-family: 'Lora', serif; color: #575f66;">{tagName}</h1>
+    <p class="text-xs text-[#abb0b6] mt-1" style="font-family: 'JetBrains Mono', monospace;">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
   </header>
 
-  <div class="flex flex-col gap-3">
+  <div>
     {posts.map((post) => (
       <PostCard
         title={post.data["blog-title"]}

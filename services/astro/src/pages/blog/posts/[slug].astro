@@ -32,23 +32,28 @@ function tagSlug(tag: string) { return tag.toLowerCase().replace(/ /g, "-"); }
 ---
 
 <BlogLayout title={title}>
-  <nav class="mb-8">
+  <nav class="mb-10">
     <a
       href={blogConfig.blogBase}
-      class="text-sm text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 no-underline transition-colors"
+      class="text-xs text-[#abb0b6] hover:text-[#575f66] transition-colors"
+      style="font-family: 'JetBrains Mono', monospace;"
     >
-      ← Back
+      ← back
     </a>
   </nav>
 
   <article>
-    <header class="mb-8 pb-8 border-b border-neutral-200 dark:border-neutral-800">
-      <h1 class="text-2xl font-bold tracking-tight leading-snug mb-1">{title}</h1>
+    <header class="mb-10 pb-8 border-b border-[#d9d8d8]">
+      <h1 class="text-2xl font-semibold leading-snug mb-2" style="font-family: 'Lora', serif; color: #575f66;">{title}</h1>
       {subtitle && (
-        <p class="text-lg text-neutral-500 dark:text-neutral-400 mb-3">{subtitle}</p>
+        <p class="text-base italic mb-3" style="font-family: 'Lora', serif; color: #abb0b6;">{subtitle}</p>
       )}
       {date && (
-        <time dateTime={date.toISOString()} class="text-sm text-neutral-400 dark:text-neutral-500">
+        <time
+          datetime={date.toISOString()}
+          class="text-xs text-[#abb0b6]"
+          style="font-family: 'JetBrains Mono', monospace;"
+        >
           {formattedDate}
         </time>
       )}
@@ -65,7 +70,7 @@ function tagSlug(tag: string) { return tag.toLowerCase().replace(/ /g, "-"); }
       )}
     </header>
 
-    <div class="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-a:text-blue-500 prose-a:no-underline hover:prose-a:underline prose-code:text-sm prose-pre:rounded-xl">
+    <div class="prose max-w-none" style="color: #575f66;">
       <Content />
     </div>
   </article>
