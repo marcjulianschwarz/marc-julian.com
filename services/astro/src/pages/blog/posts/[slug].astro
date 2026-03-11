@@ -3,9 +3,16 @@ import { getCollection, render } from "astro:content";
 import BlogLayout from "../../../layouts/BlogLayout.astro";
 import TagChip from "../../../components/TagChip.astro";
 import { blogConfig } from "@config";
+import { tagsForPost, isYear, tagSlug } from "@/lib/tags";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", (e) => !e.data["blog-skip"]);
+  const now = new Date();
+  const posts = await getCollection("blog", (e) => {
+    if (e.data["blog-skip"]) return false;
+    const pub = e.data["blog-published"];
+    if (pub && pub > now) return false;
+    return true;
+  });
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -19,16 +26,13 @@ const data = post.data;
 const title = data["blog-title"];
 const subtitle = data["blog-subtitle"];
 const date = data["blog-published"];
-const tags = data["blog-tags"] ?? [];
+const tags = tagsForPost(data["blog-tags"] ?? [], date);
 
 const formattedDate = date?.toLocaleDateString("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
-
-function isYear(tag: string) { return /^\d{4}$/.test(tag); }
-function tagSlug(tag: string) { return tag.toLowerCase().replace(/ /g, "-"); }
 ---
 
 <BlogLayout title={title}>

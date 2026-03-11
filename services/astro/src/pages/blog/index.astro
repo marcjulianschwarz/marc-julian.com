@@ -4,8 +4,15 @@ import BlogLayout from "../../layouts/BlogLayout.astro";
 import PostCard from "../../components/PostCard.astro";
 import TagChip from "../../components/TagChip.astro";
 import { blogConfig } from "@config";
+import { tagsForPost, isYear, tagSlug } from "@/lib/tags";
 
-const allPosts = await getCollection("blog", (e) => !e.data["blog-skip"]);
+const now = new Date();
+const allPosts = await getCollection("blog", (e) => {
+  if (e.data["blog-skip"]) return false;
+  const pub = e.data["blog-published"];
+  if (pub && pub > now) return false;
+  return true;
+});
 
 allPosts.sort((a, b) => {
   const da = a.data["blog-published"]?.getTime() ?? 0;
@@ -18,12 +25,9 @@ const archived = allPosts.filter((p) => p.data["blog-archived"]);
 
 const tagSet = new Set<string>();
 for (const post of allPosts) {
-  for (const tag of post.data["blog-tags"]) tagSet.add(tag);
+  for (const tag of tagsForPost(post.data["blog-tags"], post.data["blog-published"])) tagSet.add(tag);
 }
 const tags = Array.from(tagSet).sort();
-
-function isYear(tag: string) { return /^\d{4}$/.test(tag); }
-function tagSlug(tag: string) { return tag.toLowerCase().replace(/ /g, "-"); }
 ---
 
 <BlogLayout>
