@@ -32,16 +32,16 @@ const tags = Array.from(tagSet).sort();
 
 <BlogLayout>
   <header class="mb-12">
-    <a href="/" class="text-xs text-[#abb0b6] hover:text-[#575f66] transition-colors" style="font-family: 'JetBrains Mono', monospace;">
+    <a href="/" class="text-xs transition-colors" style="font-family: 'JetBrains Mono', monospace; color: var(--color-back-link);">
       ← back
     </a>
-    <h1 class="mt-6 text-3xl font-semibold tracking-tight" style="font-family: 'Lora', serif; color: #575f66;">
-      <span style="color: #f29718;">MJ's</span> Blog
+    <h1 class="mt-6 text-5xl font-semibold tracking-tight" style="font-family: 'Inter', sans-serif; color: var(--color-text);">
+      <span style="color: var(--color-accent);">MJ's</span> Blog
     </h1>
   </header>
 
   <section class="mb-10">
-    <p class="text-xs text-[#abb0b6] uppercase tracking-widest mb-3" style="font-family: 'JetBrains Mono', monospace;">Tags</p>
+    <p class="text-xs uppercase tracking-widest mb-3" style="color: var(--color-muted);" style="font-family: 'JetBrains Mono', monospace;">Tags</p>
     <div class="flex flex-wrap gap-2">
       {tags.map((tag) => (
         <TagChip
@@ -54,7 +54,7 @@ const tags = Array.from(tagSet).sort();
   </section>
 
   <section class="mb-12">
-    <p class="text-xs text-[#abb0b6] uppercase tracking-widest mb-1" style="font-family: 'JetBrains Mono', monospace;">Posts</p>
+    <p class="text-xs uppercase tracking-widest mb-1" style="color: var(--color-muted);" style="font-family: 'JetBrains Mono', monospace;">Posts</p>
     <div>
       {posts.map((post) => (
         <PostCard
@@ -70,7 +70,7 @@ const tags = Array.from(tagSet).sort();
 
   {archived.length > 0 && (
     <section>
-      <p class="text-xs text-[#abb0b6] uppercase tracking-widest mb-1" style="font-family: 'JetBrains Mono', monospace;">Archived</p>
+      <p class="text-xs uppercase tracking-widest mb-1" style="color: var(--color-muted);" style="font-family: 'JetBrains Mono', monospace;">Archived</p>
       <div>
         {archived.map((post) => (
           <PostCard

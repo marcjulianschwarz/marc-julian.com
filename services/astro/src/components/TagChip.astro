@@ -10,8 +10,22 @@ const { name, href, year = false } = Astro.props;
 
 <a
   href={href}
-  class={`inline-block border rounded px-2 py-0.5 text-xs tracking-wide no-underline transition-colors ${year ? "border-dashed border-[#d9d8d8] text-[#abb0b6] hover:text-[#575f66] hover:border-[#abb0b6]" : "border-[#d9d8d8] text-[#575f66] hover:text-[#f29718] hover:border-[#f29718]"}`}
-  style="font-family: 'JetBrains Mono', monospace;"
+  class={`tag-chip inline-block border rounded px-2 py-0.5 text-sm tracking-wide no-underline ${year ? "year" : ""}`}
+  style={`font-family: 'JetBrains Mono', monospace; border-style: ${year ? "dashed" : "solid"};`}
 >
   {name}
 </a>
+
+<style>
+  .tag-chip {
+    border-color: var(--color-border);
+    color: var(--color-text);
+  }
+  .tag-chip.year {
+    color: var(--color-muted);
+  }
+  .tag-chip:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+</style>

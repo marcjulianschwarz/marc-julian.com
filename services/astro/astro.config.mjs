@@ -8,6 +8,14 @@ import { blogConfig } from './blog.config.ts';
 // https://astro.build/config
 export default defineConfig({
   integrations: [blogImages(blogConfig.imagesPath)],
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'ayu-light',
+        dark: 'ayu-dark',
+      },
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
     resolve: {

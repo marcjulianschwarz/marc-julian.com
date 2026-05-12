@@ -16,18 +16,27 @@ const formattedDate = date?.toLocaleDateString("en-US", {
 });
 ---
 
-<a href={href} class="group block py-4 border-b border-[#d9d8d8] no-underline">
+<a href={href} class="post-card group block py-4 border-b no-underline" style="border-color: var(--color-border);">
   <div class="flex items-baseline justify-between gap-4">
-    <span class="text-[#575f66] group-hover:text-[#f29718] transition-colors leading-snug">{title}</span>
+    <span class="post-title text-base leading-snug">{title}</span>
     {date && (
       <time
         datetime={date.toISOString()}
-        class="text-xs text-[#abb0b6] whitespace-nowrap shrink-0"
-        style="font-family: 'JetBrains Mono', monospace;"
+        class="text-xs whitespace-nowrap shrink-0"
+        style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);"
       >
         {formattedDate}
       </time>
     )}
   </div>
-  {subtitle && <p class="text-sm text-[#abb0b6] italic mt-0.5" style="font-family: 'Lora', serif;">{subtitle}</p>}
+  {subtitle && <p class="text-base italic mt-0.5" style="font-family: 'Inter', sans-serif; color: var(--color-muted);">{subtitle}</p>}
 </a>
+
+<style>
+  .post-title {
+    color: var(--color-text);
+  }
+  .post-card:hover .post-title {
+    color: var(--color-accent);
+  }
+</style>

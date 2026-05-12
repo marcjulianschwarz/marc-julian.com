@@ -39,7 +39,7 @@ const formattedDate = date?.toLocaleDateString("en-US", {
   <nav class="mb-10">
     <a
       href={blogConfig.blogBase}
-      class="text-xs text-[#abb0b6] hover:text-[#575f66] transition-colors"
+      class="back-link text-xs"
       style="font-family: 'JetBrains Mono', monospace;"
     >
       ← back
@@ -47,16 +47,16 @@ const formattedDate = date?.toLocaleDateString("en-US", {
   </nav>
 
   <article>
-    <header class="mb-10 pb-8 border-b border-[#d9d8d8]">
-      <h1 class="text-2xl font-semibold leading-snug mb-2" style="font-family: 'Lora', serif; color: #575f66;">{title}</h1>
+    <header class="mb-10 pb-8 border-b" style="border-color: var(--color-border);">
+      <h1 class="text-2xl font-semibold leading-snug mb-2" style="font-family: 'Inter', sans-serif; color: var(--color-text);">{title}</h1>
       {subtitle && (
-        <p class="text-base italic mb-3" style="font-family: 'Lora', serif; color: #abb0b6;">{subtitle}</p>
+        <p class="text-base italic mb-3" style="font-family: 'Inter', sans-serif; color: var(--color-muted);">{subtitle}</p>
       )}
       {date && (
         <time
           datetime={date.toISOString()}
-          class="text-xs text-[#abb0b6]"
-          style="font-family: 'JetBrains Mono', monospace;"
+          class="text-xs"
+          style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);"
         >
           {formattedDate}
         </time>
@@ -74,8 +74,57 @@ const formattedDate = date?.toLocaleDateString("en-US", {
       )}
     </header>
 
-    <div class="prose max-w-none" style="color: #575f66;">
+    <div class="prose max-w-none">
       <Content />
     </div>
   </article>
 </BlogLayout>
+
+<style>
+  .back-link {
+    color: var(--color-muted);
+  }
+  .back-link:hover {
+    color: var(--color-text);
+  }
+
+  .prose {
+    color: var(--color-text);
+  }
+  .prose :global(h1),
+  .prose :global(h2),
+  .prose :global(h3),
+  .prose :global(h4) {
+    color: var(--color-accent);
+    font-family: 'Inter', sans-serif;
+  }
+  .prose :global(a) {
+    color: var(--color-accent);
+  }
+  .prose :global(a:hover) {
+    opacity: 0.8;
+  }
+  .prose :global(strong) {
+    color: var(--color-text);
+  }
+  .prose :global(pre) {
+    border-radius: 1rem;
+    overflow-x: auto;
+  }
+  .prose :global(blockquote) {
+    border-left-color: var(--color-border);
+    color: var(--color-muted);
+  }
+  .prose :global(img) {
+    border-radius: 1rem;
+  }
+  .prose :global(hr) {
+    border-color: var(--color-border);
+  }
+  .prose :global(thead) {
+    border-bottom-color: var(--color-border);
+  }
+  .prose :global(tbody tr) {
+    border-bottom-color: var(--color-border);
+  }
+</style>
