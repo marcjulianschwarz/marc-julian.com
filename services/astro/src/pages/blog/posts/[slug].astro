@@ -138,6 +138,22 @@ const formattedDate = date?.toLocaleDateString("en-US", {
   }
   .prose :global(img) {
     border-radius: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (prefers-color-scheme: dark) {
+    .prose :global(img[src$=".svg"]) {
+      filter: invert(1);
+    }
+  }
+  .prose :global(figcaption) {
+    text-align: center;
+    font-size: 0.78em;
+    color: var(--color-muted);
+    margin-top: 1em;
+    font-style: italic;
+    font-family: 'JetBrains Mono', monospace;
   }
   .prose :global(hr) {
     border-color: var(--color-border);
