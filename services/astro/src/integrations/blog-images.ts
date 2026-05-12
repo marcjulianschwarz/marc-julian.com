@@ -12,7 +12,7 @@ export function blogImages(imagesPath: string): AstroIntegration {
     name: "blog-images",
     hooks: {
       "astro:build:start": async ({ logger }) => {
-        await processImages(imagesPath, "dist/images", logger);
+        await processImages(imagesPath, "public/images", logger);
       },
       "astro:server:start": async ({ logger }) => {
         await processImages(imagesPath, "public/images", logger);
@@ -36,6 +36,7 @@ async function processImages(src: string, dest: string, logger: { info: (msg: st
     const ext = path.extname(file).toLowerCase();
     const srcFile = path.join(src, file);
     const destFile = path.join(dest, file);
+    const destFileJpg = destFile.replace(/\.(png|webp|avif)$/i, ".jpg");
 
     if (!SUPPORTED.has(ext)) {
       // Copy non-image files (svg, etc.) as-is
@@ -44,16 +45,17 @@ async function processImages(src: string, dest: string, logger: { info: (msg: st
     }
 
     // Skip if already processed and source hasn't changed
-    if (fs.existsSync(destFile)) {
+    const cachedFile = fs.existsSync(destFile) ? destFile : fs.existsSync(destFileJpg) ? destFileJpg : null;
+    if (cachedFile) {
       const srcMtime = fs.statSync(srcFile).mtimeMs;
-      const destMtime = fs.statSync(destFile).mtimeMs;
+      const destMtime = fs.statSync(cachedFile).mtimeMs;
       if (destMtime >= srcMtime) continue;
     }
 
     await sharp(srcFile)
       .resize({ width: MAX_WIDTH, withoutEnlargement: true })
       .jpeg({ quality: QUALITY, progressive: true })
-      .toFile(destFile.replace(/\.(png|webp|avif)$/i, ".jpg"));
+      .toFile(destFileJpg);
 
     count++;
   }
