@@ -1,17 +1,326 @@
 ---
+import { getCollection } from "astro:content";
+import BlogLayout from "../layouts/BlogLayout.astro";
+import { blogConfig } from "@config";
 
+const now = new Date();
+const allPosts = await getCollection("blog", (e) => {
+  if (e.data["blog-skip"]) return false;
+  const pub = e.data["blog-published"];
+  if (pub && pub > now) return false;
+  return true;
+});
+
+allPosts.sort((a, b) => {
+  const da = a.data["blog-published"]?.getTime() ?? 0;
+  const db = b.data["blog-published"]?.getTime() ?? 0;
+  return db - da;
+});
+
+const recentPosts = allPosts.filter((p) => !p.data["blog-archived"]).slice(0, 7);
+
+function shortHash(id: string) {
+  return id.replace(/[^a-zA-Z0-9]/g, "").slice(0, 7).toLowerCase().padEnd(7, "0");
+}
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BlogLayout title="Marc Julian Schwarz">
+  <!-- Hero -->
+  <header class="mb-16">
+    <h1 class="text-4xl font-semibold tracking-tight mb-6" style="font-family: 'Inter', sans-serif; color: var(--color-text);">
+      <span style="color: var(--color-accent);">Marc Julian</span> Schwarz
+    </h1>
+    <p class="text-base leading-relaxed" style="color: var(--color-text);">
+      I love building and using software. At day I work as an AI Engineer at{" "}
+      <a href="https://www.govradar.de/" class="accent-link">GovRadar</a>, building AI-powered solutions for public procurement. At night I create the missing pieces for knowledge workers:{" "}
+      <a href="https://sammlung.app/" class="accent-link">sammlung.app</a> and{" "}
+      <a href="https://raycast.com/marcjulian/obsidian" class="accent-link">Obsidian for Raycast</a>.
+    </p>
+  </header>
+
+  <!-- Navigation -->
+  <section class="mb-16">
+    <div class="flex flex-wrap gap-x-6 gap-y-1">
+<a href="#projects" class="nav-item accent-link">Projects</a>
+      <a href="/blog" class="nav-item accent-link">Blog</a>
+      <a href="https://shots.marc-julian.com/" class="nav-item accent-link">Photos</a>
+      <a href="#tools" class="nav-item accent-link">Tools</a>
+      <a href="mailto:hi@marc-julian.de" class="nav-item accent-link">Send Email</a>
+      <a href="https://cal.com/marcjulianschwarz/" class="nav-item accent-link">Setup a Call</a>
+    </div>
+  </section>
+
+  <!-- CV -->
+  <section class="mb-20" id="cv">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-period mono-text muted-text">2026–Today</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-sm font-medium" style="color: var(--color-text);">GovRadar</span>
+            <span class="mono-text muted-text" style="font-size: 0.7rem;">Munich, Germany (Remote)</span>
+          </div>
+          <p class="text-sm" style="color: var(--color-muted);">AI Engineer building AI-powered solutions that help public administrations prepare procurement processes faster and more efficiently.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period mono-text muted-text">2024–2026</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-sm font-medium" style="color: var(--color-text);">AHEAD Automotive</span>
+            <span class="mono-text muted-text" style="font-size: 0.7rem;">Hamburg, Germany</span>
+          </div>
+          <p class="text-sm" style="color: var(--color-muted);">Data Scientist &amp; Software Engineer working on <a href="https://www.qira.net/" class="accent-link">Qira</a>, an intelligent assistant that supports car mechanics in their daily work.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period mono-text muted-text">2022–2024</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-sm font-medium" style="color: var(--color-text);">AI Office at DATEV</span>
+            <span class="mono-text muted-text" style="font-size: 0.7rem;">Nuremberg, Germany</span>
+          </div>
+          <p class="text-sm" style="color: var(--color-muted);">Data Scientist / Working Student. Worked on semantic-preserving PII anonymization, mixed integer program optimization, retrieval augmented generation, fine-tuning of large language models.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-period mono-text muted-text">2021–2022</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="flex items-baseline gap-2 mb-1">
+            <span class="text-sm font-medium" style="color: var(--color-text);">Fraunhofer IIS</span>
+            <span class="mono-text muted-text" style="font-size: 0.7rem;">Nuremberg, Germany</span>
+          </div>
+          <p class="text-sm" style="color: var(--color-muted);">Research Assistant / Working Student in the "Machine Learning and Validation" research group. Supported the team in analyzing motion capture data, built a Python Flask API and web application dashboard.</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-between mt-6">
+      <a href="mailto:hi@marc-julian.de" class="accent-link mono-text">Want to work with me?</a>
+      <a href="https://github.com/marcjulianschwarz/marcjulianschwarz/blob/master/cv.md" class="accent-link mono-text">View full CV</a>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="mb-20" id="projects">
+    <p class="section-label mb-4">Projects</p>
+    <div>
+      <a href="https://sammlung.app" class="list-row group">
+        <span class="list-title">sammlung.app</span>
+        <span class="list-sub">Make your own. Built for knowledge workers</span>
+      </a>
+      <a href="https://wizard.marc-julian.com/" class="list-row group">
+        <span class="list-title">wizard.marc-julian.com</span>
+        <span class="list-sub">Wizard card game companion app</span>
+      </a>
+      <a href="https://www.raycast.com/marcjulian/obsidian" class="list-row group">
+        <span class="list-title">obsidian-raycast</span>
+        <span class="list-sub">Obsidian notes at your fingertips on Mac</span>
+      </a>
+      <a href="https://www.raycast.com/marcjulian/mac-mouse-fix" class="list-row group">
+        <span class="list-title">macmousefix-raycast</span>
+        <span class="list-sub">Control Mac Mouse Fix with Raycast</span>
+      </a>
+      <a href="https://the-brew-code.de/" class="list-row group">
+        <span class="list-title">the-brew-code.de</span>
+        <span class="list-sub">German coffee wiki and digital garden</span>
+      </a>
+      <a href="https://notes.marc-julian.com/" class="list-row group">
+        <span class="list-title">notes.marc-julian.com</span>
+        <span class="list-sub">My public notes</span>
+      </a>
+      <a href="https://shots.marc-julian.com/" class="list-row group">
+        <span class="list-title">shots.marc-julian.com</span>
+        <span class="list-sub">My photography gallery</span>
+      </a>
+      <a href="https://mdsnip.com" class="list-row group">
+        <span class="list-title">mdsnip.com</span>
+        <span class="list-sub">Instantly share beautifully formatted markdown snippets</span>
+      </a>
+      <a href="https://www.raycast.com/boosteblume/personio" class="list-row group">
+        <span class="list-title">personio-raycast</span>
+        <span class="list-sub">Manage Personio attendance times</span>
+      </a>
+      <a href="https://github.com/marcjulianschwarz/obsidian-podcast-note" class="list-row group">
+        <span class="list-title">podcast-note-obsidian</span>
+        <span class="list-sub">Take notes on podcasts with rich metadata</span>
+      </a>
+      <a href="https://github.com/marcjulianschwarz/obsidian-file-link" class="list-row group">
+        <span class="list-title">file-link-obsidian</span>
+        <span class="list-sub">Link to local files outside vault</span>
+      </a>
+      <a href="https://github.com/marcjulianschwarz/telekom-data-usage-widget" class="list-row group">
+        <span class="list-title">telekom-widget</span>
+        <span class="list-sub">iOS widget for data usage tracking</span>
+      </a>
+      <a href="/blog" class="list-row group">
+        <span class="list-title">blog</span>
+        <span class="list-sub">Tech articles and things I learned</span>
+      </a>
+    </div>
+    <div class="flex justify-between mt-4">
+      <a href="https://github.com/marcjulianschwarz/marcjulianschwarz/discussions/1" class="accent-link mono-text">Let's collaborate!</a>
+      <a href="https://github.com/marcjulianschwarz" class="accent-link mono-text">More projects</a>
+    </div>
+  </section>
+
+  <!-- Recent Blog Posts -->
+  <section class="mb-20" id="blog">
+    <p class="section-label mb-4">Recent Blog Posts</p>
+    <div>
+      {recentPosts.map((post) => {
+        const date = post.data["blog-published"];
+        const formattedDate = date?.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+        return (
+          <a href={`${blogConfig.postsBase}/${post.id}`} class="list-row group">
+            <span class="list-title">{post.data["blog-title"]}</span>
+            {date && (
+              <time datetime={date.toISOString()} class="list-date">{formattedDate}</time>
+            )}
+          </a>
+        );
+      })}
+    </div>
+    <div class="flex justify-between mt-4">
+      <a href="/blog" class="accent-link mono-text">More posts</a>
+    </div>
+  </section>
+
+  <!-- Tools -->
+  <section class="mb-20" id="tools">
+    <p class="section-label mb-4">Tools I Use</p>
+    <div>
+      <a href="https://zed.dev/" class="list-row group"><span class="list-title">Zed</span></a>
+      <a href="https://ghostty.org/" class="list-row group"><span class="list-title">Ghostty</span></a>
+      <a href="https://www.raycast.com/" class="list-row group"><span class="list-title">Raycast</span></a>
+      <a href="https://cleanshot.com/" class="list-row group"><span class="list-title">CleanShot X</span></a>
+      <a href="https://macmousefix.com/de" class="list-row group"><span class="list-title">Mac Mouse Fix</span></a>
+      <a href="https://obsidian.md/" class="list-row group"><span class="list-title">Obsidian</span></a>
+      <a href="https://alt-tab-macos.netlify.app/" class="list-row group"><span class="list-title">AltTab</span></a>
+      <a href="https://www.docker.com/" class="list-row group"><span class="list-title">Docker</span></a>
+      <a href="https://netnewswire.com/" class="list-row group"><span class="list-title">NetNewsWire</span></a>
+    </div>
+    <div class="flex justify-end mt-4">
+      <a href="mailto:hi@marc-julian.de?subject=Tool Suggestion" class="accent-link mono-text">Know a great tool? Let me know</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="flex flex-wrap gap-x-6 gap-y-1 pb-8">
+    <span class="muted-text mono-text text-xs">Imprint</span>
+    <a href="https://www.linkedin.com/in/marcjulianschwarz/" class="accent-link mono-text text-xs">LinkedIn</a>
+  </footer>
+</BlogLayout>
+
+<style>
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+  }
+
+  .accent-link {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .accent-link:hover {
+    opacity: 0.8;
+  }
+
+  .muted-text {
+    color: var(--color-muted);
+  }
+
+  .mono-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .nav-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 0;
+  }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 6rem 1rem 1fr;
+    gap: 0 0.75rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: calc(6rem + 0.75rem + 0.4rem);
+    top: 1.4rem;
+    bottom: -1.5rem;
+    width: 1px;
+    background-color: var(--color-border);
+  }
+  .timeline-period {
+    text-align: right;
+    padding-top: 0.1rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+  .timeline-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    margin-top: 0.25rem;
+    justify-self: center;
+    flex-shrink: 0;
+  }
+  .timeline-content {
+    padding-bottom: 0.25rem;
+  }
+
+  .list-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+  }
+  .list-row:last-child {
+    border-bottom: none;
+  }
+  .list-title {
+    font-size: 0.9rem;
+    color: var(--color-text);
+    transition: color 0.15s;
+  }
+  .list-row:hover .list-title {
+    color: var(--color-accent);
+  }
+  .list-sub {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .list-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+</style>
