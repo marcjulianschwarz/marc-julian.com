@@ -1,0 +1,32 @@
+     __  __                       _       _ _
+    |  \/  | __ _ _ __ ___       | |_   _| (_) __ _ _ __
+    | |\/| |/ _` | '__/ __|   _  | | | | | | |/ _` | '_ \
+    | |  | | (_| | | | (__   | |_| | |_| | | | (_| | | | |
+    |_|  |_|\__,_|_|  \___|   \___/ \__,_|_|_|\__,_|_| |_|
+
+   ════════════════════════════════════════════════════════
+             Software Developer & Data Scientist
+   ════════════════════════════════════════════════════════
+
+┌─ About ─────────────────────────────┐ ┌─ Contact & Links ──────────────────┐
+│                                     │ │                                    │
+│  Hey there! I'm Marc Julian, a      │ │  📧 terminal@marc-julian.de        │
+│  developer and data scientist       │ │  🐙 github.com/marcjulianschwarz   │
+│  based in Germany. I love building  │ │  🌐 marc-julian.com                │
+│  things with code!                  │ │  📍 Germany 🇩🇪                     │
+│                                     │ │                                    │
+└─────────────────────────────────────┘ └────────────────────────────────────┘
+
+┌─ Stack & Interests ─────────────────────────────────────────────────────────┐
+│                                                                             │
+│  • Python, JavaScript, TypeScript, Go                                       │
+│  • Machine Learning, Data Analysis, Web Development                         │
+│  • Cloud Technologies, DevOps, Open Source                                  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Commands:
+═════════
+
+$ curl marc-julian.com                 → Get this page
+$ curl marc-julian.com/email | sh      → Get in touch with me

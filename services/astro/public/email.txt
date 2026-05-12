@@ -1,0 +1,5 @@
+case "$(uname)" in
+  Darwin) open "mailto:terminal@marc-julian.de?subject=Hello%20from%20terminal!" ;;
+  Linux) xdg-open "mailto:terminal@marc-julian.de?subject=Hello%20from%20terminal!" ;;
+  *) echo "Copy this: terminal@marc-julian.de" ;;
+esac
