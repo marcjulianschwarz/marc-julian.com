@@ -54,9 +54,9 @@ function shortHash(id: string) {
   <section class="mb-20" id="cv">
     <div class="timeline">
       <div class="timeline-item">
-        <div class="timeline-period mono-text muted-text">2026–Today</div>
         <div class="timeline-dot"></div>
         <div class="timeline-content">
+          <div class="timeline-period mono-text muted-text">2026–Today</div>
           <div class="flex items-baseline gap-2 mb-1">
             <span class="text-sm font-medium" style="color: var(--color-text);">GovRadar</span>
             <span class="mono-text muted-text" style="font-size: 0.7rem;">Munich, Germany (Remote)</span>
@@ -65,9 +65,9 @@ function shortHash(id: string) {
         </div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-period mono-text muted-text">2024–2026</div>
         <div class="timeline-dot"></div>
         <div class="timeline-content">
+          <div class="timeline-period mono-text muted-text">2024–2026</div>
           <div class="flex items-baseline gap-2 mb-1">
             <span class="text-sm font-medium" style="color: var(--color-text);">AHEAD Automotive</span>
             <span class="mono-text muted-text" style="font-size: 0.7rem;">Hamburg, Germany</span>
@@ -76,9 +76,9 @@ function shortHash(id: string) {
         </div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-period mono-text muted-text">2022–2024</div>
         <div class="timeline-dot"></div>
         <div class="timeline-content">
+          <div class="timeline-period mono-text muted-text">2022–2024</div>
           <div class="flex items-baseline gap-2 mb-1">
             <span class="text-sm font-medium" style="color: var(--color-text);">AI Office at DATEV</span>
             <span class="mono-text muted-text" style="font-size: 0.7rem;">Nuremberg, Germany</span>
@@ -87,9 +87,9 @@ function shortHash(id: string) {
         </div>
       </div>
       <div class="timeline-item">
-        <div class="timeline-period mono-text muted-text">2021–2022</div>
         <div class="timeline-dot"></div>
         <div class="timeline-content">
+          <div class="timeline-period mono-text muted-text">2021–2022</div>
           <div class="flex items-baseline gap-2 mb-1">
             <span class="text-sm font-medium" style="color: var(--color-text);">Fraunhofer IIS</span>
             <span class="mono-text muted-text" style="font-size: 0.7rem;">Nuremberg, Germany</span>
@@ -214,7 +214,7 @@ function shortHash(id: string) {
 
   <!-- Footer -->
   <footer class="flex flex-wrap gap-x-6 gap-y-1 pb-8">
-    <span class="muted-text mono-text text-xs">Imprint</span>
+    <a href="/imprint" class="muted-text mono-text text-xs" style="text-decoration: none;">Imprint</a>
     <a href="https://www.linkedin.com/in/marcjulianschwarz/" class="accent-link mono-text text-xs">LinkedIn</a>
   </footer>
 </BlogLayout>
@@ -256,7 +256,7 @@ function shortHash(id: string) {
   }
   .timeline-item {
     display: grid;
-    grid-template-columns: 6rem 1rem 1fr;
+    grid-template-columns: 1rem 1fr;
     gap: 0 0.75rem;
     align-items: start;
     margin-bottom: 1.5rem;
@@ -265,17 +265,16 @@ function shortHash(id: string) {
   .timeline-item:not(:last-child)::after {
     content: '';
     position: absolute;
-    left: calc(6rem + 0.75rem + 0.4rem);
+    left: calc(0.4rem);
     top: 1.4rem;
     bottom: -1.5rem;
     width: 1px;
     background-color: var(--color-border);
   }
   .timeline-period {
-    text-align: right;
-    padding-top: 0.1rem;
     font-size: 0.7rem;
     line-height: 1.2;
+    margin-bottom: 0.2rem;
   }
   .timeline-dot {
     width: 0.5rem;
@@ -314,7 +313,7 @@ function shortHash(id: string) {
     font-size: 0.8rem;
     color: var(--color-muted);
     text-align: right;
-    flex-shrink: 0;
+    min-width: 0;
   }
   .list-date {
     font-family: 'JetBrains Mono', monospace;
