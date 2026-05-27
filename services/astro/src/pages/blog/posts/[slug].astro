@@ -73,10 +73,35 @@ const formattedDate = date?.toLocaleDateString("en-US", {
         </div>
       )}
     </header>
-
     <div class="prose max-w-none">
       <Content />
     </div>
+
+    <footer class="post-footer">
+      <a href={`mailto:hi@marc-julian.de?subject=${encodeURIComponent(`Want to talk about: ${title}`)}&body=${encodeURIComponent(`Hi MJ,\n\n`)}`} class="post-footer-link">Talk about this</a>
+      <span class="post-footer-dot">&middot;</span>
+      <button id="copy-md" class="post-footer-link post-footer-btn">
+        <span class="copy-md-label">Copy Markdown</span>
+      </button>
+    </footer>
+    <script is:inline define:vars={{ rawMarkdown: post.body, postId: post.id }}>
+      if (window.location.search.includes('edit')) {
+        window.location.href = 'obsidian://open?vault=obsidian-blog&file=Posts/' + encodeURIComponent(postId);
+      }
+
+      document.getElementById('copy-md').addEventListener('click', function() {
+        const btn = this;
+        const label = btn.querySelector('.copy-md-label');
+        navigator.clipboard.writeText(rawMarkdown).then(() => {
+          label.textContent = 'Copied!';
+          btn.style.color = 'var(--color-text)';
+          setTimeout(() => {
+            label.textContent = 'Copy Markdown';
+            btn.style.color = '';
+          }, 1500);
+        });
+      });
+    </script>
   </article>
 </BlogLayout>
 
@@ -86,6 +111,33 @@ const formattedDate = date?.toLocaleDateString("en-US", {
   }
   .back-link:hover {
     color: var(--color-text);
+  }
+  .post-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .post-footer-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .post-footer-link:hover {
+    opacity: 0.8;
+  }
+  .post-footer-btn {
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .post-footer-dot {
+    color: var(--color-border);
   }
 
   .prose {
@@ -134,6 +186,43 @@ const formattedDate = date?.toLocaleDateString("en-US", {
   .prose :global(pre) {
     border-radius: 1rem;
     overflow-x: auto;
+  }
+  .prose :global(.code-block-wrapper) {
+    position: relative;
+  }
+  .prose :global(.code-block-wrapper .copy-btn) {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    color: var(--color-muted);
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 0.375rem;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s, background-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .prose :global(.code-block-wrapper:hover .copy-btn) {
+    opacity: 1;
+  }
+  .prose :global(.code-block-wrapper .copy-btn:hover) {
+    color: var(--color-text);
+    background-color: var(--color-border);
+  }
+  .prose :global(.code-block-wrapper.single-line .copy-btn) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  @media (hover: none) {
+    .prose :global(.code-block-wrapper .copy-btn) {
+      opacity: 1;
+    }
   }
   .prose :global(blockquote) {
     border-left-color: var(--color-border);
