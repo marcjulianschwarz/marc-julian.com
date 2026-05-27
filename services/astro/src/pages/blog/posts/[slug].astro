@@ -197,7 +197,7 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     z-index: 1;
     background: var(--color-bg);
     border: 1px solid var(--color-border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     color: var(--color-muted);
     cursor: pointer;
     padding: 0.3rem;
@@ -218,6 +218,14 @@ const formattedDate = date?.toLocaleDateString("en-US", {
   .prose :global(.code-block-wrapper.single-line .copy-btn) {
     top: 50%;
     transform: translateY(-50%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(html:not(.light)) .prose :global(.code-block-wrapper .copy-btn) {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :global(html.dark) .prose :global(.code-block-wrapper .copy-btn) {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
   @media (hover: none) {
     .prose :global(.code-block-wrapper .copy-btn) {
