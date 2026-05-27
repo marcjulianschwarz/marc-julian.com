@@ -31,24 +31,36 @@ function shortHash(id: string) {
       <span style="color: var(--color-accent);">Marc Julian</span> Schwarz
     </h1>
     <p class="text-base leading-relaxed" style="color: var(--color-text);">
-      I love building and using software. At day I work as an AI Engineer at{" "}
-      <a href="https://www.govradar.de/" class="accent-link">GovRadar</a>, building AI-powered solutions for public procurement. At night I create the missing pieces for knowledge workers:{" "}
+      AI Engineer at <a href="https://www.govradar.de/" class="accent-link">GovRadar</a>. I also build{" "}
       <a href="https://sammlung.app/" class="accent-link">sammlung.app</a> and{" "}
-      <a href="https://raycast.com/marcjulian/obsidian" class="accent-link">Obsidian for Raycast</a>.
+      <a href="https://raycast.com/marcjulian/obsidian" class="accent-link">Obsidian for Raycast</a>, the missing tools for knowledge workers.
     </p>
   </header>
 
   <!-- Navigation -->
-  <section class="mb-16">
-    <div class="flex flex-wrap gap-x-6 gap-y-1">
-<a href="#projects" class="nav-item accent-link">Projects</a>
-      <a href="/blog" class="nav-item accent-link">Blog</a>
-      <a href="https://shots.marc-julian.com/" class="nav-item accent-link">Photos</a>
-      <a href="#tools" class="nav-item accent-link">Tools</a>
-      <a href="mailto:hi@marc-julian.de" class="nav-item accent-link">Send Email</a>
-      <a href="https://cal.com/marcjulianschwarz/" class="nav-item accent-link">Setup a Call</a>
+  <nav class="mb-16">
+    <a href="#projects" class="nav-row">
+      <span class="nav-index">01</span>
+      <span class="nav-label">Projects</span>
+    </a>
+    <a href="/blog" class="nav-row">
+      <span class="nav-index">02</span>
+      <span class="nav-label">Blog</span>
+    </a>
+    <a href="https://shots.marc-julian.com/" class="nav-row">
+      <span class="nav-index">03</span>
+      <span class="nav-label">Photos</span>
+    </a>
+    <a href="#tools" class="nav-row">
+      <span class="nav-index">04</span>
+      <span class="nav-label">Tools</span>
+    </a>
+    <div class="nav-contact">
+      <a href="mailto:hi@marc-julian.de" class="accent-link">Send Email</a>
+      <span style="color: var(--color-border);">·</span>
+      <a href="https://cal.com/marcjulianschwarz/" class="accent-link">Setup a Call</a>
     </div>
-  </section>
+  </nav>
 
   <!-- CV -->
   <section class="mb-20" id="cv">
@@ -58,10 +70,10 @@ function shortHash(id: string) {
         <div class="timeline-content">
           <div class="timeline-period mono-text muted-text">2026–Today</div>
           <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-sm font-medium" style="color: var(--color-text);">GovRadar</span>
-            <span class="mono-text muted-text" style="font-size: 0.7rem;">Munich, Germany (Remote)</span>
+            <span class="text-base font-semibold" style="color: var(--color-text);">GovRadar</span>
+            <span class="mono-text muted-text" style="font-size: 1rem;">Munich, Germany (Remote)</span>
           </div>
-          <p class="text-sm" style="color: var(--color-muted);">AI Engineer building AI-powered solutions that help public administrations prepare procurement processes faster and more efficiently.</p>
+          <p class="text-base" style="color: var(--color-text);">AI Engineer building AI-powered solutions that help public administrations prepare procurement processes faster and more efficiently.</p>
         </div>
       </div>
       <div class="timeline-item">
@@ -69,10 +81,10 @@ function shortHash(id: string) {
         <div class="timeline-content">
           <div class="timeline-period mono-text muted-text">2024–2026</div>
           <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-sm font-medium" style="color: var(--color-text);">AHEAD Automotive</span>
-            <span class="mono-text muted-text" style="font-size: 0.7rem;">Hamburg, Germany</span>
+            <span class="text-base font-semibold" style="color: var(--color-text);">AHEAD Automotive</span>
+            <span class="mono-text muted-text" style="font-size: 1rem;">Hamburg, Germany</span>
           </div>
-          <p class="text-sm" style="color: var(--color-muted);">Data Scientist &amp; Software Engineer working on <a href="https://www.qira.net/" class="accent-link">Qira</a>, an intelligent assistant that supports car mechanics in their daily work.</p>
+          <p class="text-base" style="color: var(--color-text);">Data Scientist &amp; Software Engineer working on <a href="https://www.qira.net/" class="accent-link">Qira</a>, an intelligent assistant that supports car mechanics in their daily work.</p>
         </div>
       </div>
       <div class="timeline-item">
@@ -80,10 +92,10 @@ function shortHash(id: string) {
         <div class="timeline-content">
           <div class="timeline-period mono-text muted-text">2022–2024</div>
           <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-sm font-medium" style="color: var(--color-text);">AI Office at DATEV</span>
-            <span class="mono-text muted-text" style="font-size: 0.7rem;">Nuremberg, Germany</span>
+            <span class="text-base font-semibold" style="color: var(--color-text);">AI Office at DATEV</span>
+            <span class="mono-text muted-text" style="font-size: 1rem;">Nuremberg, Germany</span>
           </div>
-          <p class="text-sm" style="color: var(--color-muted);">Data Scientist / Working Student. Worked on semantic-preserving PII anonymization, mixed integer program optimization, retrieval augmented generation, fine-tuning of large language models.</p>
+          <p class="text-base" style="color: var(--color-text);">Data Scientist / Working Student. Worked on semantic-preserving PII anonymization, mixed integer program optimization, retrieval augmented generation, fine-tuning of large language models.</p>
         </div>
       </div>
       <div class="timeline-item">
@@ -91,16 +103,42 @@ function shortHash(id: string) {
         <div class="timeline-content">
           <div class="timeline-period mono-text muted-text">2021–2022</div>
           <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-sm font-medium" style="color: var(--color-text);">Fraunhofer IIS</span>
-            <span class="mono-text muted-text" style="font-size: 0.7rem;">Nuremberg, Germany</span>
+            <span class="text-base font-semibold" style="color: var(--color-text);">Fraunhofer IIS</span>
+            <span class="mono-text muted-text" style="font-size: 1rem;">Nuremberg, Germany</span>
           </div>
-          <p class="text-sm" style="color: var(--color-muted);">Research Assistant / Working Student in the "Machine Learning and Validation" research group. Supported the team in analyzing motion capture data, built a Python Flask API and web application dashboard.</p>
+          <p class="text-base" style="color: var(--color-text);">Research Assistant / Working Student in the "Machine Learning and Validation" research group. Supported the team in analyzing motion capture data, built a Python Flask API and web application dashboard.</p>
         </div>
       </div>
     </div>
     <div class="flex justify-between mt-6">
       <a href="mailto:hi@marc-julian.de" class="accent-link mono-text">Want to work with me?</a>
       <a href="https://github.com/marcjulianschwarz/marcjulianschwarz/blob/master/cv.md" class="accent-link mono-text">View full CV</a>
+    </div>
+  </section>
+
+  <!-- Recent Blog Posts -->
+  <section class="mb-20" id="blog">
+    <p class="section-label mb-4">Recent Blog Posts</p>
+    <div>
+      {recentPosts.map((post) => {
+        const date = post.data["blog-published"];
+        const formattedDate = date?.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+        return (
+          <a href={`${blogConfig.postsBase}/${post.id}`} class="list-row group">
+            <span class="list-title">{post.data["blog-title"]}</span>
+            {date && (
+              <time datetime={date.toISOString()} class="list-date">{formattedDate}</time>
+            )}
+          </a>
+        );
+      })}
+    </div>
+    <div class="flex justify-between mt-4">
+      <a href="/blog" class="accent-link mono-text">More posts</a>
     </div>
   </section>
 
@@ -167,32 +205,6 @@ function shortHash(id: string) {
     </div>
   </section>
 
-  <!-- Recent Blog Posts -->
-  <section class="mb-20" id="blog">
-    <p class="section-label mb-4">Recent Blog Posts</p>
-    <div>
-      {recentPosts.map((post) => {
-        const date = post.data["blog-published"];
-        const formattedDate = date?.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
-        return (
-          <a href={`${blogConfig.postsBase}/${post.id}`} class="list-row group">
-            <span class="list-title">{post.data["blog-title"]}</span>
-            {date && (
-              <time datetime={date.toISOString()} class="list-date">{formattedDate}</time>
-            )}
-          </a>
-        );
-      })}
-    </div>
-    <div class="flex justify-between mt-4">
-      <a href="/blog" class="accent-link mono-text">More posts</a>
-    </div>
-  </section>
-
   <!-- Tools -->
   <section class="mb-20" id="tools">
     <p class="section-label mb-4">Tools I Use</p>
@@ -213,16 +225,51 @@ function shortHash(id: string) {
   </section>
 
   <!-- Footer -->
-  <footer class="flex flex-wrap gap-x-6 gap-y-1 pb-8">
-    <a href="/imprint" class="muted-text mono-text text-xs" style="text-decoration: none;">Imprint</a>
-    <a href="https://www.linkedin.com/in/marcjulianschwarz/" class="accent-link mono-text text-xs">LinkedIn</a>
+  <footer class="flex flex-wrap gap-x-6 gap-y-1 items-center pb-8">
+    <a href="/imprint" class="muted-text mono-text" style="text-decoration: none;">Imprint</a>
+    <a href="https://www.linkedin.com/in/marcjulianschwarz/" class="accent-link mono-text">LinkedIn</a>
   </footer>
 </BlogLayout>
 
 <style>
+  .nav-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .nav-row:first-child {
+    border-top: 1px solid var(--color-border);
+  }
+  .nav-index {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    transition: color 0.15s;
+    min-width: 1.5rem;
+  }
+  .nav-label {
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: color 0.15s;
+  }
+  .nav-row:hover .nav-index,
+  .nav-row:hover .nav-label {
+    color: var(--color-accent);
+  }
+  .nav-contact {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding-top: 0.75rem;
+    font-size: 1rem;
+  }
+
   .section-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-muted);
@@ -242,12 +289,7 @@ function shortHash(id: string) {
 
   .mono-text {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-  }
-
-  .nav-item {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
+    font-size: 1rem;
   }
 
   .timeline {
@@ -272,7 +314,7 @@ function shortHash(id: string) {
     background-color: var(--color-border);
   }
   .timeline-period {
-    font-size: 0.7rem;
+    font-size: 1rem;
     line-height: 1.2;
     margin-bottom: 0.2rem;
   }
@@ -302,7 +344,7 @@ function shortHash(id: string) {
     border-bottom: none;
   }
   .list-title {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: var(--color-text);
     transition: color 0.15s;
   }
@@ -310,14 +352,14 @@ function shortHash(id: string) {
     color: var(--color-accent);
   }
   .list-sub {
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: var(--color-muted);
     text-align: right;
     min-width: 0;
   }
   .list-date {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 1rem;
     color: var(--color-muted);
     white-space: nowrap;
     flex-shrink: 0;

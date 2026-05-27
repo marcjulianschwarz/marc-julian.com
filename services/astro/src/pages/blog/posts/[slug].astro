@@ -124,9 +124,12 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     content: none;
   }
   @media (prefers-color-scheme: dark) {
-    .prose :global(:not(pre) > code) {
+    :global(html:not(.light)) .prose :global(:not(pre) > code) {
       background-color: #1e2530;
     }
+  }
+  :global(html.dark) .prose :global(:not(pre) > code) {
+    background-color: #1e2530;
   }
   .prose :global(pre) {
     border-radius: 1rem;

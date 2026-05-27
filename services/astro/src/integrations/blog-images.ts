@@ -36,7 +36,7 @@ async function processImages(src: string, dest: string, logger: { info: (msg: st
     const ext = path.extname(file).toLowerCase();
     const srcFile = path.join(src, file);
     const destFile = path.join(dest, file);
-    const destFileJpg = destFile.replace(/\.(png|webp|avif)$/i, ".jpg");
+    const destFileJpg = destFile.replace(/\.(png|webp|avif|jpeg)$/i, ".jpg");
 
     if (!SUPPORTED.has(ext)) {
       // Copy non-image files (svg, etc.) as-is

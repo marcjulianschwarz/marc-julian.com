@@ -7,12 +7,34 @@ import { blogConfig } from './blog.config.ts';
 import rehypeFigure from 'rehype-figure';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import { visit } from 'unist-util-visit';
+
+function remarkImageToJpg() {
+  return (tree) => {
+    visit(tree, 'image', (node) => {
+      if (node.url) {
+        node.url = node.url.replace(/\.(png|webp|avif|jpeg)$/i, '.jpg');
+      }
+    });
+  };
+}
+
+function rehypeImageToJpg() {
+  return (tree) => {
+    visit(tree, 'element', (node) => {
+      if (node.tagName === 'img' && node.properties?.src) {
+        node.properties.src = node.properties.src.replace(/\.(png|webp|avif|jpeg)$/i, '.jpg');
+      }
+    });
+  };
+}
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [blogImages(blogConfig.imagesPath)],
   markdown: {
-    rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }], rehypeFigure],
+    remarkPlugins: [remarkImageToJpg],
+    rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, { behavior: 'wrap' }], rehypeFigure, rehypeImageToJpg],
     shikiConfig: {
       themes: {
         light: 'ayu-light',

@@ -20,7 +20,7 @@ html {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     --color-bg: #0d1017;
     --color-text: #bfbdb6;
     --color-muted: #565b66;
@@ -28,6 +28,23 @@ html {
     --color-border: #1e2430;
     --color-back-link: #565b66;
   }
+}
+
+html.dark {
+  --color-bg: #0d1017;
+  --color-text: #bfbdb6;
+  --color-muted: #565b66;
+  --color-accent: #e6b450;
+  --color-border: #1e2430;
+  --color-back-link: #565b66;
+}
+
+/* Blog post images */
+.prose img {
+  max-height: 800px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Linkable headings */
@@ -45,11 +62,18 @@ html {
   color: var(--shiki-light) !important;
 }
 @media (prefers-color-scheme: dark) {
-  .astro-code-themes {
+  html:not(.light) .astro-code-themes {
     background-color: #161b24 !important;
     color: var(--shiki-dark) !important;
   }
-  .astro-code-themes span {
+  html:not(.light) .astro-code-themes span {
     color: var(--shiki-dark) !important;
   }
+}
+html.dark .astro-code-themes {
+  background-color: #161b24 !important;
+  color: var(--shiki-dark) !important;
+}
+html.dark .astro-code-themes span {
+  color: var(--shiki-dark) !important;
 }
