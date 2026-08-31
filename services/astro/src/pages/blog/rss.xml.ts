@@ -2,7 +2,6 @@ import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
 import { getCollection, render } from "astro:content";
 import { experimental_AstroContainer as AstroContainer } from "astro/container";
-import sanitizeHtml from "sanitize-html";
 import { blogConfig } from "@config";
 
 export async function GET(context: APIContext) {
@@ -32,9 +31,7 @@ export async function GET(context: APIContext) {
         description: post.data["blog-subtitle"],
         pubDate: post.data["blog-published"],
         link: `${blogConfig.postsBase}/${post.id}`,
-        content: sanitizeHtml(html, {
-          allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-        }),
+        content: html,
       };
     }),
   );
