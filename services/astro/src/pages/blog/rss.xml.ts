@@ -1,6 +1,8 @@
 import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
+import sanitizeHtml from "sanitize-html";
 import { blogConfig } from "@config";
 
 export async function GET(context: APIContext) {
@@ -19,15 +21,28 @@ export async function GET(context: APIContext) {
     return db - da;
   });
 
+  const container = await AstroContainer.create();
+
+  const items = await Promise.all(
+    posts.map(async (post) => {
+      const { Content } = await render(post);
+      const html = await container.renderToString(Content);
+      return {
+        title: post.data["blog-title"],
+        description: post.data["blog-subtitle"],
+        pubDate: post.data["blog-published"],
+        link: `${blogConfig.postsBase}/${post.id}`,
+        content: sanitizeHtml(html, {
+          allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+        }),
+      };
+    }),
+  );
+
   return rss({
     title: blogConfig.title,
     description: blogConfig.description,
     site: context.site!,
-    items: posts.map((post) => ({
-      title: post.data["blog-title"],
-      description: post.data["blog-subtitle"],
-      pubDate: post.data["blog-published"],
-      link: `${blogConfig.postsBase}/${post.id}`,
-    })),
+    items,
   });
 }
