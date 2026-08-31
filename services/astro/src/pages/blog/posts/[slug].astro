@@ -1,0 +1,267 @@
+---
+import { getCollection, render } from "astro:content";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import TagChip from "../../../components/TagChip.astro";
+import { blogConfig } from "@config";
+import { tagsForPost, isYear, tagSlug } from "@/lib/tags";
+
+export async function getStaticPaths() {
+  const now = new Date();
+  const posts = await getCollection("blog", (e) => {
+    if (e.data["blog-skip"]) return false;
+    const pub = e.data["blog-published"];
+    if (pub && pub > now) return false;
+    return true;
+  });
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const data = post.data;
+const title = data["blog-title"];
+const subtitle = data["blog-subtitle"];
+const date = data["blog-published"];
+const tags = tagsForPost(data["blog-tags"] ?? [], date);
+
+const formattedDate = date?.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<BlogLayout title={title}>
+  <nav class="mb-10">
+    <a
+      href={blogConfig.blogBase}
+      class="back-link text-xs"
+      style="font-family: 'JetBrains Mono', monospace;"
+    >
+      ← back
+    </a>
+  </nav>
+
+  <article>
+    <header class="mb-10 pb-8 border-b" style="border-color: var(--color-border);">
+      <h1 class="text-2xl font-semibold leading-snug mb-2" style="font-family: 'Inter', sans-serif; color: var(--color-text);">{title}</h1>
+      {subtitle && (
+        <p class="text-base italic mb-3" style="font-family: 'Inter', sans-serif; color: var(--color-muted);">{subtitle}</p>
+      )}
+      {date && (
+        <time
+          datetime={date.toISOString()}
+          class="text-xs"
+          style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);"
+        >
+          {formattedDate}
+        </time>
+      )}
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-3">
+          {tags.map((tag) => (
+            <TagChip
+              name={tag}
+              href={`${blogConfig.tagsBase}/${tagSlug(tag)}`}
+              year={isYear(tag)}
+            />
+          ))}
+        </div>
+      )}
+    </header>
+    <div class="prose max-w-none">
+      <Content />
+    </div>
+
+    <footer class="post-footer">
+      <a href={`mailto:hi@marc-julian.de?subject=${encodeURIComponent(`Want to talk about: ${title}`)}&body=${encodeURIComponent(`Hi MJ,\n\n`)}`} class="post-footer-link">Talk about this</a>
+      <span class="post-footer-dot">&middot;</span>
+      <button id="copy-md" class="post-footer-link post-footer-btn">
+        <span class="copy-md-label">Copy Markdown</span>
+      </button>
+    </footer>
+    <script is:inline define:vars={{ rawMarkdown: post.body, postId: post.id }}>
+      if (window.location.search.includes('edit')) {
+        window.location.href = 'obsidian://open?vault=obsidian-blog&file=Posts/' + encodeURIComponent(postId);
+      }
+
+      document.getElementById('copy-md').addEventListener('click', function() {
+        const btn = this;
+        const label = btn.querySelector('.copy-md-label');
+        navigator.clipboard.writeText(rawMarkdown).then(() => {
+          label.textContent = 'Copied!';
+          btn.style.color = 'var(--color-text)';
+          setTimeout(() => {
+            label.textContent = 'Copy Markdown';
+            btn.style.color = '';
+          }, 1500);
+        });
+      });
+    </script>
+  </article>
+</BlogLayout>
+
+<style>
+  .back-link {
+    color: var(--color-muted);
+  }
+  .back-link:hover {
+    color: var(--color-text);
+  }
+  .post-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .post-footer-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .post-footer-link:hover {
+    opacity: 0.8;
+  }
+  .post-footer-btn {
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .post-footer-dot {
+    color: var(--color-border);
+  }
+
+  .prose {
+    color: var(--color-text);
+  }
+  .prose :global(h1),
+  .prose :global(h2),
+  .prose :global(h3),
+  .prose :global(h4) {
+    color: var(--color-accent);
+    font-family: 'Inter', sans-serif;
+  }
+  .prose :global(h1),
+  .prose :global(h2) {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.3em;
+  }
+  .prose :global(a) {
+    color: var(--color-accent);
+  }
+  .prose :global(a:hover) {
+    opacity: 0.8;
+  }
+  .prose :global(strong) {
+    color: var(--color-text);
+  }
+  .prose :global(:not(pre) > code) {
+    background-color: #ebebeb;
+    color: var(--color-text);
+    padding: 0.15em 0.35em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+  }
+  .prose :global(:not(pre) > code::before),
+  .prose :global(:not(pre) > code::after) {
+    content: none;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(html:not(.light)) .prose :global(:not(pre) > code) {
+      background-color: #1e2530;
+    }
+  }
+  :global(html.dark) .prose :global(:not(pre) > code) {
+    background-color: #1e2530;
+  }
+  .prose :global(pre) {
+    border-radius: 1rem;
+    overflow-x: auto;
+  }
+  .prose :global(.code-block-wrapper) {
+    position: relative;
+  }
+  .prose :global(.code-block-wrapper .copy-btn) {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    color: var(--color-muted);
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 0.375rem;
+    opacity: 0;
+    transition: opacity 0.15s, color 0.15s, background-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .prose :global(.code-block-wrapper:hover .copy-btn) {
+    opacity: 1;
+  }
+  .prose :global(.code-block-wrapper .copy-btn:hover) {
+    color: var(--color-text);
+    background-color: var(--color-border);
+  }
+  .prose :global(.code-block-wrapper.single-line .copy-btn) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(html:not(.light)) .prose :global(.code-block-wrapper .copy-btn) {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :global(html.dark) .prose :global(.code-block-wrapper .copy-btn) {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  @media (hover: none) {
+    .prose :global(.code-block-wrapper .copy-btn) {
+      opacity: 1;
+    }
+  }
+  .prose :global(blockquote) {
+    border-left-color: var(--color-border);
+    color: var(--color-muted);
+  }
+  .prose :global(img) {
+    border-radius: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (prefers-color-scheme: dark) {
+    .prose :global(img[src$=".svg"]) {
+      filter: invert(1);
+    }
+  }
+  .prose :global(figcaption) {
+    text-align: center;
+    font-size: 0.78em;
+    color: var(--color-muted);
+    margin-top: 1em;
+    font-style: italic;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .prose :global(hr) {
+    border-color: var(--color-border);
+  }
+  .prose :global(thead) {
+    border-bottom-color: var(--color-border);
+  }
+  .prose :global(tbody tr) {
+    border-bottom-color: var(--color-border);
+  }
+</style>

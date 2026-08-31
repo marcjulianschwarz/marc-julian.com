@@ -1,0 +1,31 @@
+---
+interface Props {
+  name: string;
+  href: string;
+  year?: boolean;
+}
+
+const { name, href, year = false } = Astro.props;
+---
+
+<a
+  href={href}
+  class={`tag-chip inline-block border rounded px-2 py-0.5 text-sm tracking-wide no-underline ${year ? "year" : ""}`}
+  style={`font-family: 'JetBrains Mono', monospace; border-style: ${year ? "dashed" : "solid"};`}
+>
+  {name}
+</a>
+
+<style>
+  .tag-chip {
+    border-color: var(--color-border);
+    color: var(--color-text);
+  }
+  .tag-chip.year {
+    color: var(--color-muted);
+  }
+  .tag-chip:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+</style>

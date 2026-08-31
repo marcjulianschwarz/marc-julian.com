@@ -1,0 +1,78 @@
+[
+  {
+    "title": "Sammlung",
+    "description": "Make your own. Built for knowledge workers",
+    "url": "https://sammlung.app"
+  },
+  {
+    "title": "Wizard Companion",
+    "description": "Wizard card game companion app",
+    "url": "https://wizard.marc-julian.com/",
+    "github": "https://github.com/marcjulianschwarz/wizard"
+  },
+  {
+    "title": "Obsidian for Raycast",
+    "description": "Obsidian notes at your fingertips on Mac",
+    "url": "https://www.raycast.com/marcjulian/obsidian",
+    "github": "https://github.com/marcjulianschwarz/obsidian-raycast"
+  },
+  {
+    "title": "Mac Mouse Fix for Raycast",
+    "description": "Control Mac Mouse Fix with Raycast",
+    "url": "https://www.raycast.com/marcjulian/mac-mouse-fix",
+    "github": "https://github.com/marcjulianschwarz/raycast-mac-mouse-fix"
+  },
+  {
+    "title": "The Brew Code",
+    "description": "German coffee wiki and digital garden",
+    "url": "https://the-brew-code.de/"
+  },
+  {
+    "title": "Notes",
+    "description": "My public notes",
+    "url": "https://notes.marc-julian.com/",
+    "github": "https://github.com/marcjulianschwarz/obsidian-vault-notes"
+  },
+  {
+    "title": "Shots",
+    "description": "My photography gallery",
+    "url": "https://shots.marc-julian.com/",
+    "github": "https://github.com/marcjulianschwarz/shots"
+  },
+  {
+    "title": "MD Snip",
+    "description": "Instantly share beautifully formatted markdown snippets",
+    "url": "https://mdsnip.com",
+    "github": "https://github.com/marcjulianschwarz/mdsnip"
+  },
+  {
+    "title": "Personio for Raycast",
+    "description": "Manage Personio attendance times",
+    "url": "https://www.raycast.com/boosteblume/personio",
+    "github": "https://github.com/marcjulianschwarz/personio-raycast"
+  },
+  {
+    "title": "Podcast Note",
+    "description": "Take notes on podcasts with rich metadata",
+    "url": "https://github.com/marcjulianschwarz/obsidian-podcast-note",
+    "github": "https://github.com/marcjulianschwarz/obsidian-podcast-note"
+  },
+  {
+    "title": "File Link",
+    "description": "Link to local files outside vault",
+    "url": "https://github.com/marcjulianschwarz/obsidian-file-link",
+    "github": "https://github.com/marcjulianschwarz/obsidian-file-link"
+  },
+  {
+    "title": "Telekom Widget",
+    "description": "iOS widget for data usage tracking",
+    "url": "https://github.com/marcjulianschwarz/telekom-data-usage-widget",
+    "github": "https://github.com/marcjulianschwarz/telekom-data-usage-widget"
+  },
+  {
+    "title": "Blog",
+    "description": "Tech articles and things I learned",
+    "url": "/blog",
+    "github": "https://github.com/marcjulianschwarz/obsidian-vault-blog"
+  }
+]

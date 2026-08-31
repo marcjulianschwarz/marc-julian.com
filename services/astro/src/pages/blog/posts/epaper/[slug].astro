@@ -1,0 +1,64 @@
+---
+import { getCollection, render } from "astro:content";
+import EpaperLayout from "../../../../layouts/EpaperLayout.astro";
+import { tagsForPost, isYear } from "@/lib/tags";
+
+export async function getStaticPaths() {
+    const now = new Date();
+    const posts = await getCollection("blog", (e) => {
+        if (e.data["blog-skip"]) return false;
+        const pub = e.data["blog-published"];
+        if (pub && pub > now) return false;
+        return true;
+    });
+    return posts.map((post) => ({
+        params: { slug: post.id },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const data = post.data;
+const title = data["blog-title"];
+const subtitle = data["blog-subtitle"];
+const date = data["blog-published"];
+const tags = tagsForPost(data["blog-tags"] ?? [], date).filter(
+    (t) => !isYear(t),
+);
+
+const formattedDate = date?.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+});
+---
+
+<EpaperLayout title={title}>
+    <article>
+        <header>
+            <div class="meta">
+                {formattedDate ?? "marc-julian.com"} &middot; Wframe
+            </div>
+            <h1>{title}</h1>
+            {subtitle && <p class="subtitle">{subtitle}</p>}
+            {
+                tags.length > 0 && (
+                    <div class="tags">
+                        {tags.map((t) => (
+                            <span class="tag">{t}</span>
+                        ))}
+                    </div>
+                )
+            }
+        </header>
+        <div class="prose">
+            <Content />
+        </div>
+        <footer class="epaper-footer">
+            <span>marc-julian.com</span>
+            <span>{post.id}</span>
+        </footer>
+    </article>
+</EpaperLayout>

@@ -1,0 +1,272 @@
+---
+interface Props {
+    title?: string;
+}
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=480, initial-scale=1.0" />
+        <title>{title ?? "Epaper"}</title>
+        <style is:global>
+            :root {
+                --fg: #fff;
+                --bg: #000;
+            }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body {
+                width: 480px;
+                min-height: 800px;
+                background: var(--bg);
+                color: var(--fg);
+                font-family:
+                    -apple-system, "SF Pro Display", "Helvetica Neue", "Inter",
+                    Arial, sans-serif;
+                -webkit-font-smoothing: none;
+                font-smooth: never;
+                text-rendering: geometricPrecision;
+                shape-rendering: crispEdges;
+                letter-spacing: -0.015em;
+            }
+            body {
+                padding: 24px;
+            }
+            .frame {
+                border: 2px solid #fff;
+                border-radius: 22px;
+                padding: 28px 26px;
+            }
+            .meta {
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                margin-bottom: 14px;
+                opacity: 0.7;
+            }
+            h1 {
+                font-size: 32px;
+                font-weight: 800;
+                line-height: 1.05;
+                letter-spacing: -0.035em;
+                margin-bottom: 10px;
+            }
+            .subtitle {
+                font-size: 16px;
+                font-weight: 500;
+                line-height: 1.35;
+                margin-bottom: 16px;
+                opacity: 0.8;
+                letter-spacing: -0.01em;
+            }
+            .tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin: 14px 0 22px;
+                padding-bottom: 22px;
+                border-bottom: 2px solid #fff;
+            }
+            .tag {
+                font-size: 11px;
+                font-weight: 700;
+                padding: 4px 10px;
+                border: 1.5px solid #fff;
+                border-radius: 999px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            }
+            .prose {
+                font-size: 15px;
+                line-height: 1.55;
+                font-weight: 500;
+            }
+            .prose p,
+            .prose li {
+                margin-bottom: 12px;
+            }
+            .prose h2 {
+                font-size: 20px;
+                font-weight: 800;
+                margin: 24px 0 10px;
+                letter-spacing: -0.02em;
+            }
+            .prose h3 {
+                font-size: 17px;
+                font-weight: 700;
+                margin: 18px 0 8px;
+                letter-spacing: -0.015em;
+            }
+            .prose ul,
+            .prose ol {
+                margin: 0 0 14px 22px;
+            }
+            .prose li {
+                margin-bottom: 6px;
+            }
+            .prose a {
+                color: var(--fg);
+                text-decoration: none;
+                border-bottom: 1.5px solid #fff;
+                padding-bottom: 1px;
+                font-weight: 700;
+            }
+            .prose strong {
+                font-weight: 800;
+            }
+            .prose em {
+                font-style: italic;
+            }
+            .prose blockquote {
+                border-left: 3px solid #fff;
+                padding: 4px 0 4px 14px;
+                margin: 14px 0;
+                font-style: italic;
+                opacity: 0.85;
+            }
+            .prose hr {
+                border: none;
+                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                margin: 18px 0;
+            }
+            .prose code,
+            .prose pre {
+                font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+                font-size: 12.5px;
+            }
+            .prose pre {
+                border: 1.5px solid #fff;
+                border-radius: 12px;
+                padding: 14px 16px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                margin: 14px 0;
+                background: var(--bg) !important;
+                line-height: 1.5;
+                overflow-x: auto;
+            }
+            .prose pre,
+            .prose pre * {
+                color: var(--fg) !important;
+                background: transparent !important;
+                font-style: normal !important;
+            }
+            .prose :not(pre) > code {
+                border: 1px solid #fff;
+                border-radius: 5px;
+                padding: 1px 6px;
+                font-size: 12.5px;
+                background: var(--bg);
+            }
+            .prose pre code {
+                border: none;
+                padding: 0;
+                background: transparent;
+            }
+            .prose table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 14px 0;
+                font-size: 13px;
+            }
+            .prose th,
+            .prose td {
+                border: 1px solid #fff;
+                padding: 6px 8px;
+                text-align: left;
+            }
+            .prose th {
+                font-weight: 800;
+            }
+            .prose img {
+                width: 100%;
+                max-height: 240px;
+                object-fit: contain;
+                display: block;
+                margin: 14px auto;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 8px;
+                filter: grayscale(1) contrast(1.5) invert(0);
+                image-rendering: pixelated;
+            }
+            .prose figcaption {
+                text-align: center;
+                font-size: 11px;
+                font-weight: 600;
+                margin-top: 6px;
+                margin-bottom: 14px;
+                opacity: 0.7;
+                letter-spacing: 0.04em;
+            }
+            .epaper-footer {
+                margin-top: 26px;
+                padding-top: 14px;
+                border-top: 2px solid #fff;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                display: flex;
+                justify-content: space-between;
+                opacity: 0.7;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="frame">
+            <slot />
+        </div>
+        <script is:inline>
+            // Ordered Bayer dither for crisp epaper-ready images
+            const BAYER = [
+                [0, 32, 8, 40, 2, 34, 10, 42],
+                [48, 16, 56, 24, 50, 18, 58, 26],
+                [12, 44, 4, 36, 14, 46, 6, 38],
+                [60, 28, 52, 20, 62, 30, 54, 22],
+                [3, 35, 11, 43, 1, 33, 9, 41],
+                [51, 19, 59, 27, 49, 17, 57, 25],
+                [15, 47, 7, 39, 13, 45, 5, 37],
+                [63, 31, 55, 23, 61, 29, 53, 21],
+            ];
+            function dither(img) {
+                const w = img.naturalWidth,
+                    h = img.naturalHeight;
+                if (!w) return;
+                const canvas = document.createElement("canvas");
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+                const d = ctx.getImageData(0, 0, w, h);
+                const px = d.data;
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        const i = (y * w + x) * 4;
+                        const g =
+                            0.299 * px[i] +
+                            0.587 * px[i + 1] +
+                            0.114 * px[i + 2];
+                        const t = (BAYER[y & 7][x & 7] / 64) * 255;
+                        const v = g > t ? 255 : 0;
+                        px[i] = px[i + 1] = px[i + 2] = v;
+                    }
+                }
+                ctx.putImageData(d, 0, 0);
+                img.src = canvas.toDataURL();
+                img.style.filter = "none";
+            }
+            document.querySelectorAll(".prose img").forEach((img) => {
+                if (img.complete) dither(img);
+                else img.addEventListener("load", () => dither(img));
+            });
+        </script>
+    </body>
+</html>

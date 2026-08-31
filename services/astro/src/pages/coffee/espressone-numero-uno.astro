@@ -1,0 +1,55 @@
+---
+import BlogLayout from "../../layouts/BlogLayout.astro";
+---
+
+<BlogLayout
+    title="Espressone Numero Uno"
+    description="Espressone Numero Uno — eine Single-Origin-Espressobohne."
+>
+    <main class="coffee">
+        <div class="eyebrow">Kaffee &middot; Bohne</div>
+        <h1>Espressone <span class="accent">Numero Uno</span></h1>
+        <p class="lead">
+            Eine kräftige, ausgewogene Espressobohne mit sanfter Crema und lang
+            anhaltendem Schokoladen-Abgang.
+        </p>
+    </main>
+</BlogLayout>
+
+<style>
+    .coffee {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        padding: 2rem 0;
+    }
+
+    .eyebrow {
+        font-size: 0.8rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--color-muted);
+    }
+
+    h1 {
+        font-family: "Lora", serif;
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        line-height: 1.05;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .accent {
+        color: var(--color-accent);
+        font-style: italic;
+    }
+
+    .lead {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: var(--color-text);
+        max-width: 34rem;
+        margin: 0;
+    }
+</style>

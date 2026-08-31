@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import BlogLayout from "../../../layouts/BlogLayout.astro";
+import PostCard from "../../../components/PostCard.astro";
+import { blogConfig } from "@config";
+import { tagsForPost } from "@/lib/tags";
+
+export async function getStaticPaths() {
+  const now = new Date();
+  const posts = await getCollection("blog", (e) => {
+    if (e.data["blog-skip"]) return false;
+    const pub = e.data["blog-published"];
+    if (pub && pub > now) return false;
+    return true;
+  });
+
+  const tagMap = new Map<string, typeof posts>();
+  for (const post of posts) {
+    for (const tag of tagsForPost(post.data["blog-tags"], post.data["blog-published"])) {
+      const slug = tag.toLowerCase().replace(/ /g, "-");
+      if (!tagMap.has(slug)) tagMap.set(slug, []);
+      tagMap.get(slug)!.push(post);
+    }
+  }
+
+  return Array.from(tagMap.entries()).map(([slug, tagPosts]) => ({
+    params: { tag: slug },
+    props: {
+      tagName: tagsForPost(tagPosts[0].data["blog-tags"], tagPosts[0].data["blog-published"]).find(
+        (t) => t.toLowerCase().replace(/ /g, "-") === slug
+      ) ?? slug,
+      posts: tagPosts.sort((a, b) => {
+        const da = a.data["blog-published"]?.getTime() ?? 0;
+        const db = b.data["blog-published"]?.getTime() ?? 0;
+        return db - da;
+      }),
+    },
+  }));
+}
+
+const { tagName, posts } = Astro.props;
+---
+
+<BlogLayout title={tagName}>
+  <nav class="mb-10">
+    <a
+      href={blogConfig.blogBase}
+      class="back-link text-xs"
+      style="font-family: 'JetBrains Mono', monospace;"
+    >
+      ← back
+    </a>
+  </nav>
+
+  <header class="mb-8">
+    <p class="text-xs uppercase tracking-widest mb-1" style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);">Tag</p>
+    <h1 class="text-2xl font-semibold" style="font-family: 'Inter', sans-serif; color: var(--color-text);">{tagName}</h1>
+    <p class="text-xs mt-1" style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+  </header>
+
+  <div>
+    {posts.map((post) => (
+      <PostCard
+        title={post.data["blog-title"]}
+        subtitle={post.data["blog-subtitle"]}
+        date={post.data["blog-published"]}
+        tags={post.data["blog-tags"]}
+        href={`${blogConfig.postsBase}/${post.id}`}
+      />
+    ))}
+  </div>
+</BlogLayout>
+
+<style>
+  .back-link {
+    color: var(--color-muted);
+  }
+  .back-link:hover {
+    color: var(--color-text);
+  }
+</style>
