@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Zed",
+    "url": "https://zed.dev/",
+    "icon": "/assets/tool_icons/zed.png"
+  },
+  {
+    "name": "Ghostty",
+    "url": "https://ghostty.org/",
+    "icon": "/assets/tool_icons/ghostty.png"
+  },
+  {
+    "name": "Raycast",
+    "url": "https://www.raycast.com/",
+    "icon": "/assets/tool_icons/raycast.png"
+  },
+  {
+    "name": "CleanShot X",
+    "url": "https://cleanshot.com/",
+    "icon": "/assets/tool_icons/cleanshot.png"
+  },
+  {
+    "name": "Mac Mouse Fix",
+    "url": "https://macmousefix.com/de",
+    "icon": "/assets/tool_icons/macmousefix.png"
+  },
+  {
+    "name": "Obsidian",
+    "url": "https://obsidian.md/",
+    "icon": "/assets/tool_icons/obsidian.png"
+  },
+  {
+    "name": "AltTab",
+    "url": "https://alt-tab-macos.netlify.app/",
+    "icon": "/assets/tool_icons/alttab.png"
+  },
+  {
+    "name": "Docker",
+    "url": "https://www.docker.com/",
+    "icon": "/assets/tool_icons/docker.png"
+  },
+  {
+    "name": "NetNewsWire",
+    "url": "https://netnewswire.com/",
+    "icon": "/assets/tool_icons/netnewswire.png"
+  },
+  {
+    "name": "Tools",
+    "url": "https://tools.marc-julian.com/",
+    "icon": "/assets/tool_icons/tools.png"
+  }
+]

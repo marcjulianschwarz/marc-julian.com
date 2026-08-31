@@ -1,0 +1,147 @@
+---
+import BlogLayout from "../../layouts/BlogLayout.astro";
+---
+
+<BlogLayout
+    title="Peru Grandes Mujeres"
+    description="Peru Grandes Mujeres — ein besonderer Bio-Plantagenkaffee aus den Anden, geröstet von Espressone."
+>
+    <main class="coffee">
+        <div class="eyebrow">Kaffee &middot; Bohne</div>
+        <h1>Peru <span class="accent">Grandes Mujeres</span></h1>
+        <p class="lead">
+            In den Anden, nahe der antiken Ruinenstadt Machu Picchu, befinden
+            sich die Kaffeeplantagen <strong>Finca La Requia</strong> und
+            <strong>Finca Santa Sofia</strong> — in mystische Nebelfelder
+            eingebettet am Fuße der Gebirgskette, in der Provinz Oxapampa.
+            Beide Plantagen gehören zur Frauenkooperative
+            <strong>„CEMCAVIR“</strong>. Auf den 1.600 Metern Anbauhöhe
+            herrscht ein einzigartiges Mikroklima, das die Kaffeekirschen mit
+            einem Geschmack nach Herzkirsche, Haselnuss und Pampelmuse
+            ausstattet. Ein ganz besonderer Bio-Kaffee!
+        </p>
+
+        <table class="specs">
+            <tbody>
+                <tr>
+                    <th>Herkunft</th>
+                    <td>Peru &middot; Provinz Oxapampa</td>
+                </tr>
+                <tr>
+                    <th>Kooperative</th>
+                    <td>CEMCAVIR (Frauenkooperative)</td>
+                </tr>
+                <tr>
+                    <th>Geschmacksprofil</th>
+                    <td>Herzkirsche, Haselnuss, Pampelmuse</td>
+                </tr>
+                <tr>
+                    <th>Varietät</th>
+                    <td>100 % Arabica: Bourbon, Caturra, Geisha, Typica</td>
+                </tr>
+                <tr>
+                    <th>Verarbeitung</th>
+                    <td>gewaschen, sonnengetrocknet</td>
+                </tr>
+                <tr>
+                    <th>Anbauhöhe</th>
+                    <td>1.600 – 1.750 m</td>
+                </tr>
+                <tr>
+                    <th>Röstung</th>
+                    <td>Röstkaffee, ganze Bohnen</td>
+                </tr>
+                <tr>
+                    <th>Füllmenge</th>
+                    <td>250 g</td>
+                </tr>
+                <tr>
+                    <th>Zertifizierung</th>
+                    <td>Bio (DE-ÖKO-001, Nicht-EU-Landwirtschaft)</td>
+                </tr>
+                <tr>
+                    <th>Rösterei</th>
+                    <td>Espressone GmbH, Cadolzburg</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p class="note">
+            Dieser Kaffee wurde im traditionellen handwerklichen Verfahren unter
+            Einhaltung der Qualitätsbestimmungen der Deutschen Röstergilde
+            hergestellt.
+        </p>
+    </main>
+</BlogLayout>
+
+<style>
+    .coffee {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        padding: 2rem 0;
+    }
+
+    .eyebrow {
+        font-size: 0.8rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--color-muted);
+    }
+
+    h1 {
+        font-family: "Lora", serif;
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        line-height: 1.05;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .accent {
+        color: var(--color-accent);
+        font-style: italic;
+    }
+
+    .lead {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: var(--color-text);
+        max-width: 34rem;
+        margin: 0;
+    }
+
+    .specs {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 34rem;
+        font-size: 0.95rem;
+    }
+
+    .specs th,
+    .specs td {
+        text-align: left;
+        padding: 0.6rem 0.75rem;
+        border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+        vertical-align: top;
+    }
+
+    .specs th {
+        color: var(--color-muted);
+        font-weight: 500;
+        white-space: nowrap;
+        width: 40%;
+    }
+
+    .specs td {
+        color: var(--color-text);
+    }
+
+    .note {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--color-muted);
+        max-width: 34rem;
+        margin: 0;
+    }
+</style>
