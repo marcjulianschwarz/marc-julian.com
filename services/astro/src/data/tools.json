@@ -45,6 +45,11 @@
     "icon": "/assets/tool_icons/netnewswire.png"
   },
   {
+    "name": "Zen Browser",
+    "url": "https://zen-browser.app/",
+    "icon": "/assets/tool_icons/zen.png"
+  },
+  {
     "name": "Tools",
     "url": "https://tools.marc-julian.com/",
     "icon": "/assets/tool_icons/tools.png"
