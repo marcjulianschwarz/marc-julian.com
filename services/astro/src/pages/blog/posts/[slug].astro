@@ -84,6 +84,9 @@ const formattedDate = date?.toLocaleDateString("en-US", {
         <span class="copy-md-label">Copy Markdown</span>
       </button>
     </footer>
+    <a href="https://notbyai.fyi/" target="_blank" rel="noopener" class="not-by-ai-badge">
+      Written by a human, not by AI
+    </a>
     <script is:inline define:vars={{ rawMarkdown: post.body, postId: post.id }}>
       if (window.location.search.includes('edit')) {
         window.location.href = 'obsidian://open?vault=obsidian-blog&file=Posts/' + encodeURIComponent(postId);
@@ -138,6 +141,22 @@ const formattedDate = date?.toLocaleDateString("en-US", {
   }
   .post-footer-dot {
     color: var(--color-border);
+  }
+  .not-by-ai-badge {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .not-by-ai-badge:hover {
+    color: var(--color-text);
+    border-color: var(--color-muted);
   }
 
   .prose {
