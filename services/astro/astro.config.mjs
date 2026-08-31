@@ -31,6 +31,7 @@ function rehypeImageToJpg() {
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://marc-julian.com',
   integrations: [blogImages(blogConfig.imagesPath)],
   markdown: {
     remarkPlugins: [remarkImageToJpg],

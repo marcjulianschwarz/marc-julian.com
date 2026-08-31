@@ -21,6 +21,7 @@ const pageTitle = title ? `${title} — ${blogConfig.title}` : blogConfig.title;
     <title>{pageTitle}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title={blogConfig.title} href="/blog/rss.xml" />
   </head>
   <body class="antialiased" style="position: relative; font-family: 'Inter', sans-serif; background: var(--color-bg); color: var(--color-text);">
     <button id="theme-toggle" aria-label="Toggle theme" style="position: absolute; top: 1.5rem; right: 1.5rem; background: none; color: var(--color-muted); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; transition: color 0.15s;">
