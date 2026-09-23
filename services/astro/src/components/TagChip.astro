@@ -11,7 +11,7 @@ const { name, href, year = false } = Astro.props;
 <a
   href={href}
   class={`tag-chip inline-block border rounded px-2 py-0.5 text-sm tracking-wide no-underline ${year ? "year" : ""}`}
-  style={`font-family: 'JetBrains Mono', monospace; border-style: ${year ? "dashed" : "solid"};`}
+  style={`border-style: ${year ? "dashed" : "solid"};`}
 >
   {name}
 </a>
@@ -24,8 +24,12 @@ const { name, href, year = false } = Astro.props;
   .tag-chip.year {
     color: var(--color-muted);
   }
+  .tag-chip {
+    transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+  }
   .tag-chip:hover {
-    color: var(--color-accent);
+    color: var(--color-bg);
     border-color: var(--color-accent);
+    background-color: var(--color-accent);
   }
 </style>

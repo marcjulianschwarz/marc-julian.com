@@ -1,0 +1,29 @@
+---
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import PhotoGrid from "@/components/PhotoGrid.astro";
+import { getGalleryPhotos } from "@/lib/photos";
+import { blogConfig } from "@config";
+
+export async function getStaticPaths() {
+  return [{ params: { page: undefined } }];
+}
+
+const photos = await getGalleryPhotos();
+---
+
+<BlogLayout title="Photography" description="Photography by Marc Julian Schwarz" wide>
+  <header class="page-header mb-12">
+    <h1
+      class="text-5xl font-semibold tracking-tight"
+      style="font-family: 'Inter', sans-serif; color: var(--color-text);"
+    >
+      <span style="color: var(--color-accent);">Marc Julian's</span> Photography
+    </h1>
+    <nav class="page-nav">
+      <a href="/">Home</a>
+      <a href={blogConfig.blogBase}>Blog</a>
+    </nav>
+  </header>
+
+  <PhotoGrid photos={photos} />
+</BlogLayout>

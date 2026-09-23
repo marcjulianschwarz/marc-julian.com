@@ -2,8 +2,19 @@
 import { getCollection } from "astro:content";
 import BlogLayout from "../layouts/BlogLayout.astro";
 import { blogConfig } from "@config";
+import { getGalleryPhotos } from "@/lib/photos";
 import projects from "../data/projects.json";
 import tools from "../data/tools.json";
+
+// Projects groups in display order. The first one needs no heading, the
+// section title already names it.
+const projectGroups = [
+    { id: "projects" },
+    { id: "content", heading: "Digital Gardens" },
+].map((group) => ({
+    ...group,
+    items: projects.filter((project) => project.section === group.id),
+}));
 
 const now = new Date();
 const allPosts = await getCollection("blog", (e) => {
@@ -22,6 +33,11 @@ allPosts.sort((a, b) => {
 const recentPosts = allPosts
     .filter((p) => !p.data["blog-archived"])
     .slice(0, 7);
+
+const photographyTag = blogConfig.photographyTag.toLowerCase();
+
+// Small strip of square crops, kept short so the home page stays light
+const recentPhotos = (await getGalleryPhotos()).slice(0, 6);
 
 function shortHash(id: string) {
     return id
@@ -46,7 +62,7 @@ function shortHash(id: string) {
             style="color: var(--color-text);"
         >
             AI Engineer at <a
-                href="https://www.govradar.de/"
+                href="https://www.govradar.net/"
                 class="accent-link">GovRadar</a
             >. I also build{" "}
             <a href="https://sammlung.app/" class="accent-link">sammlung.app</a> and{
@@ -60,7 +76,7 @@ function shortHash(id: string) {
         <div class="hero-contact">
             <a href="mailto:hi@marc-julian.de" class="accent-link">Send Email</a
             >
-            <span style="color: var(--color-border);">·</span>
+            <span style="color: var(--color-muted);">or</span>
             <a href="https://cal.com/marcjulianschwarz/" class="accent-link"
                 >Setup a Call</a
             >
@@ -79,7 +95,11 @@ function shortHash(id: string) {
                     <div class="flex items-baseline gap-2 mb-1">
                         <span
                             class="text-base font-semibold"
-                            style="color: var(--color-text);">GovRadar</span
+                            style="color: var(--color-text);"
+                            ><a
+                                href="https://www.govradar.net/"
+                                class="accent-link">GovRadar</a
+                            ></span
                         >
                         <span
                             class="mono-text muted-text"
@@ -88,9 +108,13 @@ function shortHash(id: string) {
                         >
                     </div>
                     <p class="text-base" style="color: var(--color-text);">
-                        AI Engineer building AI-powered solutions that help
-                        public administrations prepare procurement processes
-                        faster and more efficiently.
+                        AI Engineer building agentic solutions that help public
+                        administrations prepare procurement processes faster and
+                        more efficiently. I am currently working on <a
+                            href="https://www.govradar.net/l%C3%B6sung"
+                            class="accent-link">GovBot</a
+                        >, the agentic assistant that drafts and reviews
+                        tender documents.
                     </p>
                 </div>
             </div>
@@ -104,7 +128,10 @@ function shortHash(id: string) {
                         <span
                             class="text-base font-semibold"
                             style="color: var(--color-text);"
-                            >AHEAD Automotive</span
+                            ><a
+                                href="https://de.linkedin.com/company/ahead-automotive"
+                                class="accent-link">AHEAD Automotive</a
+                            ></span
                         >
                         <span
                             class="mono-text muted-text"
@@ -130,7 +157,10 @@ function shortHash(id: string) {
                         <span
                             class="text-base font-semibold"
                             style="color: var(--color-text);"
-                            >AI Office at DATEV</span
+                            ><a
+                                href="https://www.datev.de/web/de/berufsgruppenuebergreifend/ueber-datev/innovation/kuenstliche-intelligenz"
+                                class="accent-link">AI Office at DATEV</a
+                            ></span
                         >
                         <span
                             class="mono-text muted-text"
@@ -155,7 +185,10 @@ function shortHash(id: string) {
                         <span
                             class="text-base font-semibold"
                             style="color: var(--color-text);"
-                            >Fraunhofer IIS</span
+                            ><a
+                                href="https://www.iis.fraunhofer.de/de/ff/lv/dataanalytics/ml-kompetenz.html"
+                                class="accent-link">Fraunhofer IIS</a
+                            ></span
                         >
                         <span
                             class="mono-text muted-text"
@@ -166,7 +199,11 @@ function shortHash(id: string) {
                         Research Assistant / Working Student in the "Machine
                         Learning and Validation" research group. Supported the
                         team in analyzing motion capture data, built a Python
-                        Flask API and web application dashboard.
+                        Flask API and web application dashboard. Contributed to
+                        the <a
+                            href="https://www.iis.fraunhofer.de/de/ff/lv/dataanalytics/anwproj/search-engine-for-sports-scenes.html"
+                            class="accent-link">Sports Scene Search Engine</a
+                        >.
                     </p>
                 </div>
             </div>
@@ -184,7 +221,7 @@ function shortHash(id: string) {
 
     <!-- Recent Blog Posts -->
     <section class="mb-32" id="blog">
-        <p class="section-label mb-4">Recent Blog Posts</p>
+        <h2 class="section-label mb-4">Recent Blog Posts</h2>
         <div>
             {
                 recentPosts.map((post) => {
@@ -194,12 +231,34 @@ function shortHash(id: string) {
                         month: "short",
                         day: "numeric",
                     });
+                    const isPhotography =
+                        post.data["blog-tags"].some(
+                            (tag) => tag.toLowerCase() === photographyTag,
+                        );
                     return (
                         <a
                             href={`${blogConfig.postsBase}/${post.id}`}
                             class="list-row group"
                         >
                             <span class="list-title">
+                                {isPhotography && (
+                                    <svg
+                                        class="list-icon"
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-label="Photography post"
+                                        role="img"
+                                    >
+                                        <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z" />
+                                        <circle cx="12" cy="13" r="3" />
+                                    </svg>
+                                )}
                                 {post.data["blog-title"]}
                             </span>
                             {date && (
@@ -220,60 +279,99 @@ function shortHash(id: string) {
         </div>
     </section>
 
+    <!-- Photography -->
+    {recentPhotos.length > 0 && (
+        <section class="mb-32" id="photography">
+            <h2 class="section-label mb-4">Photography</h2>
+            <div class="photo-strip">
+                {recentPhotos.map((photo) => (
+                    <a
+                        href={photo.href}
+                        class="photo-strip-item"
+                        title={photo.title}
+                    >
+                        <picture>
+                            <source
+                                srcset={photo.images.small.webp}
+                                type="image/webp"
+                            />
+                            <img
+                                src={photo.images.small.jpg}
+                                alt={photo.title}
+                                width={photo.size?.small.width}
+                                height={photo.size?.small.height}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </picture>
+                    </a>
+                ))}
+            </div>
+            <div class="flex justify-between mt-4">
+                <a href={blogConfig.photographyBase} class="accent-link mono-text">
+                    More photos
+                </a>
+            </div>
+        </section>
+    )}
+
     <!-- Projects -->
     <section class="mb-32" id="projects">
-        <p class="section-label mb-4">Projects</p>
-        <div class="project-grid">
-            {
-                projects.map((project) => {
-                    const showGithub = !!project.github;
-                    return (
-                        <div class="project-card-wrapper">
-                            <a
-                                href={project.url}
-                                class="project-card"
-                                target={
-                                    project.url.startsWith("/")
-                                        ? undefined
-                                        : "_blank"
-                                }
-                                rel={
-                                    project.url.startsWith("/")
-                                        ? undefined
-                                        : "noopener noreferrer"
-                                }
-                            >
-                                <span class="project-title">
-                                    {project.title}
-                                </span>
-                                <span class="project-sub">
-                                    {project.description}
-                                </span>
-                            </a>
-                            {showGithub && (
-                                <a
-                                    href={project.github}
-                                    class="project-github"
-                                    aria-label={`${project.title} on GitHub`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        width="16"
-                                        height="16"
-                                        fill="currentColor"
-                                        aria-hidden="true"
+        <h2 class="section-label mb-4">Projects</h2>
+        {
+            projectGroups.map((group) => (
+                <div class="project-group">
+                    {group.heading && (
+                        <h3 class="project-group-heading">{group.heading}</h3>
+                    )}
+                    <div class="project-list">
+                        {group.items.map((project) => {
+                            const external = !project.url.startsWith("/");
+                            return (
+                                <div class="project-row">
+                                    <a
+                                        href={project.url}
+                                        class="project-link"
+                                        target={external ? "_blank" : undefined}
+                                        rel={
+                                            external
+                                                ? "noopener noreferrer"
+                                                : undefined
+                                        }
                                     >
-                                        <path d="M12 .5C5.73.5.99 5.24.99 11.51c0 4.86 3.15 8.98 7.52 10.43.55.1.75-.24.75-.53 0-.26-.01-.95-.02-1.86-3.06.66-3.71-1.47-3.71-1.47-.5-1.27-1.22-1.61-1.22-1.61-1-.68.08-.67.08-.67 1.1.08 1.68 1.13 1.68 1.13.98 1.68 2.58 1.2 3.21.92.1-.71.38-1.2.69-1.48-2.44-.28-5.01-1.22-5.01-5.44 0-1.2.43-2.18 1.13-2.95-.11-.28-.49-1.4.11-2.92 0 0 .92-.29 3.02 1.13.88-.24 1.82-.36 2.76-.37.94.01 1.88.13 2.76.37 2.1-1.42 3.02-1.13 3.02-1.13.6 1.52.22 2.64.11 2.92.7.77 1.13 1.75 1.13 2.95 0 4.23-2.57 5.16-5.02 5.43.39.34.74 1 .74 2.02 0 1.46-.01 2.64-.01 3 0 .29.2.64.76.53 4.36-1.45 7.51-5.57 7.51-10.43C23.01 5.24 18.27.5 12 .5z" />
-                                    </svg>
-                                </a>
-                            )}
-                        </div>
-                    );
-                })
-            }
-        </div>
+                                        <span class="project-title">
+                                            {project.title}
+                                        </span>
+                                        <span class="project-sub">
+                                            {project.description}
+                                        </span>
+                                    </a>
+                                    {project.github && (
+                                        <a
+                                            href={project.github}
+                                            class="project-github"
+                                            aria-label={`${project.title} on GitHub`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                width="16"
+                                                height="16"
+                                                fill="currentColor"
+                                                aria-hidden="true"
+                                            >
+                                                <path d="M12 .5C5.73.5.99 5.24.99 11.51c0 4.86 3.15 8.98 7.52 10.43.55.1.75-.24.75-.53 0-.26-.01-.95-.02-1.86-3.06.66-3.71-1.47-3.71-1.47-.5-1.27-1.22-1.61-1.22-1.61-1-.68.08-.67.08-.67 1.1.08 1.68 1.13 1.68 1.13.98 1.68 2.58 1.2 3.21.92.1-.71.38-1.2.69-1.48-2.44-.28-5.01-1.22-5.01-5.44 0-1.2.43-2.18 1.13-2.95-.11-.28-.49-1.4.11-2.92 0 0 .92-.29 3.02 1.13.88-.24 1.82-.36 2.76-.37.94.01 1.88.13 2.76.37 2.1-1.42 3.02-1.13 3.02-1.13.6 1.52.22 2.64.11 2.92.7.77 1.13 1.75 1.13 2.95 0 4.23-2.57 5.16-5.02 5.43.39.34.74 1 .74 2.02 0 1.46-.01 2.64-.01 3 0 .29.2.64.76.53 4.36-1.45 7.51-5.57 7.51-10.43C23.01 5.24 18.27.5 12 .5z" />
+                                            </svg>
+                                        </a>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            ))
+        }
         <div class="flex justify-between mt-4">
             <a
                 href="https://github.com/marcjulianschwarz/marcjulianschwarz/discussions/1"
@@ -288,7 +386,7 @@ function shortHash(id: string) {
 
     <!-- Tools -->
     <section class="mb-32" id="tools">
-        <p class="section-label mb-4">Tools I Use</p>
+        <h2 class="section-label mb-4">Tools I Use</h2>
         <div>
             {
                 tools.map((tool) => (
@@ -349,50 +447,86 @@ function shortHash(id: string) {
     }
 
     .section-label {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--color-muted);
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--color-text);
     }
 
     .accent-link {
         color: var(--color-accent);
-        text-decoration: none;
     }
-    .accent-link:hover {
-        opacity: 0.8;
-    }
-
+    
     .muted-text {
         color: var(--color-muted);
     }
 
     .mono-text {
-        font-family: "JetBrains Mono", monospace;
         font-size: 1rem;
     }
 
+    /* Timeline geometry is derived from these variables only. */
     .timeline {
+        --timeline-dot-size: 0.5rem;
+        --timeline-gutter: 1rem;
+        --timeline-gap: 1.5rem;
+        /* Center of the first text line: half of period font-size * line-height. */
+        --timeline-anchor: 0.6rem;
+        /* Same clear space above and below every dot. */
+        --timeline-dot-clearance: 0.75rem;
+        --timeline-tail: 2rem;
+        /* How far the line fades in at each end. */
+        --timeline-fade: 1.25rem;
         position: relative;
-        padding-left: 0;
     }
     .timeline-item {
         display: grid;
-        grid-template-columns: 1rem 1fr;
-        gap: 0 0.75rem;
+        grid-template-columns: var(--timeline-gutter) 1fr;
+        column-gap: 0.75rem;
         align-items: start;
-        margin-bottom: 1.5rem;
         position: relative;
     }
-    .timeline-item:not(:last-child)::after {
+    .timeline-item:not(:last-child) {
+        padding-bottom: var(--timeline-gap);
+    }
+    /* Line stops short of both dots by exactly the clearance. */
+    .timeline-item::after {
         content: "";
         position: absolute;
-        left: calc(0.4rem);
-        top: 1.4rem;
-        bottom: -1.5rem;
+        left: calc(var(--timeline-gutter) / 2);
+        transform: translateX(-50%);
+        top: calc(
+            var(--timeline-anchor) + var(--timeline-dot-size) / 2 +
+                var(--timeline-dot-clearance)
+        );
+        /* Next dot's top edge sits (anchor - dot/2) below this box. */
+        bottom: calc(
+            var(--timeline-dot-clearance) - var(--timeline-anchor) +
+                var(--timeline-dot-size) / 2
+        );
         width: 1px;
-        background-color: var(--color-border);
+        background-image: linear-gradient(
+            to bottom,
+            transparent,
+            var(--color-border) var(--timeline-fade),
+            var(--color-border) calc(100% - var(--timeline-fade)),
+            transparent
+        );
+    }
+    /* The last line has no dot to reach, so it runs on and fades out. */
+    .timeline-item:last-child {
+        padding-bottom: var(--timeline-tail);
+    }
+    .timeline-item:last-child::after {
+        bottom: 0;
+        /* Fades in at the dot, then out across the tail. */
+        background-image: linear-gradient(
+            to bottom,
+            transparent,
+            var(--color-border) var(--timeline-fade),
+            var(--color-border) calc(100% - var(--timeline-tail)),
+            transparent calc(100% - var(--timeline-tail) / 3)
+        );
     }
     .timeline-period {
         font-size: 1rem;
@@ -400,16 +534,13 @@ function shortHash(id: string) {
         margin-bottom: 0.2rem;
     }
     .timeline-dot {
-        width: 0.5rem;
-        height: 0.5rem;
+        width: var(--timeline-dot-size);
+        height: var(--timeline-dot-size);
         border-radius: 50%;
         background-color: var(--color-accent);
-        margin-top: 0.25rem;
         justify-self: center;
+        margin-top: calc(var(--timeline-anchor) - var(--timeline-dot-size) / 2);
         flex-shrink: 0;
-    }
-    .timeline-content {
-        padding-bottom: 0.25rem;
     }
 
     .list-title-with-icon {
@@ -444,6 +575,49 @@ function shortHash(id: string) {
     }
     .list-row:hover .list-title {
         color: var(--color-accent);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
+    }
+    .photo-strip {
+        columns: 2;
+        column-gap: 0.75rem;
+    }
+    @media (min-width: 640px) {
+        .photo-strip {
+            columns: 3;
+        }
+    }
+    .photo-strip-item {
+        display: block;
+        margin-bottom: 0.75rem;
+        break-inside: avoid;
+        overflow: hidden;
+        border-radius: 0.5rem;
+        line-height: 0;
+        background: var(--color-border);
+        box-shadow: var(--shadow-photo);
+        transition: box-shadow 0.25s ease;
+    }
+    .photo-strip-item:hover {
+        box-shadow: var(--shadow-photo-hover);
+    }
+    .photo-strip-item img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .photo-strip-item:hover img {
+        transform: scale(1.04);
+    }
+    .list-icon {
+        display: inline-block;
+        vertical-align: -0.12em;
+        margin-right: 0.35rem;
+        color: var(--color-muted);
+    }
+    .list-row:hover .list-icon {
+        color: var(--color-accent);
     }
     .list-sub {
         font-size: 1rem;
@@ -451,81 +625,68 @@ function shortHash(id: string) {
         text-align: right;
         min-width: 0;
     }
-    .project-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
+    .project-group + .project-group {
+        margin-top: 2rem;
     }
-    @media (min-width: 480px) {
-        .project-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+    .project-group-heading {
+        font-size: 1.125rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--color-text);
+        margin-bottom: 0.25rem;
     }
-    @media (min-width: 640px) {
-        .project-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
+    .project-row {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--color-border);
     }
-    .project-card-wrapper {
-        position: relative;
+    .project-row:last-child {
+        border-bottom: none;
     }
-    .project-card {
+    .project-link {
         display: flex;
         flex-direction: column;
-        gap: 0.35rem;
-        padding: 0.9rem 2.4rem 0.9rem 1rem;
-        border: 1px solid var(--color-border);
-        border-radius: 6px;
+        gap: 0.2rem;
+        flex: 1;
+        min-width: 0;
         text-decoration: none;
-        transition:
-            border-color 0.15s,
-            background-color 0.15s;
-        height: 100%;
-    }
-    .project-card:hover,
-    .project-card-wrapper:hover .project-card {
-        border-color: var(--color-accent);
-    }
-    .project-github {
-        position: absolute;
-        top: 0.6rem;
-        right: 0.6rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 4px;
-        color: var(--color-muted);
-        text-decoration: none;
-        transition:
-            color 0.15s,
-            background-color 0.15s;
-    }
-    .project-github:hover {
-        color: var(--color-accent);
-        background-color: color-mix(
-            in srgb,
-            var(--color-border) 40%,
-            transparent
-        );
     }
     .project-title {
         font-size: 1rem;
         color: var(--color-text);
         transition: color 0.15s;
     }
-    .project-card:hover .project-title {
+    .project-link:hover .project-title {
         color: var(--color-accent);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.2em;
     }
     .project-sub {
         font-size: 0.875rem;
         color: var(--color-muted);
         line-height: 1.35;
     }
+    .project-github {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        align-self: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 4px;
+        color: var(--color-muted);
+        text-decoration: none;
+        transition: color 0.15s;
+    }
+    .project-github:hover {
+        color: var(--color-accent);
+    }
 
     .list-date {
-        font-family: "JetBrains Mono", monospace;
         font-size: 1rem;
         color: var(--color-muted);
         white-space: nowrap;

@@ -1,4 +1,6 @@
 ---
+import { blogConfig } from "@config";
+
 interface Props {
   title: string;
   subtitle?: string;
@@ -7,7 +9,11 @@ interface Props {
   href: string;
 }
 
-const { title, subtitle, date, href } = Astro.props;
+const { title, subtitle, date, tags, href } = Astro.props;
+
+const photographyTag = blogConfig.photographyTag.toLowerCase();
+const isPhotography =
+  tags.some((tag) => tag.toLowerCase() === photographyTag);
 
 const formattedDate = date?.toLocaleDateString("en-US", {
   year: "numeric",
@@ -18,12 +24,32 @@ const formattedDate = date?.toLocaleDateString("en-US", {
 
 <a href={href} class="post-card group block py-4 border-b no-underline" style="border-color: var(--color-border);">
   <div class="flex items-baseline justify-between gap-4">
-    <span class="post-title text-base leading-snug">{title}</span>
+    <span class="post-title text-base leading-snug">
+      {isPhotography && (
+        <svg
+          class="post-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-label="Photography post"
+          role="img"
+        >
+          <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z" />
+          <circle cx="12" cy="13" r="3" />
+        </svg>
+      )}
+      {title}
+    </span>
     {date && (
       <time
         datetime={date.toISOString()}
         class="text-xs whitespace-nowrap shrink-0"
-        style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);"
+        style="color: var(--color-muted);"
       >
         {formattedDate}
       </time>
@@ -37,6 +63,18 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     color: var(--color-text);
   }
   .post-card:hover .post-title {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+  .post-icon {
+    display: inline-block;
+    vertical-align: -0.12em;
+    margin-right: 0.35rem;
+    color: var(--color-muted);
+  }
+  .post-card:hover .post-icon {
     color: var(--color-accent);
   }
 </style>

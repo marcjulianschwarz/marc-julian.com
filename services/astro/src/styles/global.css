@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -10,33 +10,46 @@ html {
   scroll-margin-top: 4rem;
 }
 
+.photo-block:target {
+  scroll-margin-top: 2rem;
+}
+
 :root {
   --color-bg: #fafafa;
   --color-text: #2e3338;
-  --color-muted: #abb0b6;
-  --color-accent: #f29718;
+  --color-muted: #6b7280;
+  --color-accent: #1a1d21;
+  --color-underline: #1a1d2159;
+  --shadow-photo: 0 1px 3px #1a1d211a, 0 6px 16px -6px #1a1d2114;
+  --shadow-photo-hover: 0 2px 6px #1a1d2124, 0 14px 30px -10px #1a1d2124;
   --color-border: #d9d8d8;
-  --color-back-link: #abb0b6;
+  --color-back-link: #6b7280;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     --color-bg: #0d1017;
     --color-text: #bfbdb6;
-    --color-muted: #565b66;
-    --color-accent: #e6b450;
-    --color-border: #1e2430;
-    --color-back-link: #565b66;
+    --color-muted: #8b949e;
+    --color-accent: #f0eee6;
+    --color-underline: #f0eee659;
+    --shadow-photo: 0 1px 3px #0006, 0 6px 16px -6px #0000004d;
+    --shadow-photo-hover: 0 2px 6px #00000073, 0 14px 30px -10px #00000066;
+    --color-border: #2f3947;
+    --color-back-link: #8b949e;
   }
 }
 
 html.dark {
   --color-bg: #0d1017;
   --color-text: #bfbdb6;
-  --color-muted: #565b66;
-  --color-accent: #e6b450;
-  --color-border: #1e2430;
-  --color-back-link: #565b66;
+  --color-muted: #8b949e;
+  --color-accent: #f0eee6;
+  --color-underline: #f0eee659;
+  --shadow-photo: 0 1px 3px #0006, 0 6px 16px -6px #0000004d;
+  --shadow-photo-hover: 0 2px 6px #00000073, 0 14px 30px -10px #00000066;
+  --color-border: #2f3947;
+  --color-back-link: #8b949e;
 }
 
 /* Blog post images */
@@ -76,4 +89,170 @@ html.dark .astro-code-themes {
 }
 html.dark .astro-code-themes span {
   color: var(--shiki-dark) !important;
+}
+
+/* Photography blocks inside posts */
+/* fit-content shrinks the figure to the image, so the caption bar matches its width */
+/*
+  70vh * ratio is the width at which the image is exactly 70vh tall, so this
+  caps height without max-height. The reserved and final boxes stay identical.
+*/
+.photo-block {
+  margin: 2.5rem auto;
+  width: 100%;
+  max-width: min(100%, calc(70vh * var(--photo-ratio, 1.5)));
+}
+.photo-block picture {
+  display: block;
+  line-height: 0;
+}
+/*
+  No max-height here. The browser reserves space from the width/height
+  attributes, and a max-height would shrink the box afterwards. The two
+  disagree while lazy images load, which drifts every anchor below them.
+  Portrait images are bounded by a width cap set per photo instead.
+*/
+.photo-block .photo-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-photo);
+}
+.photo-caption {
+  margin-top: 0.4rem;
+}
+.photo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.15rem;
+}
+
+/* Icon buttons: camera details, download, request */
+.photo-action,
+.photo-summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  color: var(--color-muted);
+  text-decoration: none;
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.15s, background-color 0.15s;
+}
+.photo-action:hover,
+.photo-summary:hover {
+  color: var(--color-text);
+  background-color: var(--color-border);
+}
+.photo-summary::-webkit-details-marker {
+  display: none;
+}
+.photo-details {
+  position: relative;
+}
+.photo-details[open] .photo-summary {
+  color: var(--color-text);
+  background-color: var(--color-border);
+}
+.photo-meta {
+  position: absolute;
+  right: 0;
+  z-index: 10;
+  margin: 0.4rem 0 0;
+  padding: 0.6rem 0.75rem;
+  min-width: 15rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-bg);
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
+}
+.photo-meta-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.15rem 0;
+}
+/* The typography plugin adds top margins to dt/dd, which breaks the row alignment */
+.photo-meta dt,
+.photo-meta dd {
+  margin: 0;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.photo-meta dt {
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.photo-meta dd {
+  color: var(--color-text);
+  text-align: right;
+}
+
+/* Section headings on the blog index */
+.section-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+/*
+  Links carry weight and an underline instead of a distinct hue, since the
+  accent is now the text color. offset + thickness keep the rule off the
+  descenders so it stays readable at body size.
+*/
+.accent-link,
+.prose :is(p, li, td, blockquote) a {
+  color: var(--color-accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: var(--color-underline);
+  transition: text-decoration-color 0.15s;
+}
+.accent-link:hover,
+.prose :is(p, li, td, blockquote) a:hover {
+  opacity: 1;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-accent);
+}
+
+/* Page header with nav links beside the title */
+.page-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  flex-wrap: wrap;
+}
+/*
+  A long title pushes the nav onto its own line. margin-left keeps it against
+  the right edge there, since space-between does nothing to a lone wrapped item.
+*/
+.page-nav {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.page-nav a {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.page-nav a:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
 }

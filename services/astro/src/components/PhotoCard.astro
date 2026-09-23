@@ -1,0 +1,99 @@
+---
+import type { Photo } from "@/lib/photos";
+
+interface Props {
+  photo: Photo;
+}
+
+const { photo } = Astro.props;
+
+const place = [photo.location?.city, photo.location?.country].filter(Boolean).join(", ");
+---
+
+<a href={photo.href} class="photo-card">
+  <picture>
+    <source srcset={photo.images.small.webp} type="image/webp" />
+    <img
+      src={photo.images.small.jpg}
+      alt={photo.title}
+      width={photo.size?.small.width}
+      height={photo.size?.small.height}
+      loading="lazy"
+      decoding="async"
+      class="photo-card-img"
+    />
+  </picture>
+
+  <div class="photo-card-overlay">
+    <span class="photo-card-title">{photo.title}</span>
+    {place && <span class="photo-card-place">{place}</span>}
+    {photo.description && <span class="photo-card-description">{photo.description}</span>}
+  </div>
+</a>
+
+<style>
+  .photo-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    background: var(--color-border);
+    box-shadow: var(--shadow-photo);
+    transition: box-shadow 0.25s ease;
+  }
+  .photo-card:hover {
+    box-shadow: var(--shadow-photo-hover);
+  }
+  .photo-card-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.4s ease;
+  }
+  .photo-card:hover .photo-card-img {
+    transform: scale(1.03);
+  }
+  .photo-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.15rem;
+    padding: 1rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.1) 55%, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .photo-card:hover .photo-card-overlay,
+  .photo-card:focus-visible .photo-card-overlay {
+    opacity: 1;
+  }
+  .photo-card-title {
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #ffffff;
+  }
+  .photo-card-place {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .photo-card-description {
+    margin-top: 0.2rem;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.7);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  /* Touch devices have no hover, so keep the caption visible */
+  @media (hover: none) {
+    .photo-card-overlay {
+      opacity: 1;
+    }
+  }
+</style>

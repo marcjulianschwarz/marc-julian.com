@@ -1,0 +1,47 @@
+---
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import { blogConfig } from "@config";
+---
+
+<BlogLayout
+    title="AI Usage"
+    description="How I use AI when writing and building things"
+>
+    <header class="page-header mb-10">
+        <h1
+            class="text-2xl font-semibold"
+            style="font-family: 'Inter', sans-serif; color: var(--color-text);"
+        >
+            AI Usage
+        </h1>
+        <nav class="page-nav">
+            <a href="/">Home</a>
+            <a href={blogConfig.blogBase}>Blog</a>
+        </nav>
+    </header>
+
+    <div class="ai-usage">
+        <p>
+            All text on every website under the marc-julian.com domain is
+            entirely written by me (Marc Julian Schwarz). There will be no
+            LLM-generated text anywhere. I consider publishing LLM-generated
+            text to be disrespectful and actively damaging to the internet we
+            once had.
+        </p>
+        <p>
+            LLMs might only be used for identifying spelling or grammar
+            mistakes.
+        </p>
+    </div>
+</BlogLayout>
+
+<style>
+    .ai-usage p {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+        color: var(--color-text);
+    }
+    .ai-usage p:last-child {
+        margin-bottom: 0;
+    }
+</style>

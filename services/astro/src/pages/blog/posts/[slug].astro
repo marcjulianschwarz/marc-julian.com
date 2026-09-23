@@ -36,19 +36,15 @@ const formattedDate = date?.toLocaleDateString("en-US", {
 ---
 
 <BlogLayout title={title}>
-  <nav class="mb-10">
-    <a
-      href={blogConfig.blogBase}
-      class="back-link text-xs"
-      style="font-family: 'JetBrains Mono', monospace;"
-    >
-      ← back
-    </a>
-  </nav>
-
   <article>
     <header class="mb-10 pb-8 border-b" style="border-color: var(--color-border);">
-      <h1 class="text-2xl font-semibold leading-snug mb-2" style="font-family: 'Inter', sans-serif; color: var(--color-text);">{title}</h1>
+      <div class="page-header mb-2">
+        <h1 class="text-2xl font-semibold leading-snug" style="font-family: 'Inter', sans-serif; color: var(--color-text);">{title}</h1>
+        <nav class="page-nav">
+          <a href="/">Home</a>
+          <a href={blogConfig.blogBase}>Blog</a>
+        </nav>
+      </div>
       {subtitle && (
         <p class="text-base italic mb-3" style="font-family: 'Inter', sans-serif; color: var(--color-muted);">{subtitle}</p>
       )}
@@ -56,7 +52,7 @@ const formattedDate = date?.toLocaleDateString("en-US", {
         <time
           datetime={date.toISOString()}
           class="text-xs"
-          style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);"
+          style="color: var(--color-muted);"
         >
           {formattedDate}
         </time>
@@ -83,10 +79,8 @@ const formattedDate = date?.toLocaleDateString("en-US", {
       <button id="copy-md" class="post-footer-link post-footer-btn">
         <span class="copy-md-label">Copy Markdown</span>
       </button>
+      <a href="/ai-usage" class="not-by-ai-badge">Made by Human</a>
     </footer>
-    <a href="https://notbyai.fyi/" target="_blank" rel="noopener" class="not-by-ai-badge">
-      Written by a human, not by AI
-    </a>
     <script is:inline define:vars={{ rawMarkdown: post.body, postId: post.id }}>
       if (window.location.search.includes('edit')) {
         window.location.href = 'obsidian://open?vault=obsidian-blog&file=Posts/' + encodeURIComponent(postId);
@@ -109,12 +103,6 @@ const formattedDate = date?.toLocaleDateString("en-US", {
 </BlogLayout>
 
 <style>
-  .back-link {
-    color: var(--color-muted);
-  }
-  .back-link:hover {
-    color: var(--color-text);
-  }
   .post-footer {
     display: flex;
     align-items: center;
@@ -124,14 +112,18 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     border-top: 1px solid var(--color-border);
   }
   .post-footer-link {
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
     color: var(--color-accent);
-    text-decoration: none;
-    transition: opacity 0.15s;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: var(--color-underline);
+    transition: text-decoration-color 0.15s;
   }
   .post-footer-link:hover {
-    opacity: 0.8;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--color-accent);
   }
   .post-footer-btn {
     padding: 0;
@@ -143,12 +135,10 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     color: var(--color-border);
   }
   .not-by-ai-badge {
-    display: inline-block;
-    margin-top: 1rem;
+    margin-left: auto;
     padding: 0.2rem 0.5rem;
     border: 1px solid var(--color-border);
     border-radius: 0.25rem;
-    font-family: 'JetBrains Mono', monospace;
     font-size: 0.7rem;
     color: var(--color-muted);
     text-decoration: none;
@@ -174,11 +164,19 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     border-bottom: 1px solid var(--color-border);
     padding-bottom: 0.3em;
   }
-  .prose :global(a) {
+  /* Heading anchors are excluded, they wrap the whole heading text */
+  .prose :global(:is(p, li, td, blockquote) a) {
     color: var(--color-accent);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: var(--color-underline);
+    transition: text-decoration-color 0.15s;
   }
-  .prose :global(a:hover) {
-    opacity: 0.8;
+  .prose :global(:is(p, li, td, blockquote) a:hover) {
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--color-accent);
   }
   .prose :global(strong) {
     color: var(--color-text);
@@ -272,8 +270,7 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     color: var(--color-muted);
     margin-top: 1em;
     font-style: italic;
-    font-family: 'JetBrains Mono', monospace;
-  }
+    }
   .prose :global(hr) {
     border-color: var(--color-border);
   }

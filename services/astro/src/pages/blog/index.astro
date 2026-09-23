@@ -31,20 +31,18 @@ const tags = Array.from(tagSet).sort();
 ---
 
 <BlogLayout>
-  <header class="mb-12">
-    <a href="/" class="text-xs transition-colors" style="font-family: 'JetBrains Mono', monospace; color: var(--color-back-link);">
-      ← back
-    </a>
-    <h1 class="mt-6 text-5xl font-semibold tracking-tight" style="font-family: 'Inter', sans-serif; color: var(--color-text);">
-      <span style="color: var(--color-accent);">MJ's</span> Blog
+  <header class="page-header mb-12">
+    <h1 class="text-5xl font-semibold tracking-tight" style="font-family: 'Inter', sans-serif; color: var(--color-text);">
+      <span style="color: var(--color-accent);">Marc Julian's</span> Blog
     </h1>
-    <a href="/blog/rss.xml" class="mt-4 inline-block text-xs transition-colors" style="font-family: 'JetBrains Mono', monospace; color: var(--color-back-link);">
-      RSS
-    </a>
+    <nav class="page-nav">
+      <a href="/">Home</a>
+      <a href="/blog/rss.xml">RSS</a>
+    </nav>
   </header>
 
   <section class="mb-10">
-    <p class="text-xs uppercase tracking-widest mb-3" style="color: var(--color-muted);" style="font-family: 'JetBrains Mono', monospace;">Tags</p>
+    <h2 class="section-heading mb-3">Tags</h2>
     <div class="flex flex-wrap gap-2">
       {tags.map((tag) => (
         <TagChip
@@ -57,7 +55,7 @@ const tags = Array.from(tagSet).sort();
   </section>
 
   <section class="mb-12">
-    <p class="text-xs uppercase tracking-widest mb-1" style="color: var(--color-muted);" style="font-family: 'JetBrains Mono', monospace;">Posts</p>
+    <h2 class="section-heading mb-3">Posts</h2>
     <div>
       {posts.map((post) => (
         <PostCard
@@ -73,7 +71,7 @@ const tags = Array.from(tagSet).sort();
 
   {archived.length > 0 && (
     <section>
-      <p class="text-xs uppercase tracking-widest mb-1" style="color: var(--color-muted);" style="font-family: 'JetBrains Mono', monospace;">Archived</p>
+      <h2 class="section-heading mb-3">Archived</h2>
       <div>
         {archived.map((post) => (
           <PostCard

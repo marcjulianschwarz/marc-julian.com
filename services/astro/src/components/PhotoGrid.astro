@@ -1,0 +1,89 @@
+---
+import type { Photo } from "@/lib/photos";
+import PhotoCard from "./PhotoCard.astro";
+
+interface Props {
+  photos: Photo[];
+}
+
+const { photos } = Astro.props;
+
+const COLUMN_COUNTS = [1, 2, 3];
+
+// Aspect ratio is known at build time, so columns can be filled by shortest-first
+// instead of letting the browser balance them. Fallback ratio is 3:2 landscape.
+function getRatio(photo: Photo): number {
+  const size = photo.size?.small;
+  if (!size || size.width === 0) return 2 / 3;
+  return size.height / size.width;
+}
+
+// One precomputed distribution per breakpoint; CSS shows only the matching one.
+const layouts = COLUMN_COUNTS.map((count) => {
+  const columns: Photo[][] = Array.from({ length: count }, () => []);
+  const heights: number[] = Array.from({ length: count }, () => 0);
+  for (const photo of photos) {
+    let shortest = 0;
+    for (let i = 1; i < count; i++) {
+      if (heights[i] < heights[shortest]) shortest = i;
+    }
+    columns[shortest].push(photo);
+    heights[shortest] += getRatio(photo);
+  }
+  return { count, columns };
+});
+---
+
+{
+  photos.length === 0 ? (
+    <p class="text-sm" style="color: var(--color-muted);">
+      No photos yet.
+    </p>
+  ) : (
+    layouts.map(({ count, columns }) => (
+      <div class="photo-grid" data-columns={count} style={`--photo-columns: ${count};`}>
+        {columns.map((column) => (
+          <div class="photo-column">
+            {column.map((photo) => (
+              <PhotoCard photo={photo} />
+            ))}
+          </div>
+        ))}
+      </div>
+    ))
+  )
+}
+
+<style>
+  .photo-grid {
+    display: none;
+    grid-template-columns: repeat(var(--photo-columns), minmax(0, 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+  .photo-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .photo-grid[data-columns="1"] {
+    display: grid;
+  }
+  @media (min-width: 640px) {
+    .photo-grid[data-columns="1"] {
+      display: none;
+    }
+    .photo-grid[data-columns="2"] {
+      display: grid;
+    }
+  }
+  @media (min-width: 1024px) {
+    .photo-grid[data-columns="2"] {
+      display: none;
+    }
+    .photo-grid[data-columns="3"] {
+      display: grid;
+    }
+  }
+</style>

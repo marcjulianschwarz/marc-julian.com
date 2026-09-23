@@ -1,5 +1,10 @@
 [
   {
+    "name": "Tools",
+    "url": "https://tools.marc-julian.com/",
+    "icon": "/assets/tool_icons/tools.png"
+  },
+  {
     "name": "Zed",
     "url": "https://zed.dev/",
     "icon": "/assets/tool_icons/zed.png"
@@ -48,10 +53,5 @@
     "name": "Zen Browser",
     "url": "https://zen-browser.app/",
     "icon": "/assets/tool_icons/zen.png"
-  },
-  {
-    "name": "Tools",
-    "url": "https://tools.marc-julian.com/",
-    "icon": "/assets/tool_icons/tools.png"
   }
 ]

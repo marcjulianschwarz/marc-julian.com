@@ -42,20 +42,15 @@ const { tagName, posts } = Astro.props;
 ---
 
 <BlogLayout title={tagName}>
-  <nav class="mb-10">
-    <a
-      href={blogConfig.blogBase}
-      class="back-link text-xs"
-      style="font-family: 'JetBrains Mono', monospace;"
-    >
-      ← back
-    </a>
-  </nav>
-
   <header class="mb-8">
-    <p class="text-xs uppercase tracking-widest mb-1" style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);">Tag</p>
-    <h1 class="text-2xl font-semibold" style="font-family: 'Inter', sans-serif; color: var(--color-text);">{tagName}</h1>
-    <p class="text-xs mt-1" style="font-family: 'JetBrains Mono', monospace; color: var(--color-muted);">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+    <div class="page-header">
+      <h1 class="text-2xl font-semibold" style="font-family: 'Inter', sans-serif; color: var(--color-text);">{tagName}</h1>
+      <nav class="page-nav">
+        <a href="/">Home</a>
+        <a href={blogConfig.blogBase}>Blog</a>
+      </nav>
+    </div>
+    <p class="text-xs mt-1" style="color: var(--color-muted);">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
   </header>
 
   <div>
@@ -71,11 +66,3 @@ const { tagName, posts } = Astro.props;
   </div>
 </BlogLayout>
 
-<style>
-  .back-link {
-    color: var(--color-muted);
-  }
-  .back-link:hover {
-    color: var(--color-text);
-  }
-</style>
