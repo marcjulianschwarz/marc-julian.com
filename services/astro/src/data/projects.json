@@ -19,6 +19,13 @@
     "section": "projects"
   },
   {
+    "title": "Counter",
+    "description": "Keep track of all kinds of counts",
+    "url": "https://counter.marc-julian.com/",
+    "github": "https://github.com/marcjulianschwarz/counter",
+    "section": "projects"
+  },
+  {
     "title": "Obsidian for Raycast",
     "description": "Obsidian notes at your fingertips on Mac",
     "url": "https://www.raycast.com/marcjulian/obsidian",

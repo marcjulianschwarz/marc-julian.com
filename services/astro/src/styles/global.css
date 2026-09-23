@@ -233,16 +233,30 @@ html.dark .astro-code-themes span {
   gap: 0.5rem 2rem;
   flex-wrap: wrap;
 }
-/*
-  A long title pushes the nav onto its own line. margin-left keeps it against
-  the right edge there, since space-between does nothing to a lone wrapped item.
-*/
+/* The title wraps next to the nav */
+.page-header > :first-child {
+  flex: 1 1 0;
+}
 .page-nav {
   display: flex;
   align-items: baseline;
   gap: 1.25rem;
   flex-shrink: 0;
-  margin-left: auto;
+}
+/*
+  Mobile: nav on its own line, top left above the title. It moves up into the
+  page padding (4rem) to share a line with the theme toggle (top 1.5rem, 18px tall).
+*/
+@media (max-width: 639px) {
+  .page-header > :first-child {
+    flex-basis: 100%;
+  }
+  .page-nav {
+    order: -1;
+    line-height: 1.125rem;
+    margin-top: -2.5rem;
+    margin-bottom: 1rem;
+  }
 }
 .page-nav a {
   font-size: 0.9rem;
