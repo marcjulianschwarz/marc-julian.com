@@ -75,6 +75,20 @@
     "section": "projects"
   },
   {
+    "title": "Desk Automation",
+    "description": "Control a Steelcase desk with Home Assistant",
+    "url": "https://github.com/marcjulianschwarz/ha-desk-automation",
+    "github": "https://github.com/marcjulianschwarz/ha-desk-automation",
+    "section": "projects"
+  },
+  {
+    "title": "MRI Scan Dashboard",
+    "description": "Analyze brain MRI scans with ML predictions",
+    "url": "https://github.com/marcjulianschwarz/mri-scan-dashboard",
+    "github": "https://github.com/marcjulianschwarz/mri-scan-dashboard",
+    "section": "projects"
+  },
+  {
     "title": "The Brew Code",
     "description": "German coffee wiki and digital garden",
     "url": "https://the-brew-code.de/",
