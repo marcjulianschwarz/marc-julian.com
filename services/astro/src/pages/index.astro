@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import BlogLayout from "../layouts/BlogLayout.astro";
 import { blogConfig } from "@config";
-import { getGalleryPhotos } from "@/lib/photos";
+import { isPhotographyPost } from "@/lib/photos";
 import projects from "../data/projects.json";
 import tools from "../data/tools.json";
 
@@ -36,8 +36,7 @@ const recentPosts = allPosts
 
 const photographyTag = blogConfig.photographyTag.toLowerCase();
 
-// Small strip of square crops, kept short so the home page stays light
-const recentPhotos = (await getGalleryPhotos()).slice(0, 6);
+const photographyPosts = allPosts.filter(isPhotographyPost).slice(0, 6);
 
 function shortHash(id: string) {
     return id
@@ -280,32 +279,35 @@ function shortHash(id: string) {
     </section>
 
     <!-- Photography -->
-    {recentPhotos.length > 0 && (
+    {photographyPosts.length > 0 && (
         <section class="mb-32" id="photography">
             <h2 class="section-label mb-4">Photography</h2>
-            <div class="photo-strip">
-                {recentPhotos.map((photo) => (
-                    <a
-                        href={photo.href}
-                        class="photo-strip-item"
-                        title={photo.title}
-                    >
-                        <picture>
-                            <source
-                                srcset={photo.images.small.webp}
-                                type="image/webp"
-                            />
-                            <img
-                                src={photo.images.small.jpg}
-                                alt={photo.title}
-                                width={photo.size?.small.width}
-                                height={photo.size?.small.height}
-                                loading="lazy"
-                                decoding="async"
-                            />
-                        </picture>
-                    </a>
-                ))}
+            <div>
+                {photographyPosts.map((post) => {
+                    const date = post.data["blog-published"];
+                    return (
+                        <a
+                            href={`${blogConfig.postsBase}/${post.id}`}
+                            class="list-row group"
+                        >
+                            <span class="list-title">
+                                {post.data["blog-title"]}
+                            </span>
+                            {date && (
+                                <time
+                                    datetime={date.toISOString()}
+                                    class="list-date"
+                                >
+                                    {date.toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                    })}
+                                </time>
+                            )}
+                        </a>
+                    );
+                })}
             </div>
             <div class="flex justify-between mt-4">
                 <a href={blogConfig.photographyBase} class="accent-link mono-text">
@@ -578,37 +580,6 @@ function shortHash(id: string) {
         text-decoration: underline;
         text-decoration-thickness: 1px;
         text-underline-offset: 0.2em;
-    }
-    .photo-strip {
-        columns: 2;
-        column-gap: 0.75rem;
-    }
-    @media (min-width: 640px) {
-        .photo-strip {
-            columns: 3;
-        }
-    }
-    .photo-strip-item {
-        display: block;
-        margin-bottom: 0.75rem;
-        break-inside: avoid;
-        overflow: hidden;
-        border-radius: 0.5rem;
-        line-height: 0;
-        background: var(--color-border);
-        box-shadow: var(--shadow-photo);
-        transition: box-shadow 0.25s ease;
-    }
-    .photo-strip-item:hover {
-        box-shadow: var(--shadow-photo-hover);
-    }
-    .photo-strip-item img {
-        width: 100%;
-        height: auto;
-        transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .photo-strip-item:hover img {
-        transform: scale(1.04);
     }
     .list-icon {
         display: inline-block;
