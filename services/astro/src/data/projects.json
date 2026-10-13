@@ -26,6 +26,13 @@
     "section": "projects"
   },
   {
+    "title": "wframe",
+    "description": "Dashboards for ESPHome e-paper displays",
+    "url": "https://wframe.de/",
+    "github": "https://github.com/marcjulianschwarz/wframe",
+    "section": "projects"
+  },
+  {
     "title": "Obsidian for Raycast",
     "description": "Obsidian notes at your fingertips on Mac",
     "url": "https://www.raycast.com/marcjulian/obsidian",
@@ -51,6 +58,13 @@
     "description": "Manage Personio attendance times",
     "url": "https://www.raycast.com/boosteblume/personio",
     "github": "https://github.com/marcjulianschwarz/personio-raycast",
+    "section": "projects"
+  },
+  {
+    "title": "Apple TV Remote for Raycast",
+    "description": "Control your Apple TV with Raycast",
+    "url": "https://github.com/marcjulianschwarz/raycast-apple-tv-remote",
+    "github": "https://github.com/marcjulianschwarz/raycast-apple-tv-remote",
     "section": "projects"
   },
   {
@@ -100,6 +114,12 @@
     "description": "My public notes",
     "url": "https://notes.marc-julian.com/",
     "github": "https://github.com/marcjulianschwarz/obsidian-vault-notes",
+    "section": "content"
+  },
+  {
+    "title": "University",
+    "description": "My university notes",
+    "url": "https://university.marc-julian.com/",
     "section": "content"
   },
   {
