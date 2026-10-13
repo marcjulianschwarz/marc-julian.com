@@ -259,6 +259,17 @@ const formattedDate = date?.toLocaleDateString("en-US", {
     margin-left: auto;
     margin-right: auto;
   }
+  .prose :global(video) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    /* HDR clips play in SDR inline and in full HDR only in fullscreen */
+    dynamic-range-limit: standard;
+  }
+  .prose :global(video:fullscreen) {
+    dynamic-range-limit: no-limit;
+  }
   @media (prefers-color-scheme: dark) {
     .prose :global(img[src$=".svg"]) {
       filter: invert(1);

@@ -195,6 +195,16 @@ html.dark .astro-code-themes span {
   text-align: right;
 }
 
+/* Large page title */
+.display-heading {
+  font-family: "Inter", sans-serif;
+  font-size: clamp(2.75rem, 11vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
 /* Section headings on the blog index */
 .section-heading {
   font-size: 1.5rem;
